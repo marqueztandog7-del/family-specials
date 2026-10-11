@@ -80,18 +80,18 @@ logged (`collection_runs`), together with exactly which pages it read (`run_cove
 
 | Store | Source | Our store | Specials | Regular prices | Barcodes |
 |---|---|---|---|---|---|
-| Woolworths | JSON API the site uses | Default online store #7008 (pinning Kellyville North needs a login) | Half Price, Lower Shelf Price*, Seasonal*, Buy More Save More, Online Only | Tracked categories | In listings (almost all) |
-| Coles | The site's page data | Kellyville #0883 (set with a cookie, no login) | Everything on /on-special | Tracked categories | Product pages only (not fetched yet) |
-| ALDI | Public JSON API | North Kellyville G449 | Special Buys (each Wed/Sat drop), Super Savers, Lower Prices* | Tracked categories | None (mostly own brands) |
-| Costco | JSON API the site uses | Online, national | Hot Buys with a member saving and real end dates | Keyword searches | Product detail only (not fetched yet) |
-| Chemist Warehouse | Algolia search index (approved, limited to tracked categories) | Online, national | Clearance only (see below) | Tracked categories | Some, from supplier image links |
+| Woolworths (from the Mac: it blocks GitHub) | JSON API the site uses | Woolworths' default store for anonymous visitors, which changes (#7008 on 5 Oct, #2631 on 12 Oct); pinning Kellyville North needs a login | Half Price, Lower Shelf Price*, Seasonal*, Buy More Save More, Online Only | Tracked categories | In listings (almost all) |
+| Coles (paused: challenges scripts after a page or two) | The site's page data | Kellyville #0883 (set with a cookie, no login) | Everything on /on-special | Tracked categories | Product pages only (not fetched yet) |
+| ALDI (from GitHub) | Public JSON API | North Kellyville G449 | Special Buys (each Wed/Sat drop), Super Savers, Lower Prices* | Tracked categories | None (mostly own brands) |
+| Costco (from GitHub) | JSON API the site uses | Online, national | Hot Buys with a member saving and real end dates | Keyword searches | Product detail only (not fetched yet) |
+| Chemist Warehouse (from GitHub) | Algolia search index (approved, limited to tracked categories) | Online, national | Clearance only (see below) | Tracked categories | Some, from supplier image links |
 | Tong Li | None online | Castle Hill | Typed in from the flyer (CSV) | n/a | n/a |
 
 \* Recorded as regular prices with the store's label, not as specials: the store doesn't mark
 them as on special and shows no was price.
 
 **Honest limits:**
-- **Woolworths** prices are from its default online store; weekly specials are set state-wide.
+- **Woolworths** prices are from the store it picks for anonymous visitors, which changes from week to week. Weekly specials are set state-wide; everyday prices can differ slightly between stores.
 - **Coles** is paused (`enabled: false` in `config/stores.yaml`): it challenged our script after about 20 requests in an hour on 5 Oct.
 - **Costco** prices are online prices, often including delivery. They are not warehouse shelf prices, and are always labelled.
 - **Chemist Warehouse** shows "$X Off RRP" on nearly everything; that's everyday pricing, never a

@@ -55,7 +55,9 @@ def build_products(conn: sqlite3.Connection) -> list[dict[str, Any]]:
         f"""
         WITH l AS (
           SELECT o.*, ROW_NUMBER() OVER (
-            PARTITION BY o.retailer_product_id, o.store_id
+            -- One row per product: its latest price. (Woolworths' anonymous default store changes
+            -- from week to week, so an older store's price must not show as a second listing.)
+            PARTITION BY o.retailer_product_id
             ORDER BY substr(o.observed_at, 1, 10) DESC, o.is_special DESC,
                      CASE o.price_basis WHEN 'in_store' THEN 0 ELSE 1 END, o.observed_at DESC, o.id DESC
           ) AS rn
@@ -123,10 +125,13 @@ def build_status(conn: sqlite3.Connection, product_counts: dict[str, int]) -> di
         last = conn.execute(
             "SELECT status, started_at, run_where FROM collection_runs WHERE chain = ? ORDER BY started_at DESC LIMIT 1",
             (chain,)).fetchone()
+        latest_store = conn.execute(
+            """SELECT s.name FROM price_observations o JOIN stores s ON s.id = o.store_id
+               WHERE s.chain = ? ORDER BY o.observed_at DESC LIMIT 1""", (chain,)).fetchone()
         stores.append({
             "chain": chain,
             "name": STORE_NAMES.get(chain, chain),
-            "store": cfg["store"]["name"],
+            "store": latest_store["name"] if latest_store else cfg["store"]["name"],
             "updates_from": cfg.get("run_on", "github") if cfg.get("enabled", True) else "paused",
             "last_updated": last_ok,
             "last_attempt": dict(last) if last else None,

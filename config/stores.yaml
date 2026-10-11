@@ -13,7 +13,7 @@ chains:
       # Pinning prices to Kellyville North (#1561) needs a login, which we don't do.
       # So prices come from Woolworths' default online store; weekly specials are set state-wide.
       ref: "7008"
-      name: Woolworths default online store (#7008)
+      name: Woolworths default online store (#7008)   # Woolworths changes this; #2631 on 12 Oct
       suburb: null
       postcode: null
       price_scope: default_online_store

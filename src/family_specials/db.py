@@ -81,6 +81,10 @@ def ensure_store(conn: sqlite3.Connection, chain: str, store_ref: str) -> int:
     if str(cfg.get("ref")) == store_ref:
         name, suburb, postcode = cfg.get("name"), cfg.get("suburb"), cfg.get("postcode")
         scope, notes = cfg.get("price_scope", "store"), cfg.get("notes")
+    elif cfg.get("price_scope") == "default_online_store":
+        # Woolworths picks a default store for anonymous visitors, and it changes over time.
+        name, suburb, postcode = f"Woolworths default online store (#{store_ref})", None, None
+        scope, notes = "default_online_store", "Store Woolworths chose for anonymous visitors"
     else:
         # The store priced us at a different store than configured: record exactly that.
         name, suburb, postcode = f"{chain} store {store_ref}", None, None

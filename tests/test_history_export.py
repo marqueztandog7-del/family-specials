@@ -90,3 +90,19 @@ def test_normalised_unit_price():
     assert normalised_unit_price(1699, "each", rolls) == {"cents": 47.19, "per": "roll"}
     assert normalised_unit_price(1299, "kg", None) == {"cents": 1299.0, "per": "kg"}   # weighed: already per kg
     assert normalised_unit_price(400, "each", _Attrs(comparable=0)) is None           # never guess a size
+
+
+def test_one_listing_per_product_even_if_the_store_changes(tmp_path):
+    conn = db.connect(tmp_path / "a.db")
+    _run(conn, "costco", "category", "category")
+    pid = conn.execute("SELECT id FROM retailer_products LIMIT 1").fetchone()[0]
+    other = db.ensure_store(conn, "costco", "some-other-store")
+    row = conn.execute("SELECT * FROM price_observations WHERE retailer_product_id = ?", (pid,)).fetchone()
+    conn.execute(
+        """INSERT INTO price_observations(run_id, retailer_product_id, store_id, observed_at, source, price_basis,
+           price_per, price_cents, is_special) VALUES (?,?,?,strftime('%Y-%m-%dT%H:%M:%SZ','now','+1 minute'),
+           'category','online','each',?,0)""", (row["run_id"], pid, other, (row["price_cents"] or 100) + 50))
+    conn.commit()
+    listings = [p for p in build_products(conn) if p["id"].endswith(":" + conn.execute(
+        "SELECT retailer_product_id FROM retailer_products WHERE id = ?", (pid,)).fetchone()[0])]
+    assert len(listings) == 1 and listings[0]["store_ref"] == "some-other-store"  # the latest price wins
