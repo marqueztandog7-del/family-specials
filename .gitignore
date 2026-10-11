@@ -6,7 +6,7 @@ __pycache__/
 
 # Local data: database, logs, raw collector responses, and our private receipt files.
 # Never committed (the repo is public).
-data/
+/data/
 *.db
 *.db-shm
 *.db-wal

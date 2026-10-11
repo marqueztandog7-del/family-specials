@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sqlite3
 import zlib
 from importlib import resources
@@ -15,7 +16,7 @@ from .models import NormalisedItem, Observation
 from .parsing import PARSER_VERSION, is_own_brand, normalise_gtin, parse_size
 from .timeutil import now_iso
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 
 def connect(path: Path | None = None) -> sqlite3.Connection:
@@ -57,6 +58,11 @@ def _migrate(conn: sqlite3.Connection, version: int) -> None:
             [(zlib.compress(r["raw_price_z"].encode(), 6), r["id"]) for r in rows if isinstance(r["raw_price_z"], str)],
         )
         conn.execute("UPDATE schema_version SET version = 2")
+    if version < 3:
+        # v3: where each run happened, and whether it's been written to the repo's history files.
+        conn.execute("ALTER TABLE collection_runs ADD COLUMN run_where TEXT")
+        conn.execute("ALTER TABLE collection_runs ADD COLUMN published INTEGER NOT NULL DEFAULT 0")
+        conn.execute("UPDATE schema_version SET version = 3")
     conn.commit()
 
 
@@ -90,9 +96,10 @@ def ensure_store(conn: sqlite3.Connection, chain: str, store_ref: str) -> int:
 
 
 def start_run(conn: sqlite3.Connection, chain: str, kind: str) -> int:
+    where = os.environ.get("SPECIALS_RUN_WHERE") or ("github" if os.environ.get("GITHUB_ACTIONS") else "mac")
     cur = conn.execute(
-        "INSERT INTO collection_runs(chain, kind, started_at, status) VALUES (?, ?, ?, 'running')",
-        (chain, kind, now_iso()),
+        "INSERT INTO collection_runs(chain, kind, started_at, status, run_where) VALUES (?, ?, ?, 'running', ?)",
+        (chain, kind, now_iso(), where),
     )
     conn.commit()
     return cur.lastrowid
@@ -154,7 +161,7 @@ def save_item(conn: sqlite3.Connection, run_id: int, item: NormalisedItem, sourc
             )
 
     _save_snapshot(conn, product_id, item.raw_product, ts)
-    _save_attributes(conn, product_id, p.chain, p.brand, p.size_text, p.display_name or p.name, ts)
+    save_attributes(conn, product_id, p.chain, p.brand, p.size_text, p.display_name or p.name, ts)
 
     raw_price = zlib.compress(json.dumps(item.raw_price, separators=(",", ":"), sort_keys=True,
                                          default=str).encode(), 6)
@@ -179,7 +186,7 @@ def _save_snapshot(conn: sqlite3.Connection, product_id: int, raw: dict[str, Any
         )
 
 
-def _save_attributes(conn: sqlite3.Connection, product_id: int, chain: str, brand: str | None,
+def save_attributes(conn: sqlite3.Connection, product_id: int, chain: str, brand: str | None,
                      size_text: str | None, name: str, ts: str) -> None:
     s = parse_size(size_text, name)
     own = is_own_brand(chain, brand, config.own_brands())

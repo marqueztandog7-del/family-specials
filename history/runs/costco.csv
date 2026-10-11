@@ -1,0 +1,3 @@
+chain,kind,run_where,started_at,finished_at,status,requests_made,items_seen,observations_added,error
+costco,specials,mac,2026-10-05T03:09:00Z,2026-10-05T03:09:32Z,ok,8,297,297,
+costco,category,mac,2026-10-05T03:09:32Z,2026-10-05T03:10:01Z,ok,7,75,75,

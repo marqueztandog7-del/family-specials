@@ -112,7 +112,9 @@ CREATE TABLE IF NOT EXISTS collection_runs (
   requests_made INTEGER NOT NULL DEFAULT 0,
   items_seen INTEGER NOT NULL DEFAULT 0,
   observations_added INTEGER NOT NULL DEFAULT 0,
-  error TEXT
+  error TEXT,
+  run_where TEXT,                   -- github | mac (where the run happened)
+  published INTEGER NOT NULL DEFAULT 0  -- 1 once written to the repo's history files (or imported from them)
 );
 CREATE INDEX IF NOT EXISTS idx_runs_chain ON collection_runs(chain, kind, started_at);
 

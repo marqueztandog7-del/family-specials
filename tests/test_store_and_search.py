@@ -57,6 +57,8 @@ def test_expired_specials_are_hidden(tmp_path):
     conn = db.connect(tmp_path / "t.db")
     _load(conn, "costco")
     word = json.loads((FIXTURES / "costco.json").read_text())[0]["name"].split()[0].lower()
+    conn.execute("UPDATE price_observations SET valid_to = '2099-01-01T00:00:00Z', observed_at = "
+                 "strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE is_special = 1")
     assert search(conn, word, specials_only=True)
     conn.execute("UPDATE price_observations SET valid_to = '2020-01-01T00:00:00Z' WHERE is_special = 1")
     conn.commit()

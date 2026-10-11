@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import sys
 
 from . import config, db
@@ -111,10 +112,54 @@ def cmd_import_tongli(args) -> int:
     return 0
 
 
-def cmd_serve(args) -> int:
-    import uvicorn
+def cmd_update(args) -> int:
+    """Load history, collect what's due, append to history, rebuild the page's data files.
+    Used by the GitHub Actions schedule (--where github) and the Mac command (--where mac)."""
+    from .collectors import get_collector_class, online_chains
+    from .export import export_site
+    from .history import import_history, publish_new_runs
+    from .runner import is_due, run_chain
 
-    uvicorn.run("family_specials.web:app", host=args.host, port=args.port, reload=False)
+    conn = db.connect()
+    loaded = import_history(conn)
+    print(f"History loaded: {loaded['runs']} runs, {loaded['observations']} prices, {loaded['products']} products")
+    settings = config.settings()["chains"]
+    chains = args.chain or [c for c in online_chains()
+                            if settings[c].get("enabled", True) and settings[c].get("run_on", "github") == args.where]
+    kinds = ["specials", "category"] if args.kind == "all" else [args.kind]
+    problems = []
+    for chain in chains if args.collect else []:
+        for kind in kinds:
+            if kind == "category" and (not config.tracked_categories(chain)
+                                       or getattr(get_collector_class(chain), "specials_are_categories", False)):
+                continue
+            if not args.force and not is_due(conn, chain, kind):
+                print(f"{chain:17} {kind:8} not due")
+                continue
+            r = run_chain(conn, chain, kind, max_pages=args.max_pages)
+            print(f"{chain:17} {kind:8} {r.status:8} requests={r.requests:<4} items={r.items:<5}"
+                  + (f"\n    {r.error.splitlines()[0]}" if r.error else ""))
+            if r.status in ("blocked", "error"):
+                problems.append(f"{chain} {kind}: {r.status}")
+    if args.publish:
+        pub = publish_new_runs(conn)
+        print(f"History: appended {pub['runs']} runs and {pub['observations']} prices")
+    counts = export_site(conn)
+    print("Page data: " + ", ".join(f"{c} {n}" for c, n in sorted(counts.items())) if counts else "Page data: empty")
+    if problems:
+        print("PROBLEMS: " + "; ".join(problems))
+        return 1
+    return 0
+
+
+def cmd_serve(args) -> int:
+    """Serve the static family page locally (the same files GitHub Pages serves)."""
+    import functools
+    import http.server
+
+    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(config.PROJECT_ROOT / "site"))
+    print(f"Family page: http://{args.host}:{args.port}/")
+    http.server.ThreadingHTTPServer((args.host, args.port), handler).serve_forever()
     return 0
 
 
@@ -155,7 +200,20 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("csv")
     p.set_defaults(func=cmd_import_tongli)
 
-    p = sub.add_parser("serve", help="run the search page")
+    p = sub.add_parser("update", help="load history, collect what's due, append history, rebuild page data")
+    p.add_argument("--where", choices=["github", "mac"],
+                   default="github" if os.environ.get("GITHUB_ACTIONS") else "mac",
+                   help="which stores to run: those set to run_on this place")
+    p.add_argument("--chain", action="append", help="only this chain (repeatable; ignores run_on/enabled)")
+    p.add_argument("--kind", choices=["specials", "category", "all"], default="all")
+    p.add_argument("--force", action="store_true", help="run even if not due this cycle")
+    p.add_argument("--max-pages", type=int, help="testing: at most N pages per group/category")
+    p.add_argument("--no-publish", dest="publish", action="store_false", help="don't append to history files")
+    p.add_argument("--no-collect", dest="collect", action="store_false",
+                   help="only load history and rebuild the page data (after pulling)")
+    p.set_defaults(func=cmd_update)
+
+    p = sub.add_parser("serve", help="serve the family page locally")
     p.add_argument("--host", default="127.0.0.1")
     p.add_argument("--port", type=int, default=8000)
     p.set_defaults(func=cmd_serve)

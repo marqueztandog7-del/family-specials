@@ -8,6 +8,7 @@ household:
 chains:
   woolworths:
     enabled: true
+    run_on: github   # github | mac (set after the GitHub test runs)
     store:
       # Pinning prices to Kellyville North (#1561) needs a login, which we don't do.
       # So prices come from Woolworths' default online store; weekly specials are set state-wide.
@@ -33,6 +34,7 @@ chains:
     # Paused 5 Oct 2026: Coles served a bot challenge after ~20 script requests in an hour.
     # Re-enable only after a single test request shows normal pages again (see PHASE1_REPORT.md).
     enabled: false
+    run_on: github
     store:
       ref: "0883"
       name: Coles Kellyville
@@ -45,6 +47,7 @@ chains:
 
   aldi:
     enabled: true
+    run_on: github
     store:
       ref: G449
       name: ALDI North Kellyville
@@ -57,6 +60,7 @@ chains:
 
   costco:
     enabled: true
+    run_on: github
     store:
       ref: online
       name: Costco online (national; prices include delivery)
@@ -71,6 +75,7 @@ chains:
 
   chemistwarehouse:
     enabled: true
+    run_on: github
     store:
       ref: online
       name: Chemist Warehouse online (national)
@@ -90,6 +95,7 @@ chains:
 
   tongli:
     enabled: true
+    run_on: manual
     store:
       ref: castle-hill
       name: Tong Li Castle Hill

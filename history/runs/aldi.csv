@@ -1,0 +1,3 @@
+chain,kind,run_where,started_at,finished_at,status,requests_made,items_seen,observations_added,error
+aldi,specials,mac,2026-10-05T03:06:25Z,2026-10-05T03:08:03Z,ok,21,949,949,
+aldi,category,mac,2026-10-05T03:08:03Z,2026-10-05T03:09:00Z,ok,13,286,286,

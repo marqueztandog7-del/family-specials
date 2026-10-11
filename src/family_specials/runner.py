@@ -53,7 +53,8 @@ def run_chain(conn: sqlite3.Connection, chain: str, kind: str, max_pages: int | 
     status, error = "ok", None
     client = make_client(chain)
     collector = get_collector_class(chain)(cfg, client, max_pages=max_pages)
-    source = "specials" if kind == "specials" else "category"
+    # Chemist Warehouse's specials run reads our tracked categories, so its prices are category prices.
+    source = "category" if kind == "category" or getattr(collector, "specials_are_categories", False) else "specials"
     try:
         if kind == "specials":
             raw_items = collector.fetch_specials()

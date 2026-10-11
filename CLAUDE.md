@@ -69,4 +69,10 @@ Every stage must keep these possible. When a design choice would block one of th
 
 ## Stack
 
-Python 3.12 (via uv), httpx, pydantic, SQLite with FTS5, FastAPI, rapidfuzz, PyYAML; launchd on the Mac now, a small server later.
+- Python 3.12 (via uv), httpx, pydantic, SQLite with FTS5, rapidfuzz, PyYAML.
+- The family page is a static web app in `site/` on GitHub Pages. `site/js/data.js` is the only file that reads data, so a Capacitor (App Store / Google Play) build can wrap `site/` later. Phone-first; greys, black and white, no colour accents; nothing desktop-only.
+- **Updates:**
+  - GitHub Actions (`.github/workflows/collect.yml`) runs the stores with `run_on: github`; `scripts/mac-update.sh` runs the ones with `run_on: mac`.
+  - Both use `specials update`: load `history/` → collect what's due → append to `history/` → rebuild `site/data/`.
+  - Per-store history files mean GitHub and the Mac never edit the same file.
+- **Published data:** `history/` and `site/data/` hold only products related to what we buy (seen in a tracked category, or matched to a watch item). No member prices and no raw store data.

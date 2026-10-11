@@ -1,30 +1,73 @@
 # Family Specials Finder
 
-Collects current specials (and regular prices for the things we buy) from the stores our
-household in North Kellyville (2155) uses, keeps them in one database with full price history,
-and makes them searchable.
+A cost-of-living app for our family: it collects specials (and regular prices for the things we
+buy) from the stores we use, keeps a price history, and shows it on a page you can install on
+your phone like an app.
 
-Phase 1: collection + search. The product vision and the data rules every phase follows are in
-[CLAUDE.md](CLAUDE.md), and the current stage's spec in [docs/next-stage-spec.md](docs/next-stage-spec.md).
-Store research, the build plan, the Phase 1 report and the decisions log are kept as local notes
-(not published).
+The product vision and the rules every stage follows are in [CLAUDE.md](CLAUDE.md); the current
+stage's spec is [docs/next-stage-spec.md](docs/next-stage-spec.md). Store research, the build plan,
+the Phase 1 report and the decisions log are kept as local notes (not published).
 
-## Quick start
+## The family page
+
+**https://marqueztandog7-del.github.io/family-specials/**
+
+- **Install it on a phone.**
+  - iPhone: open the link in Safari, tap Share, then "Add to Home Screen".
+  - Android: open it in Chrome, tap the menu, then "Install app" (or "Add to Home screen").
+- **What's on it.** It shows **only products related to what we buy** (our tracked categories now,
+  watch-item matches later). It is public to anyone with the link, so it never carries receipt
+  data, and search engines are asked not to list it.
+- **How it's built.** It's a static web app in `site/`:
+  - `index.html`, `styles.css` and `js/app.js` are the screens.
+  - **`js/data.js` is the only file that reads data** (`site/data/products.json` and `status.json`).
+    A future App Store / Google Play build (Capacitor) can wrap `site/` as it is and only needs
+    to change `data.js` if the data moves.
+  - `sw.js` keeps the app and the last prices available offline. `manifest.webmanifest` and
+    `icons/` make it installable (`scripts/make_icons.py` redraws the icons).
+
+## Quick start (on the Mac)
 
 ```bash
 cd ~/Claude/family-specials
+./scripts/mac-update.sh                # pull, run the Mac's stores, rebuild the page data, push
+uv run specials serve                  # the family page locally at http://127.0.0.1:8000
+uv run specials search "milk"          # search from the command line (full local database)
 uv run specials status                 # what was collected, and when
-uv run specials search "milk"          # specials matching "milk"
-uv run specials search "rice" --all    # include regular prices too
-uv run specials serve                  # search page at http://127.0.0.1:8000
 ```
 
-`uv` lives in `~/.local/bin`. If `uv` isn't found, run `export PATH="$HOME/.local/bin:$PATH"` first.
+`uv` and `gh` live in `~/.local/bin`. If they aren't found, run `export PATH="$HOME/.local/bin:$PATH"`.
 
-## Collecting
+## How the data updates
+
+| Where | What | When |
+|---|---|---|
+| GitHub Actions (`.github/workflows/collect.yml`) | Stores with `run_on: github` in `config/stores.yaml` | Wednesday morning (Woolworths, Coles, ALDI), Thursday (Chemist Warehouse), Saturday (ALDI), Monday (Costco), plus a daily catch-up. Times are Sydney time. |
+| Your Mac (`./scripts/mac-update.sh`) | Stores with `run_on: mac` (ones that block GitHub's servers) | Whenever you run it, or on a schedule if you install the launchd file in `scheduling/` |
+| By hand | Tong Li, from the flyer | `uv run specials import-tongli <file.csv>` |
+
+Every update does the same thing: it **loads the price history** from `history/`, **collects** each
+store that's due this specials cycle, **appends** the new prices to `history/`, **rebuilds**
+`site/data/`, commits, and publishes the page. A store that's blocked or breaks makes the run
+fail, and **GitHub emails you** (check that github.com/settings/notifications has Actions →
+email for failed workflows turned on).
+
+### Price history in the repo (`history/`)
+
+Small CSV files that only ever grow:
+
+- `history/observations/<store>-<year>.csv`: every price we've seen, one row per product per run.
+- `history/products/<store>.csv`: product names, sizes and barcodes.
+- `history/runs/<store>.csv`: every collection run (where, when, status).
+
+The page and history are limited to products related to what we buy. Member prices and raw store data stay in
+the local database (`data/specials.db`, never committed), which keeps everything the Mac collects.
+
+## Collecting by hand
 
 ```bash
-uv run specials collect                          # every store, specials + tracked categories
+uv run specials update --where mac               # what mac-update.sh runs, without the git steps
+uv run specials collect                          # every store, specials + tracked categories (local DB only)
 uv run specials collect --due                    # only stores not yet collected this cycle
 uv run specials collect --chain aldi             # one store
 uv run specials collect --chain coles --kind specials --max-pages 1   # quick test
@@ -86,10 +129,11 @@ uv run specials import-tongli ~/Downloads/tongli-week-41.csv
   stops that store's run immediately, and the scheduler then waits at least a day before trying it again.
 - Requests identify themselves as `FamilySpecialsFinder/0.1 (household use)`.
 
-## Scheduling
+## Scheduling on the Mac (optional)
 
-`scheduling/au.family-specials.collect.plist` runs `specials collect --due` at 7:30 and 18:30
-each day (launchd catches up after sleep). It isn't installed yet. To install:
+`scheduling/au.family-specials.collect.plist` runs `scripts/mac-update.sh` at 7:30 and 18:30
+each day (launchd catches up after sleep). Only needed if some stores have to run from the Mac.
+It isn't installed. To install:
 
 ```bash
 cp scheduling/au.family-specials.collect.plist ~/Library/LaunchAgents/
@@ -113,10 +157,15 @@ One SQLite file: `data/specials.db`. The main tables:
 | `collection_runs`, `run_coverage` | Every run and exactly what it read |
 | `store_categories` | Each store's category tree |
 
+## Secrets
+
+`.env` (never committed; see `.env.example`) holds Chemist Warehouse's public search key, which
+its website uses. On GitHub it's the repository secret `CW_ALGOLIA_SEARCH_KEY`.
+
 ## Development
 
 ```bash
-uv run pytest            # parser, robots.txt matcher and per-store normalisers (real saved items)
+uv run pytest            # parser, robots.txt, store normalisers, history round trip, unit prices
 ```
 
 Code is in `src/family_specials/`: one adapter per store in `collectors/` behind a shared
