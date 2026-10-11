@@ -1,0 +1,100 @@
+# Which stores we collect from, and how politely.
+# Edit freely. Store refs come from RECON.md.
+
+household:
+  name: Our household
+  postcode: "2155"
+
+chains:
+  woolworths:
+    enabled: true
+    store:
+      # Pinning prices to Kellyville North (#1561) needs a login, which we don't do.
+      # So prices come from Woolworths' default online store; weekly specials are set state-wide.
+      ref: "7008"
+      name: Woolworths default online store (#7008)
+      suburb: null
+      postcode: null
+      price_scope: default_online_store
+      notes: "Local store Kellyville North #1561 can't be pinned without logging in."
+    politeness: {delay_seconds: [3, 6], max_requests_per_run: 260}
+    cycle: {type: weekly, starts: wednesday}
+    specials_groups:
+      # Woolworths specials group ids (from /apis/ui/PiesCategoriesWithSpecials).
+      - {id: specialsgroup.3676, name: Half Price, special_type: half_price, weekly: true}
+      - {id: specialsgroup.3694, name: Lower Shelf Price, special_type: lower_shelf_price, weekly: false}
+      - {id: specialsgroup.3721, name: Seasonal Price, special_type: seasonal_price, weekly: false}
+      - {id: specialsgroup.3668, name: Buy More Save More, special_type: multibuy, weekly: false}
+      - {id: specialsgroup.onlineonly, name: Online Only Specials, special_type: online_only, weekly: false}
+      # Everyday Low Price (specialsgroup.3673, ~2,900 items) is everyday pricing, not a special.
+      # Left out to keep volume down; tracked categories give us regular prices instead.
+
+  coles:
+    # Paused 5 Oct 2026: Coles served a bot challenge after ~20 script requests in an hour.
+    # Re-enable only after a single test request shows normal pages again (see PHASE1_REPORT.md).
+    enabled: false
+    store:
+      ref: "0883"
+      name: Coles Kellyville
+      suburb: Kellyville
+      postcode: "2155"
+      price_scope: store
+      notes: "Click & Collect store, set with the fulfillmentStoreId cookie (no login)."
+    politeness: {delay_seconds: [4, 8], max_requests_per_run: 220}
+    cycle: {type: weekly, starts: wednesday}
+
+  aldi:
+    enabled: true
+    store:
+      ref: G449
+      name: ALDI North Kellyville
+      suburb: North Kellyville
+      postcode: "2155"
+      price_scope: store
+    politeness: {delay_seconds: [3, 6], max_requests_per_run: 60}
+    cycle: {type: twice_weekly, days: [wednesday, saturday]}
+    special_buys: {days_back: 7, days_ahead: 14}
+
+  costco:
+    enabled: true
+    store:
+      ref: online
+      name: Costco online (national; prices include delivery)
+      suburb: null
+      postcode: null
+      price_scope: online_national
+      notes: "Nearest warehouse: Marsden Park (9 km). Warehouse shelf prices are not published online."
+    politeness: {delay_seconds: [3, 6], max_requests_per_run: 60}
+    cycle: {type: weekly, starts: monday}
+    specials_categories:
+      - {code: hot-buys, name: Hot Buys}
+
+  chemistwarehouse:
+    enabled: true
+    store:
+      ref: online
+      name: Chemist Warehouse online (national)
+      suburb: null
+      postcode: null
+      price_scope: online_national
+    politeness: {delay_seconds: [3, 6], max_requests_per_run: 60}
+    cycle: {type: weekly, starts: thursday}
+    # Approved 5 Oct 2026: Algolia reads limited to the categories in tracked_categories.yaml.
+    # Specials here = clearance items only: the index's in_catalogue flag isn't reliable.
+    algolia:
+      app_id: 42NP1V2I98
+      search_key_env: CW_ALGOLIA_SEARCH_KEY  # set in .env (not committed) or as a GitHub secret
+      index: prod_cwr-cw-au_products_en
+      hits_per_page: 100
+    nexus_client_id: 3476  # catalogue viewer (images only), for the future flyer path
+
+  tongli:
+    enabled: true
+    store:
+      ref: castle-hill
+      name: Tong Li Castle Hill
+      suburb: Castle Hill
+      postcode: "2154"
+      price_scope: manual
+      notes: "No online data. Entered by hand from the in-store flyer (CSV import)."
+    cycle: {type: manual}

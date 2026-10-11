@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Runs `specials collect --due` twice a day. "--due" means each store is collected at most
+  once per specials cycle: Woolworths and Coles weekly from Wednesday, ALDI on Wednesdays and
+  Saturdays, Costco weekly from Monday, Chemist Warehouse weekly from Thursday.
+  If the Mac is asleep at 7:30, launchd runs the job when it wakes.
+  Install: see README.md ("Scheduling").
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>au.family-specials.collect</string>
+  <key>WorkingDirectory</key>
+  <string>/Users/marqueztandog/Claude/family-specials</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/marqueztandog/.local/bin/uv</string>
+    <string>run</string>
+    <string>specials</string>
+    <string>collect</string>
+    <string>--due</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict><key>Hour</key><integer>7</integer><key>Minute</key><integer>30</integer></dict>
+    <dict><key>Hour</key><integer>18</integer><key>Minute</key><integer>30</integer></dict>
+  </array>
+  <key>StandardOutPath</key>
+  <string>/Users/marqueztandog/Claude/family-specials/data/logs/collect.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/marqueztandog/Claude/family-specials/data/logs/collect.log</string>
+  <key>LowPriorityIO</key>
+  <true/>
+</dict>
+</plist>

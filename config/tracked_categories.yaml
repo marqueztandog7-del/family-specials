@@ -1,0 +1,72 @@
+# Categories whose REGULAR prices we read once per cycle (not just specials), so price
+# history starts now. History can't be backfilled, and "lowest in 12 weeks" needs it.
+#
+# Seeded with the earlier 10-item test basket until the family shopping list arrives.
+# Keep this list short: each entry costs a few requests per store per week.
+# Find category ids with:  uv run specials categories --chain <chain> --find <word>
+#
+# Per store:
+#   woolworths: {id, url, name}      coles: {slug, name}      aldi: {key, name}
+#   costco: {query, name} or {code, name}                    chemistwarehouse: {category}
+items:
+  - item: full cream milk
+    stores:
+      woolworths: {id: 1_A8A8E7C, url: /shop/browse/dairy-eggs-fridge/milk/full-cream-milk, name: Full Cream Milk}
+      coles: {slug: dairy-eggs-fridge/milk/full-cream-milk, name: Full Cream Milk}
+      aldi: {key: "1111111160", name: Milk}
+
+  - item: eggs
+    stores:
+      woolworths: {id: 1_7C17211, url: /shop/browse/dairy-eggs-fridge/eggs-butter-margarine/eggs, name: Eggs}
+      aldi: {key: "1111111162", name: Eggs}
+
+  - item: jasmine rice
+    stores:
+      woolworths: {id: 1_CB3D384, url: /shop/browse/pantry/pasta-rice-grains/rice, name: Rice}
+      aldi: {key: "1111111179", name: Pasta, Rice & Grains}
+      costco: {query: jasmine rice, name: jasmine rice}
+
+  - item: chicken thigh fillets
+    stores:
+      woolworths: {id: 1_FE29197, url: /shop/browse/poultry-meat-seafood/poultry/fresh-chicken, name: Fresh Chicken}
+      aldi: {key: "1111111146", name: Poultry}
+
+  - item: toilet paper
+    stores:
+      woolworths: {id: 1_E21AF56, url: /shop/browse/cleaning-maintenance/toilet-paper-tissues-paper-towels/toilet-paper, name: Toilet Paper}
+      aldi: {key: "1111111260", name: Toilet Paper, Tissues & Paper Towels}
+      costco: {query: toilet paper, name: toilet paper}
+      chemistwarehouse: {category: Toilet Paper}
+
+  - item: laundry liquid
+    stores:
+      woolworths: {id: 1_2A64A8E, url: /shop/browse/cleaning-maintenance/laundry/laundry-liquid, name: Laundry Liquid}
+      aldi: {key: "1111111252", name: Laundry}
+      costco: {query: laundry liquid, name: laundry liquid}
+      chemistwarehouse: {category: Laundry}
+
+  - item: dishwashing liquid
+    stores:
+      woolworths: {id: 1_101E244, url: /shop/browse/cleaning-maintenance/kitchen/dishwashing, name: Dishwashing}
+      aldi: {key: "1111111255", name: Kitchen}
+      costco: {query: dishwashing liquid, name: dishwashing liquid}
+      chemistwarehouse: {category: Dishwashing}
+
+  - item: toothpaste
+    stores:
+      woolworths: {id: 1_BF70D80, url: /shop/browse/personal-care/oral-care/toothpaste, name: Toothpaste}
+      aldi: {key: "1111111247", name: Dental Care}
+      costco: {query: toothpaste, name: toothpaste}
+      chemistwarehouse: {category: Toothpaste}
+
+  - item: soy sauce
+    stores:
+      woolworths: {id: 1_2046A5A, url: /shop/browse/pantry/cooking-sauces-recipe-bases/soy-asian-sauces, name: Soy & Asian Sauces}
+      aldi: {key: "1111111173", name: Sauces}
+
+  - item: paracetamol 500 mg
+    stores:
+      woolworths: {id: 1_4C3EFD2, url: /shop/browse/health-wellness/first-aid-medicinal/pain-relief, name: Pain Relief}
+      aldi: {key: "1111111245", name: First Aid & Medicinal}
+      costco: {query: paracetamol, name: paracetamol}
+      chemistwarehouse: {category: Pain Relief}

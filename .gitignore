@@ -1,0 +1,27 @@
+# Python and tools
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local data: database, logs, raw collector responses, and our private receipt files.
+# Never committed (the repo is public).
+data/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# macOS
+.DS_Store
+
+# Local notes, held back from the public repo (5 Oct planning docs and the decisions log)
+RECON.md
+PLAN.md
+PHASE1_REPORT.md
+docs/decisions.md

@@ -1,0 +1,433 @@
+[
+ {
+  "_tags": [
+   "product:a8f627aa-a0ce-4d4b-a02f-5affd3f54be8"
+  ],
+  "attributes": {
+   "PIMS_percentage_discount": 37.5,
+   "cwh_size": 30,
+   "cwr-adult-product": false,
+   "cwr-algolia-price": "2500",
+   "cwr-au-allowed-schedule-prices": [],
+   "cwr-au-appendix-h": false,
+   "cwr-au-click-and-collect": true,
+   "cwr-au-common-uses": {
+    "en": "<p>Key Features:</p>\n\n<p>Advanced Cleaning Technology: Equipped with a formula targeting tough grease and 36-hour baked-on stains for thorough cleaning.</p>\n\n<p>No Pre-Rinse Required: Save time and effort with powerful formula eliminating pre-rinsing.</p>\n\n<p>Sparkling Results: Enjoy spotless dishes, exceptional stain removal, and impeccable tableware.</p>\n\n<p>Versatile Application: Suitable for all dishes, pans, and pots, including glassware and heavily soiled cookware. Effective in all wash cycles.</p>\n"
+   },
+   "cwr-au-express-only": false,
+   "cwr-au-international-shipping": false,
+   "cwr-au-marketplace": false,
+   "cwr-au-omni-min-stock": 100,
+   "cwr-au-prescription-type": {
+    "key": "none",
+    "label": "None"
+   },
+   "cwr-au-schedule": {
+    "key": "none",
+    "label": "None"
+   },
+   "cwr-brand": {
+    "key": "morning_fresh",
+    "label": {
+     "en": "Morning Fresh"
+    }
+   },
+   "cwr-cannabis": false,
+   "cwr-depth": 83,
+   "cwr-epid": 135498,
+   "cwr-fast-delivery": true,
+   "cwr-generic-brand": false,
+   "cwr-height": 230,
+   "cwr-hide-rrp": false,
+   "cwr-manufacturer": {
+    "key": "pz_cussons_australia_pty_ltd",
+    "label": {
+     "en": "PZ Cussons Australia Pty Ltd"
+    }
+   },
+   "cwr-multipack-qty": 0,
+   "cwr-patient-profile": false,
+   "cwr-preferred-generic": false,
+   "cwr-product-flags": [
+    "clearance"
+   ],
+   "cwr-review-rating": 4.3333,
+   "cwr-review-rating-count": 3,
+   "cwr-shipping": {
+    "key": "yes",
+    "label": "Yes"
+   },
+   "cwr-transaction-limit": 1,
+   "cwr-ub-omni-min-stock": 5,
+   "cwr-weight": 461,
+   "cwr-width": 230,
+   "description": {
+    "en": "<p>Introducing Morning Fresh Pro Performance Dishwasher Tablets, the ultimate solution for effortless and effective dishwashing. Designed for tough grease and stubborn residues. With Morning Fresh Pro Performance Dishwasher Tablets, say goodbye to pre-rinsing and hello to spotless dishes.</p>\n"
+   },
+   "gwp_product": false,
+   "mandatory_code": {
+    "key": "None",
+    "label": {
+     "en": "None"
+    }
+   },
+   "pims_volume": 4390.7,
+   "practitioner_use": false
+  },
+  "categories": {
+   "en": {
+    "lvl0": [
+     "Chemist Warehouse Australia",
+     "Chemist Warehouse Australia",
+     "Chemist Warehouse Australia",
+     "Chemist Warehouse Australia",
+     "Chemist Warehouse Australia",
+     "Chemist Warehouse Australia",
+     "Chemist Warehouse Australia"
+    ],
+    "lvl1": [
+     "Chemist Warehouse Australia > Categories",
+     "Chemist Warehouse Australia > Categories",
+     "Chemist Warehouse Australia > Categories",
+     "Chemist Warehouse Australia > Brands",
+     "Chemist Warehouse Australia > Categories",
+     "Chemist Warehouse Australia > Categories",
+     "Chemist Warehouse Australia > Categories"
+    ],
+    "lvl2": [
+     "Chemist Warehouse Australia > Categories > Clearance",
+     "Chemist Warehouse Australia > Categories > Home & Pet",
+     "Chemist Warehouse Australia > Categories > Home & Pet",
+     "Chemist Warehouse Australia > Brands > Morning Fresh",
+     "Chemist Warehouse Australia > Categories > Home & Pet",
+     "Chemist Warehouse Australia > Categories > Clearance",
+     "Chemist Warehouse Australia > Categories > Home & Pet"
+    ],
+    "lvl3": [
+     "Chemist Warehouse Australia > Categories > Clearance > Clearance Home & Pet",
+     "Chemist Warehouse Australia > Categories > Home & Pet > Household",
+     "Chemist Warehouse Australia > Categories > Home & Pet > Household",
+     "Chemist Warehouse Australia > Categories > Home & Pet > Household"
+    ],
+    "lvl4": [
+     "Chemist Warehouse Australia > Categories > Home & Pet > Household > Household Cleaning",
+     "Chemist Warehouse Australia > Categories > Home & Pet > Household > Household Cleaning"
+    ],
+    "lvl5": [
+     "Chemist Warehouse Australia > Categories > Home & Pet > Household > Household Cleaning > Dishwashing"
+    ]
+   }
+  },
+  "categoryFacetKeys": {
+   "en": [
+    "Clearance",
+    "Clearance Home & Pet",
+    "Home & Pet",
+    "Household",
+    "Household Cleaning",
+    "Dishwashing"
+   ]
+  },
+  "categoryKeys": {
+   "en": [
+    "Chemist Warehouse Australia",
+    "Categories",
+    "Clearance",
+    "Clearance Home & Pet",
+    "Home & Pet",
+    "Household",
+    "Household Cleaning",
+    "Brands",
+    "Morning Fresh",
+    "Dishwashing"
+   ]
+  },
+  "categoryPageId": [
+   "Chemist Warehouse Australia",
+   "Chemist Warehouse Australia > Brands",
+   "Chemist Warehouse Australia > Brands > Morning Fresh",
+   "Chemist Warehouse Australia > Categories",
+   "Chemist Warehouse Australia > Categories > Clearance",
+   "Chemist Warehouse Australia > Categories > Clearance > Clearance Home & Pet",
+   "Chemist Warehouse Australia > Categories > Home & Pet",
+   "Chemist Warehouse Australia > Categories > Home & Pet > Household",
+   "Chemist Warehouse Australia > Categories > Home & Pet > Household > Household Cleaning",
+   "Chemist Warehouse Australia > Categories > Home & Pet > Household > Household Cleaning > Dishwashing"
+  ],
+  "categorySlugs": {
+   "en": [
+    "3674-clearance-home-pet",
+    "6266-household-cleaning",
+    "60000-home-pet",
+    "2044-morning-fresh",
+    "792-household",
+    "3240-clearance",
+    "60069-dishwashing"
+   ]
+  },
+  "createdAt": "2025-04-24T06:29:50.923Z",
+  "description": {
+   "en": "<p>Introducing Morning Fresh Pro Performance Dishwasher Tablets, the ultimate solution for effortless and effective dishwashing. Designed for tough grease and stubborn residues. With Morning Fresh Pro Performance Dishwasher Tablets, say goodbye to pre-rinsing and hello to spotless dishes.</p>\n"
+  },
+  "hasImage": true,
+  "images": [
+   "https://static.chemistwarehouse.com.au/ams/media/pi/135498/F2D_800.jpg"
+  ],
+  "isMasterVariant": true,
+  "key": "503f2070-1c33-4e35-b797-b307d1742dd2",
+  "name": {
+   "en": "Morning Fresh Pro Performance Dishwasher Tablets Lemon 30 Pack"
+  },
+  "objectID": "a8f627aa-a0ce-4d4b-a02f-5affd3f54be8.1",
+  "productID": "a8f627aa-a0ce-4d4b-a02f-5affd3f54be8",
+  "productKey": "503f2070-1c33-4e35-b797-b307d1742dd2",
+  "productType": "Home & Pet",
+  "sku": "2719491",
+  "slug": {
+   "en": "135498-morning-fresh-pro-performance-dishwasher-tablets-lemon-30-pack"
+  },
+  "calculatedPrice": 2500,
+  "isInStock": true,
+  "priceRangeFacetKeys": [
+   "2500_4999"
+  ],
+  "prices": {
+   "AUD": {
+    "max": 2500,
+    "min": 2500,
+    "priceValues": [
+     {
+      "channelID": "091dd48b-a8e3-41eb-8517-ce57d4474055",
+      "customFields": {
+       "rrp": {
+        "centAmount": 4000,
+        "currencyCode": "AUD",
+        "fractionDigits": 2,
+        "type": "centPrecision"
+       }
+      },
+      "id": "2187cc77-dfb6-4325-ab21-aae54d5bfdef",
+      "value": 2500
+     }
+    ]
+   }
+  },
+  "pricesCustomFields": {
+   "AUD": {
+    "rrp": {
+     "centAmount": 4000,
+     "currencyCode": "AUD",
+     "fractionDigits": 2,
+     "type": "centPrecision"
+    }
+   }
+  }
+ },
+ {
+  "_tags": [
+   "product:f29d4131-3da8-49ff-9b43-c27d79660179"
+  ],
+  "attributes": {
+   "PIMS_percentage_discount": 30.02,
+   "cwr-adult-product": false,
+   "cwr-algolia-price": "1399",
+   "cwr-au-allowed-schedule-prices": [],
+   "cwr-au-appendix-h": false,
+   "cwr-au-click-and-collect": true,
+   "cwr-au-directions": {
+    "en": "Place meltlet on the tongue, allow it to dissolve in the mouth before swallowing it. No water is required. Do not chew. Adults and children from 12 years: Take 1 to 2 meltlets initially, then 1 to 2 meltlets every 4 to 6 hours as necessary (maximum 6 meltlets in 24 hours). Do not use in children under 12 years old except on doctor's advice.<br /><br />Store below 25&deg;C. <p>SAFETY DIRECTIONS</p>  WARNINGS<br />Do not exceed the recommended dose. Excessive use can be harmful and increase the risk of heart attack, stroke or liver damage. <br /><br />Do not use if:<br />&bull; \tYou have a stomach ulcer, or other stomach disorders, kidney, liver or heart problems<br />&bull; \tYou are allergic to ibuprofen, aspirin or other anti-inflammatory medicines<br />&bull; \tDuring the last 3 months of pregnancy<br /><br />Unless a doctor has told you to, do not use:<br />&bull; \tFor more than 3 days at a time<br />&bull; \tIf you have asthma<br />&bull; \tIf you are taking other medicines containing ibuprofen, aspirin or other anti-inflammatory medicines<br />&bull; \tIf you are trying to become pregnant or during the first 6 months of pregnancy<br />&bull; \tIn children suffering from chickenpox (varicella)<br />&bull; \tIn children suffering from dehydration through diarrhoea and/or vomiting<br />&bull; \tIf you are taking other medication regularly<br />&bull; \tIf you are aged 65 years or over<br />&bull; \tIn children under 12 years of age<br /><br />Stop use and see your doctor immediately if:<br />&bull; \tYou have an allergic reaction<br /><br />Advisory statements:<br />Contains sucralose<br /><br />Other information: <br />Do not use if the blister foil is broken on first opening. <p>Storage Temperature:  Store below 30 degrees Celsius</p>"
+   },
+   "cwr-au-express-only": false,
+   "cwr-au-ingredients": {
+    "en": "<p>Active Ingredients:  Flavour, colloidal anhydrous silica, crospovidone, malic acid, mannitol, microcrystalline cellulose, sodium stearylfumarate, sucralose<br />ibuprofen 200 mg</p>  <p>Contains:  Contains sucralose</p>"
+   },
+   "cwr-au-international-shipping": false,
+   "cwr-au-mandatory-statement": {
+    "en": "Always read the label and follow the directions for use. Incorrect use could be harmful. \n\nPlease refer to any health and product warnings below."
+   },
+   "cwr-au-marketplace": false,
+   "cwr-au-omni-min-stock": 100,
+   "cwr-au-prescription-type": {
+    "key": "none",
+    "label": "None"
+   },
+   "cwr-au-schedule": {
+    "key": "2",
+    "label": "Schedule 2"
+   },
+   "cwr-au-warnings": {
+    "en": "Do not exceed the recommended dose. Excessive use can be harmful and increase the risk of heart attack, stroke or liver damage.\u00a0 <br />Do not use if you have a stomach ulcer, or other stomach disorders, kidney, liver or heart problems, are allergic to anti-inflammatory medicines, during the last 3 months of pregnancy<br />Unless a doctor has told you to, do not use for more than 3 days at a time if you have asthma, if you are taking other medicines containing ibuprofen, aspirin or other anti- inflammatory medicines, if you are trying to become pregnant or during the first 6 months of pregnancy, in children suffering from chickenpox (varicella), in children suffering from dehydration through diarrhoea, and/ or vomiting, if you are taking medication regularly, if you are aged 65 years or over, in children under 12 years of age <br />Stop use and see your doctor immediately if you have an allergic reaction."
+   },
+   "cwr-brand": {
+    "key": "nurofen",
+    "label": {
+     "en": "Nurofen"
+    }
+   },
+   "cwr-cannabis": false,
+   "cwr-depth": 47,
+   "cwr-epid": 115981,
+   "cwr-fast-delivery": true,
+   "cwr-generic-brand": false,
+   "cwr-height": 69,
+   "cwr-hide-rrp": false,
+   "cwr-manufacturer": {
+    "key": "reckitt_benckiser_australia_ltd",
+    "label": {
+     "en": "Reckitt Benckiser Australia Ltd"
+    }
+   },
+   "cwr-multipack-qty": 1,
+   "cwr-patient-profile": true,
+   "cwr-preferred-generic": false,
+   "cwr-product-flags": [
+    "in_catalogue",
+    "pharmacy_only"
+   ],
+   "cwr-purchase-limit": 1,
+   "cwr-review-rating": 3.2308,
+   "cwr-review-rating-count": 13,
+   "cwr-shipping": {
+    "key": "yes",
+    "label": "Yes"
+   },
+   "cwr-supplier-content": {
+    "en": "<link rel=\"stylesheet\" type=\"text/css\" href=\"https://legacy-api.chemistwarehouse.com.au/cmsglobalfiles/css/rich-content.css\"> <div id=\"sku_cwhhtml\" class=\"extended\"><div id=\"SKU-SKUItem1-row1\" class=\"extended-row\"><a class=\"image_enlarger\" title=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" href=\"https://richcontent.skulibrary.com/RBHE/9300711111356/1/RBHE_9300711111356-1-1.jpeg\" data-title=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" data-lightbox=\"EnrichedContentGroup\"><img src=\"https://richcontent.skulibrary.com/RBHE/9300711111356/1/RBHE_9300711111356-1-1.jpeg\" alt=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" u=\"image\" itemprop=\"image\"></a></div><div id=\"SKU-SKUItem2-row1\" class=\"extended-row\"><a class=\"image_enlarger\" title=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" href=\"https://richcontent.skulibrary.com/RBHE/9300711111356/1/RBHE_9300711111356-2-1.jpeg\" data-title=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" data-lightbox=\"EnrichedContentGroup\"><img src=\"https://richcontent.skulibrary.com/RBHE/9300711111356/1/RBHE_9300711111356-2-1.jpeg\" alt=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" u=\"image\" itemprop=\"image\"></a></div><div id=\"SKU-SKUItem3-row1\" class=\"extended-row\"><a class=\"image_enlarger\" title=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" href=\"https://richcontent.skulibrary.com/RBHE/9300711111356/1/RBHE_9300711111356-3-1.jpeg\" data-title=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" data-lightbox=\"EnrichedContentGroup\"><img src=\"https://richcontent.skulibrary.com/RBHE/9300711111356/1/RBHE_9300711111356-3-1.jpeg\" alt=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" u=\"image\" itemprop=\"image\"></a></div><div id=\"SKU-SKUItem4-row1\" class=\"extended-row\"><a class=\"image_enlarger\" title=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" href=\"https://richcontent.skulibrary.com/RBHE/9300711111356/1/RBHE_9300711111356-4-1.jpeg\" data-title=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" data-lightbox=\"EnrichedContentGroup\"><img src=\"https://richcontent.skulibrary.com/RBHE/9300711111356/1/RBHE_9300711111356-4-1.jpeg\" alt=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" u=\"image\" itemprop=\"image\"></a></div><div id=\"SKU-SKUItem5-row1\" class=\"extended-row\"><a class=\"image_enlarger\" title=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" href=\"https://richcontent.skulibrary.com/RBHE/9300711111356/1/RBHE_9300711111356-5-1.jpeg\" data-title=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" data-lightbox=\"EnrichedContentGroup\"><img src=\"https://richcontent.skulibrary.com/RBHE/9300711111356/1/RBHE_9300711111356-5-1.jpeg\" alt=\"Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Value Pack\" u=\"image\" itemprop=\"image\"></a></div></div>"
+   },
+   "cwr-transaction-limit": 1,
+   "cwr-ub-omni-min-stock": 5,
+   "cwr-weight": 56,
+   "cwr-width": 104,
+   "description": {
+    "en": "<p>Nurofen Meltlets start to melt in your mouth quickly, for headache relief wherever and whenever you need it. No water needed - just melts in your mouth.</p>  Nurofen Meltlets start to melt in your mouth quickly, for headache relief wherever and whenever you need it. Our next generation of ibuprofen pain relief that melts on your tongue conveniently without the need for water, making them great for when you're out and about.<br /><br />&nbsp;<br /><br />For the temporary relief of pain and/or inflammation associated with:<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Headache<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Migraine headache<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tension headache<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Muscular pian<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Cold and flu symptoms<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Period pain<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dental pain<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sinus pain<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Back pain<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Arthritic pain<br /><br />&middot;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Reduces fever <p>Suitable For:  Adults and children from 12 years. For the temporary relief of pain and/or inflammation.</p>  <p>Product Claims:  Quick, headche relief that melts in your mouth without water for wherever, whenever</p>  <p>Boxed Contents:  48 Tablets</p>  <p>Size:  48 Tablets</p>  <p>Shelf Life in Days:  730</p>  <p>KEY FEATURES</p>  &bull; Pain relief wherever, whenever you need it.<br/> &bull; No water needed - just melts in your mouth.<br/> &bull; Starts to melt in your mouth quickly<br/> &bull; Berry Burst flavour<br/> &bull; Suitable for use on headaches, muscular pain, period pain, back pain and other types of pain<br/>"
+   },
+   "gwp_product": false,
+   "instant_consult": false,
+   "mandatory_code": {
+    "key": "old_analgesics",
+    "label": {
+     "en": "Old Analgesics"
+    }
+   },
+   "pims_volume": 337.27,
+   "practitioner_use": false,
+   "quantity": 48
+  },
+  "categories": {
+   "en": {
+    "lvl0": [
+     "Chemist Warehouse Australia",
+     "Chemist Warehouse Australia",
+     "Chemist Warehouse Australia"
+    ],
+    "lvl1": [
+     "Chemist Warehouse Australia > Brands",
+     "Chemist Warehouse Australia > Categories",
+     "Chemist Warehouse Australia > Categories"
+    ],
+    "lvl2": [
+     "Chemist Warehouse Australia > Brands > Nurofen",
+     "Chemist Warehouse Australia > Categories > Medicines",
+     "Chemist Warehouse Australia > Categories > Medicines"
+    ],
+    "lvl3": [
+     "Chemist Warehouse Australia > Categories > Medicines > Pain Relief"
+    ]
+   }
+  },
+  "categoryFacetKeys": {
+   "en": [
+    "Medicines",
+    "Pain Relief"
+   ]
+  },
+  "categoryKeys": {
+   "en": [
+    "Chemist Warehouse Australia",
+    "Brands",
+    "Nurofen",
+    "Categories",
+    "Medicines",
+    "Pain Relief"
+   ]
+  },
+  "categoryPageId": [
+   "Chemist Warehouse Australia",
+   "Chemist Warehouse Australia > Brands",
+   "Chemist Warehouse Australia > Brands > Nurofen",
+   "Chemist Warehouse Australia > Categories",
+   "Chemist Warehouse Australia > Categories > Medicines",
+   "Chemist Warehouse Australia > Categories > Medicines > Pain Relief"
+  ],
+  "categorySlugs": {
+   "en": [
+    "1046-nurofen",
+    "196-pain-relief",
+    "258-medicines"
+   ]
+  },
+  "createdAt": "2025-04-24T06:03:19.412Z",
+  "description": {
+   "en": "<p>Nurofen Meltlets start to melt in your mouth quickly, for headache relief wherever and whenever you need it. No water needed - just melts in your mouth.</p>  Nurofen Meltlets start to melt in your mouth quickly, for headache relief wherever and whenever you need it. Our next generation of ibuprofen pain relief that melts on your tongue conveniently without the need for water, making them great for when you're out and about.<br /><br />&nbsp;<br /><br />For the temporary relief of pain and/or inflammation associated with:<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Headache<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Migraine headache<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tension headache<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Muscular pian<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Cold and flu symptoms<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Period pain<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dental pain<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sinus pain<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Back pain<br /><br />&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Arthritic pain<br /><br />&middot;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Reduces fever <p>Suitable For:  Adults and children from 12 years. For the temporary relief of pain and/or inflammation.</p>  <p>Product Claims:  Quick, headche relief that melts in your mouth without water for wherever, whenever</p>  <p>Boxed Contents:  48 Tablets</p>  <p>Size:  48 Tablets</p>  <p>Shelf Life in Days:  730</p>  <p>KEY FEATURES</p>  &bull; Pain relief wherever, whenever you need it.<br/> &bull; No water needed - just melts in your mouth.<br/> &bull; Starts to melt in your mouth quickly<br/> &bull; Berry Burst flavour<br/> &bull; Suitable for use on headaches, muscular pain, period pain, back pain and other types of pain<br/>"
+  },
+  "hasImage": true,
+  "images": [
+   "https://static.chemistwarehouse.com.au/ams/media/pi/115981/2DF_800.jpg",
+   "https://static.chemistwarehouse.com.au/ams/media/pi/115981/3DF_800.jpg",
+   "https://static.chemistwarehouse.com.au/ams/media/pi/115981/ADD3_800.jpg",
+   "https://static.chemistwarehouse.com.au/ams/media/pi/115981/ADD4_800.jpg",
+   "https://static.chemistwarehouse.com.au/ams/media/pi/115981/ADD5_800.jpg",
+   "https://static.chemistwarehouse.com.au/ams/media/pi/115981/ADD6_800.jpg",
+   "https://static.chemistwarehouse.com.au/ams/media/pi/115981/ADD7_800.jpg"
+  ],
+  "isMasterVariant": true,
+  "key": "f1b64be9-e48c-4af1-8b95-7150e71da208",
+  "name": {
+   "en": "Nurofen Meltlets Pain Relief Berry Burst 200mg Ibuprofen 48 Pack"
+  },
+  "objectID": "f29d4131-3da8-49ff-9b43-c27d79660179.1",
+  "productID": "f29d4131-3da8-49ff-9b43-c27d79660179",
+  "productKey": "f1b64be9-e48c-4af1-8b95-7150e71da208",
+  "productType": "Medicines",
+  "sku": "2706261",
+  "slug": {
+   "en": "115981-nurofen-meltlets-pain-relief-berry-burst-200mg-ibuprofen-48-pack"
+  },
+  "calculatedPrice": 1399,
+  "isInStock": true,
+  "priceRangeFacetKeys": [
+   "1000_2499"
+  ],
+  "prices": {
+   "AUD": {
+    "max": 1399,
+    "min": 1399,
+    "priceValues": [
+     {
+      "channelID": "091dd48b-a8e3-41eb-8517-ce57d4474055",
+      "customFields": {
+       "rrp": {
+        "centAmount": 1999,
+        "currencyCode": "AUD",
+        "fractionDigits": 2,
+        "type": "centPrecision"
+       }
+      },
+      "id": "f0d9cec4-a5ea-4418-b80a-79a0ac9c44d5",
+      "value": 1399
+     }
+    ]
+   }
+  },
+  "pricesCustomFields": {
+   "AUD": {
+    "rrp": {
+     "centAmount": 1999,
+     "currencyCode": "AUD",
+     "fractionDigits": 2,
+     "type": "centPrecision"
+    }
+   }
+  }
+ }
+]

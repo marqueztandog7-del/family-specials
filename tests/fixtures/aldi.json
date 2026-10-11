@@ -1,0 +1,255 @@
+[
+ {
+  "abstractSku": "000000000000747824",
+  "ageRestriction": null,
+  "alcohol": null,
+  "assets": [
+   {
+    "alt": null,
+    "assetType": "GR01",
+    "displayName": null,
+    "maxHeight": 1500,
+    "maxWidth": 1500,
+    "mimeType": "image/*",
+    "url": "https://dm.apac.cms.aldi.cx/is/image/aldiprodapac/product/jpg/scaleWidth/{width}/3246f48f-f958-4a35-b586-e2490d4d93dc/{slug}"
+   },
+   {
+    "alt": null,
+    "assetType": "FR01",
+    "displayName": null,
+    "maxHeight": 1500,
+    "maxWidth": 1500,
+    "mimeType": "image/*",
+    "url": "https://dm.apac.cms.aldi.cx/is/image/aldiprodapac/product/jpg/scaleWidth/{width}/dd2ed76d-2f18-4cc3-8f41-0c8db020c669/{slug}"
+   }
+  ],
+  "brandName": "WORKZONE",
+  "categories": [],
+  "countryExtensions": null,
+  "energyClass": null,
+  "isAbstract": false,
+  "isDropship": false,
+  "name": "Ratchet Spanners",
+  "onSaleDate": "2026-10-17",
+  "onSaleDateDisplay": "On Sale Sat 17 Oct",
+  "quantityDefault": 1,
+  "quantityInterval": 1,
+  "quantityMax": 99,
+  "quantityMin": 1,
+  "quantityUnit": "ea",
+  "sellingSize": null,
+  "sellingUnitDisplay": null,
+  "sku": "000000000747824001",
+  "urlSlugText": "workzone-ratchet-spanners",
+  "urlSlugTextAlternatives": [],
+  "weightType": "0",
+  "badges": [],
+  "discontinued": false,
+  "discontinuedNote": null,
+  "notForSale": true,
+  "notForSaleReason": null,
+  "price": {
+   "additionalInfo": null,
+   "amount": 1799,
+   "amountRelevant": 1799,
+   "amountRelevantDisplay": "$17.99",
+   "bottleDeposit": 0,
+   "bottleDepositDisplay": "$0.00",
+   "bottleDepositType": null,
+   "comparison": null,
+   "comparisonDisplay": null,
+   "currencyCode": "AUD",
+   "currencySymbol": "$",
+   "feeText": null,
+   "perUnit": null,
+   "perUnitDisplay": null,
+   "savingsDisplay": null,
+   "wasPriceDisplay": null
+  }
+ },
+ {
+  "abstractSku": "000000000000399726",
+  "ageRestriction": null,
+  "alcohol": null,
+  "assets": [
+   {
+    "alt": null,
+    "assetType": "FR01",
+    "displayName": null,
+    "maxHeight": 1500,
+    "maxWidth": 1500,
+    "mimeType": "image/*",
+    "url": "https://dm.apac.cms.aldi.cx/is/image/aldiprodapac/product/jpg/scaleWidth/{width}/f57e9636-24a2-40e1-9479-0594a4e28954/{slug}"
+   },
+   {
+    "alt": null,
+    "assetType": "FR02",
+    "displayName": null,
+    "maxHeight": 1500,
+    "maxWidth": 1500,
+    "mimeType": "image/*",
+    "url": "https://dm.apac.cms.aldi.cx/is/image/aldiprodapac/product/jpg/scaleWidth/{width}/451d0f57-622f-4813-a5fc-32af592c586d/{slug}"
+   },
+   {
+    "alt": null,
+    "assetType": "NU01",
+    "displayName": null,
+    "maxHeight": 1500,
+    "maxWidth": 1500,
+    "mimeType": "image/*",
+    "url": "https://dm.apac.cms.aldi.cx/is/image/aldiprodapac/product/jpg/scaleWidth/{width}/891775fe-2eba-4f04-ab84-d325927a5ae9/{slug}"
+   },
+   {
+    "alt": null,
+    "assetType": "IN01",
+    "displayName": null,
+    "maxHeight": 1500,
+    "maxWidth": 1500,
+    "mimeType": "image/*",
+    "url": "https://dm.apac.cms.aldi.cx/is/image/aldiprodapac/product/jpg/scaleWidth/{width}/4b77a6f6-3443-4bb2-90a3-d3287b585126/{slug}"
+   }
+  ],
+  "brandName": "READY, SET\u2026COOK!",
+  "categories": [
+   {
+    "id": "940000000",
+    "name": "Meat & Seafood",
+    "urlSlugText": "meat-seafood"
+   },
+   {
+    "id": "1111111146",
+    "name": "Poultry",
+    "urlSlugText": "meat-seafood/poultry"
+   }
+  ],
+  "countryExtensions": null,
+  "energyClass": null,
+  "isAbstract": false,
+  "isDropship": false,
+  "name": "Peri Peri Marinated Split RSPCA Approved Chicken per kg",
+  "onSaleDate": null,
+  "onSaleDateDisplay": null,
+  "quantityDefault": 1,
+  "quantityInterval": 1,
+  "quantityMax": 99,
+  "quantityMin": 1,
+  "quantityUnit": "kg",
+  "sellingSize": "approx. 1.075 kg per package",
+  "sellingUnitDisplay": null,
+  "sku": "000000000399726004",
+  "urlSlugText": "ready-set-cook-peri-peri-marinated-split-rspca-approved-chicken-per-kg",
+  "urlSlugTextAlternatives": [],
+  "weightType": "1",
+  "badges": [],
+  "discontinued": false,
+  "discontinuedNote": null,
+  "notForSale": true,
+  "notForSaleReason": null,
+  "price": {
+   "additionalInfo": null,
+   "amount": 799,
+   "amountRelevant": 859,
+   "amountRelevantDisplay": "$8.59",
+   "bottleDeposit": 0,
+   "bottleDepositDisplay": "$0.00",
+   "bottleDepositType": null,
+   "comparison": 799,
+   "comparisonDisplay": "$7.99 per 1 kg",
+   "currencyCode": "AUD",
+   "currencySymbol": "$",
+   "feeText": null,
+   "perUnit": null,
+   "perUnitDisplay": null,
+   "savingsDisplay": null,
+   "wasPriceDisplay": null
+  }
+ },
+ {
+  "abstractSku": "000000000000367107A",
+  "ageRestriction": null,
+  "alcohol": null,
+  "assets": [
+   {
+    "alt": null,
+    "assetType": "FR01",
+    "displayName": null,
+    "maxHeight": 1500,
+    "maxWidth": 1500,
+    "mimeType": "image/*",
+    "url": "https://dm.apac.cms.aldi.cx/is/image/aldiprodapac/product/jpg/scaleWidth/{width}/9aa1bc50-32c1-47cb-85fc-3c704c504f2f/{slug}"
+   },
+   {
+    "alt": null,
+    "assetType": "FR02",
+    "displayName": null,
+    "maxHeight": 1500,
+    "maxWidth": 1500,
+    "mimeType": "image/*",
+    "url": "https://dm.apac.cms.aldi.cx/is/image/aldiprodapac/product/jpg/scaleWidth/{width}/df6cfc60-02cc-4511-ae9d-d7ca5f7ed4c6/{slug}"
+   },
+   {
+    "alt": null,
+    "assetType": "NU01",
+    "displayName": null,
+    "maxHeight": 1500,
+    "maxWidth": 1500,
+    "mimeType": "image/*",
+    "url": "https://dm.apac.cms.aldi.cx/is/image/aldiprodapac/product/jpg/scaleWidth/{width}/a6fdb828-0697-4790-87dd-c2173fd657ba/{slug}"
+   }
+  ],
+  "brandName": "MARKET FARE",
+  "categories": [
+   {
+    "id": "980000000",
+    "name": "Freezer",
+    "urlSlugText": "freezer"
+   },
+   {
+    "id": "1111111192",
+    "name": "Frozen Fruit & Vegetables",
+    "urlSlugText": "freezer/frozen-fruit-vegetables"
+   }
+  ],
+  "countryExtensions": null,
+  "energyClass": null,
+  "isAbstract": false,
+  "isDropship": false,
+  "name": "Baby Peas 1kg",
+  "onSaleDate": null,
+  "onSaleDateDisplay": null,
+  "quantityDefault": 1,
+  "quantityInterval": 1,
+  "quantityMax": 99,
+  "quantityMin": 1,
+  "quantityUnit": "ea",
+  "sellingSize": "1 kg",
+  "sellingUnitDisplay": null,
+  "sku": "000000000000367107",
+  "urlSlugText": "market-fare-baby-peas-1kg",
+  "urlSlugTextAlternatives": [],
+  "weightType": "0",
+  "badges": [],
+  "discontinued": false,
+  "discontinuedNote": null,
+  "notForSale": true,
+  "notForSaleReason": null,
+  "price": {
+   "additionalInfo": null,
+   "amount": 399,
+   "amountRelevant": 399,
+   "amountRelevantDisplay": "$3.99",
+   "bottleDeposit": 0,
+   "bottleDepositDisplay": "$0.00",
+   "bottleDepositType": null,
+   "comparison": 399,
+   "comparisonDisplay": "$3.99 per 1 kg",
+   "currencyCode": "AUD",
+   "currencySymbol": "$",
+   "feeText": null,
+   "perUnit": null,
+   "perUnitDisplay": null,
+   "savingsDisplay": null,
+   "wasPriceDisplay": null
+  }
+ }
+]

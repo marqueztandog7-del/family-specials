@@ -1,0 +1,10 @@
+# Store (own) brands per chain. Used to flag own-brand products and, later, to find
+# store-brand equivalents. Matching is case-insensitive and also matches "Brand Something".
+own_brands:
+  woolworths: [Woolworths, Macro, Woolworths Gold, Essentials, Woolworths Essentials, Woolworths Free From, Woolworths Organic]
+  coles: [Coles, Coles Finest, Coles Simply, Coles Kitchen, Coles Organic, Coles Nature's Kitchen, Coles Perform, Coles Urban Coffee Culture, Coles Bakery, Coles Deli, Coles Graze, Coles Market]
+  # ALDI sells mostly its own brands; this list is a starting point. Add any you notice.
+  aldi: [Farmdale, Remano, Westacre, Just Organic, Lacura, Ambiano, Crofton, Specially Selected, Bramwells, Brooklea, Belmont Biscuit Co, Tandil, Emporium Selection, Damora, Sweet Valley, Power Force, Moser Roth, Dairy Fine, Choceur, Willow Farm, Colway, Ocean Rise, Broad Oak Farms, Lyttos, Imperial Grain, Baker's Life, Harvest Morn, Deli Originals, Mamia, Confidence, Logix, Expressi, Barista Blend, Kirkton House]
+  costco: [Kirkland Signature, Kirkland]
+  chemistwarehouse: [Chemists' Own, My Chemist]
+  tongli: []

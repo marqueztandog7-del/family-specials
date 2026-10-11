@@ -1,0 +1,404 @@
+[
+ {
+  "addToCartFromPLPCategories": [
+   {
+    "key": "Small-Pack-Items",
+    "value": false
+   },
+   {
+    "key": "tpd-208977",
+    "value": false
+   },
+   {
+    "key": "brands",
+    "value": true
+   },
+   {
+    "key": "fy27-p2-w1-Member-Appreciation-Deals-D2",
+    "value": true
+   },
+   {
+    "key": "fy27-p2-w1-Member-Appreciation-Deals",
+    "value": false
+   },
+   {
+    "key": "hot-buys",
+    "value": true
+   },
+   {
+    "key": "cos_8",
+    "value": true
+   },
+   {
+    "key": "cos_8.2",
+    "value": true
+   },
+   {
+    "key": "costco",
+    "value": true
+   },
+   {
+    "key": "STAYFREE",
+    "value": false
+   }
+  ],
+  "addableToCartFromListingPage": true,
+  "addonHasPDP": false,
+  "as400Discount": false,
+  "availableForPickup": false,
+  "availableForPreorder": false,
+  "averageRating": 4.0,
+  "averageWeight": "",
+  "businessDelivery": false,
+  "buyNowEnabled": false,
+  "code": "174844",
+  "decalData": [
+   {
+    "key": "1",
+    "value": {
+     "altText": "Hot Buy",
+     "position": 1,
+     "type": "DECAL",
+     "url": "/mediapermalink/AU-decal-hot-buy"
+    }
+   }
+  ],
+  "departmentNumber": "",
+  "description": "<div class=\"product-details-wrapper-au\">\n<div class=\"product-detail-dsc-wrapper\">\n<div class=\"product-detail-title-wrapper\">\n<h5 class=\"product-detail-title\">Description</h5>\n</div>\n\n<div class=\"product-detail-dsc\">\n<h2>Stayfree Ultra Thin Regular Pads With Wings 120 Pack</h2>\nStayfree Ultra Thin Regular Pads With Wings has Stayfree Perfect Fit Design and provides 4 thin and flexible layers that move with your body.                \n<h3>Fast Lock Pockets</h3>\nBest ever ultra thin leakage protection. The thin and flexible layers include Fast Lock Pockets to absorb moisture instantly and lock it away in an Advanced Anti Leak Core.\n<h3>Stayfresh Active Odour Neutralisers</h3>\nProvide a delicate hint of freshness to keep you feeling clean and fresh during day.\n<h3>Cottony Soft Quilted Cover</h3>\nSoft and gentle on skin for a more comfortable feeling.\n<h3>Thermocontrol Cover</h3>\nDesigned to draw moisture away from your body to keep you dry and comfortable.        \n\n</div>\n\n<div class=\"clearboth\">&nbsp;</div>\n</div>\n</div>",
+  "displayExVatPrice": false,
+  "englishName": "Stayfree Ultra Thin Regular Pads With Wings 120 Pack",
+  "excludePaymentPlan": false,
+  "expeditedDelivery": false,
+  "groupId": "default-cartgroup-australia",
+  "hasOtherOptionsVariants": false,
+  "hasPricePerUnit": true,
+  "idVerificationEnabled": false,
+  "images": [
+   {
+    "format": "thumbnail",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/h96/heb/293500746596382.jpg"
+   },
+   {
+    "format": "product",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/hd3/hd3/293500742696990.jpg"
+   },
+   {
+    "format": "results",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/h04/h65/293500743745566.jpg"
+   },
+   {
+    "format": "carousel",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/h04/h65/293500743745566.jpg"
+   },
+   {
+    "format": "thumbnail-webp",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/h34/h02/293500749316126.webp"
+   },
+   {
+    "format": "product-webp",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/hcc/h66/293500751511582.webp"
+   },
+   {
+    "format": "results-webp",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/h00/hf1/293500753477662.webp"
+   },
+   {
+    "format": "carousel-webp",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/h00/hf1/293500753477662.webp"
+   }
+  ],
+  "inRestrictedZone": false,
+  "ineligibleToLeaveUnattended": false,
+  "isBaseProduct": false,
+  "isExternalVendorProduct": false,
+  "isExternalVendorVariantProduct": false,
+  "isProductAvailable": false,
+  "maxOrderQuantity": 825,
+  "maxOrderQuantityMode": "PER_ORDER",
+  "maxOrderQuantityPerDateRange": 0,
+  "membership": false,
+  "membershipRestrictionApplied": false,
+  "minOrderQuantity": 1,
+  "minimumVerificationAge": 0,
+  "modulusItemQuantity": 1,
+  "multiProduct": false,
+  "name": "Stayfree Ultra Thin Regular Pads With Wings 120 Pack",
+  "nameInSelectedLanguage": "Stayfree Ultra Thin Regular Pads With Wings 120 Pack",
+  "numberOfReviews": 2,
+  "overlayRequired": false,
+  "pillData": [],
+  "productCartGroupAvailableInWarehouse": false,
+  "purchasable": true,
+  "randomWeight": false,
+  "requiresAgeVerification": false,
+  "restricted": false,
+  "rollingTimePeriod": 0,
+  "shippingPurchaseMethodExceptionMessage": "",
+  "shippingRestrictionApplied": false,
+  "showEnergyRating": false,
+  "showEstimatedDeliveryDate": false,
+  "soldIndividually": true,
+  "tire": false,
+  "url": "/Health-Beauty/Personal-Care/Stayfree-Ultra-Thin-Regular-Pads-With-Wings-120-Pack/p/174844",
+  "validExVatData": true,
+  "warehouseFulfilled": false,
+  "warehousePickupOnly": false,
+  "basePrice": {
+   "currencyIso": "AUD",
+   "formattedPriceForSetOfTwoQuantities": "$59.98",
+   "formattedValue": "$29.99",
+   "intValue": 2999,
+   "priceType": "BUY",
+   "value": 29.99
+  },
+  "boostScore": 0.0,
+  "couponDiscount": {
+   "discountEndDate": "2026-10-11T12:59:59.999Z",
+   "discountStartDate": "2026-09-27T14:00:00.000Z",
+   "discountType": "default",
+   "discountValue": 6.0,
+   "discountValueExcVat": 6.0,
+   "formattedDiscountExcVatWithMinQty": "$0.00",
+   "formattedDiscountValue": "$6.00",
+   "formattedDiscountValueExcVat": "$6.00",
+   "formattedDiscountWithMinQty": "$0.00",
+   "formattedPriceWithMinQty": "$0.00",
+   "hideDiscountCalculation": false,
+   "maxQtyDiscount": 0,
+   "minQtyDiscount": 0
+  },
+  "discountEndDate": "2026-10-11T12:59:59.999Z",
+  "discountPrice": {
+   "currencyIso": "AUD",
+   "formattedValue": "$6.00",
+   "intValue": 600,
+   "priceType": "BUY",
+   "value": 6.0
+  },
+  "discountStartDate": "2026-09-27T14:00:00.000Z",
+  "displayShippingIncludedTag": false,
+  "hidePriceValue": false,
+  "inMyWishlist": false,
+  "lexicalScore": 0.0,
+  "normalizedLexicalScore": 0.0,
+  "normalizedVectorScore": 0.0,
+  "price": {
+   "currencyIso": "AUD",
+   "formattedPriceForSetOfTwoQuantities": "$47.98",
+   "formattedValue": "$23.99",
+   "intValue": 2399,
+   "priceType": "BUY",
+   "value": 23.99
+  },
+  "pricePerUnit": {
+   "currencyIso": "AUD",
+   "formattedValue": "$0.20",
+   "intValue": 20,
+   "priceType": "BUY",
+   "value": 0.2
+  },
+  "priceRange": {},
+  "score": 1.0,
+  "shippingIncluded": true,
+  "stock": {
+   "contactDay": 0,
+   "deliveryLeadTime": 0,
+   "stockLevelStatus": "inStock"
+  },
+  "unitType": "EA",
+  "vectorScore": 0.0,
+  "volumePricesFlag": false,
+  "warehouseHidePriceValue": false
+ },
+ {
+  "addToCartFromPLPCategories": [
+   {
+    "key": "Small-Pack-Items",
+    "value": false
+   },
+   {
+    "key": "cos_5.1",
+    "value": true
+   },
+   {
+    "key": "brands",
+    "value": true
+   },
+   {
+    "key": "fy27-p2-w1-Member-Appreciation-Deals",
+    "value": false
+   },
+   {
+    "key": "hot-buys",
+    "value": true
+   },
+   {
+    "key": "fy26p13w4-EC1057-weekend-deals",
+    "value": true
+   },
+   {
+    "key": "cos_5.1.10",
+    "value": true
+   },
+   {
+    "key": "costco",
+    "value": true
+   },
+   {
+    "key": "INFINITY-X1",
+    "value": false
+   },
+   {
+    "key": "cos_5",
+    "value": true
+   },
+   {
+    "key": "fy27-p2-w1-EC1072-MEM-5",
+    "value": false
+   }
+  ],
+  "addableToCartFromListingPage": true,
+  "addonHasPDP": false,
+  "as400Discount": false,
+  "availableForPickup": false,
+  "availableForPreorder": false,
+  "averageRating": 4.7,
+  "averageWeight": "",
+  "businessDelivery": false,
+  "buyNowEnabled": false,
+  "code": "1806405",
+  "departmentNumber": "",
+  "description": "<div class=\"product-details-wrapper-au\"><div class=\"product-details-wrapper-au\"><div class=\"product-detail-dsc-wrapper\"><div class=\"product-detail-title-wrapper\"><h5 class=\"product-detail-title\">Description</h5></div><div class=\"product-detail-dsc\"><h2>Infinity X1 7000 Lumen Dual Power Rechargeable Flashlight 1806405</h2>This 7000-lumen beast offers rechargeable or AA battery options, with High, Medium and Low brightness levels. Crafted from aircraft-grade aluminium, it features a focusing beam, Power Lock and USB-C In/Out ports with cable included. Durable, versatile and powerful, it's your ultimate companion for outdoor adventures, professional tasks or emergencies.<br/>\u00a0<p>The product features:</p> <ul class=\"in-page-list-style\"><li>7000 Lumen Dual Power Flashlight</li><li>Rechargeable Battery Included</li><li>9 Duracell AA Batteries Included</li><li>High, Medium, Low Brightness Levels</li><li>Focusing Beam (Narrow to Wide)</li><li>Aircraft Grade Aluminium Body</li><li>Power Lock Prevents Accidental Activation</li><li>Heat Lock Protection</li><li>2 USB Ports (In/Out)</li><li>USB-C Cable Included</li><li>Twist Tail Cap for USB Port Access</li><li>USB Ports Accessible via Battery Compartment</li><li>Rechargeable Dual Power</li><li>3 Powerful Modes</li><li>Power Bank to Charge other devices</li><li>Heat Lock technology</li><li>Focusing narrow to wide beam</li></ul></div><div class=\"clearboth\"></div></div></div>",
+  "displayExVatPrice": false,
+  "englishName": "Infinity X1 7000 Lumen Dual Power Rechargeable Flashlight 1806405",
+  "excludePaymentPlan": false,
+  "expeditedDelivery": false,
+  "groupId": "default-cartgroup-australia",
+  "hasOtherOptionsVariants": false,
+  "hasPricePerUnit": false,
+  "idVerificationEnabled": false,
+  "images": [
+   {
+    "format": "thumbnail",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/h18/h50/368156885745694.jpg"
+   },
+   {
+    "format": "product",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/h1d/h5e/368156883910686.jpg"
+   },
+   {
+    "format": "results",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/h82/h81/368156884500510.jpg"
+   },
+   {
+    "format": "carousel",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/h82/h81/368156884500510.jpg"
+   },
+   {
+    "format": "thumbnail-webp",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/h51/ha7/368156886958110.webp"
+   },
+   {
+    "format": "product-webp",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/hc6/h5d/368156887547934.webp"
+   },
+   {
+    "format": "results-webp",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/h96/h59/368156887941150.webp"
+   },
+   {
+    "format": "carousel-webp",
+    "imageType": "PRIMARY",
+    "url": "/medias/sys_master/images/h96/h59/368156887941150.webp"
+   }
+  ],
+  "inRestrictedZone": false,
+  "ineligibleToLeaveUnattended": false,
+  "isBaseProduct": false,
+  "isExternalVendorProduct": false,
+  "isExternalVendorVariantProduct": false,
+  "isProductAvailable": false,
+  "maxOrderQuantity": 825,
+  "maxOrderQuantityMode": "PER_ORDER",
+  "maxOrderQuantityPerDateRange": 0,
+  "membership": false,
+  "membershipRestrictionApplied": false,
+  "minOrderQuantity": 1,
+  "minimumVerificationAge": 0,
+  "modulusItemQuantity": 1,
+  "multiProduct": false,
+  "name": "Infinity X1 7000 Lumen Dual Power Rechargeable Flashlight 1806405",
+  "nameInSelectedLanguage": "Infinity X1 7000 Lumen Dual Power Rechargeable Flashlight 1806405",
+  "numberOfReviews": 54,
+  "overlayRequired": false,
+  "productCartGroupAvailableInWarehouse": false,
+  "purchasable": true,
+  "randomWeight": false,
+  "requiresAgeVerification": false,
+  "restricted": false,
+  "rollingTimePeriod": 0,
+  "shippingPurchaseMethodExceptionMessage": "",
+  "shippingRestrictionApplied": false,
+  "showEnergyRating": false,
+  "showEstimatedDeliveryDate": false,
+  "soldIndividually": true,
+  "tire": false,
+  "url": "/Home-Improvement/Tools/Tool-Accessories/Infinity-X1-7000-Lumen-Dual-Power-Rechargeable-Flashlight-1806405/p/1806405",
+  "validExVatData": true,
+  "warehouseFulfilled": false,
+  "warehousePickupOnly": false,
+  "basePrice": {
+   "currencyIso": "AUD",
+   "formattedPriceForSetOfTwoQuantities": "$119.98",
+   "formattedValue": "$59.99",
+   "intValue": 5999,
+   "priceType": "BUY",
+   "value": 59.99
+  },
+  "boostScore": 0.0,
+  "couponDiscount": {
+   "discountType": "default",
+   "hideDiscountCalculation": false
+  },
+  "displayShippingIncludedTag": false,
+  "hidePriceValue": false,
+  "inMyWishlist": false,
+  "lexicalScore": 0.0,
+  "normalizedLexicalScore": 0.0,
+  "normalizedVectorScore": 0.0,
+  "price": {
+   "currencyIso": "AUD",
+   "formattedPriceForSetOfTwoQuantities": "$119.98",
+   "formattedValue": "$59.99",
+   "intValue": 5999,
+   "priceType": "BUY",
+   "value": 59.99
+  },
+  "priceRange": {},
+  "score": 1.0,
+  "shippingIncluded": true,
+  "stock": {
+   "contactDay": 0,
+   "deliveryLeadTime": 0,
+   "stockLevelStatus": "inStock"
+  },
+  "vectorScore": 0.0,
+  "volumePricesFlag": false,
+  "warehouseHidePriceValue": false
+ }
+]

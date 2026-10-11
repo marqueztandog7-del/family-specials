@@ -1,0 +1,161 @@
+[
+ {
+  "_type": "PRODUCT",
+  "brand": "Gourmet Garden",
+  "description": "HERB GG LIGHTLY DRIED PARSLEY:.:8 GRAM",
+  "id": 2999327,
+  "imageUris": [
+   {
+    "altText": "",
+    "type": "default",
+    "uri": "/2/2999327.jpg"
+   }
+  ],
+  "merchandiseHeir": {
+   "category": "HERBS & CHILLIES",
+   "categoryGroup": "VEGETABLES/SALAD",
+   "className": "POTS",
+   "subCategory": "HERBS",
+   "tradeProfitCentre": "FRESH PROD"
+  },
+  "name": "Lightly Dried Parsley",
+  "onlineHeirs": [
+   {
+    "aisle": "Herbs",
+    "aisleId": "1289636410",
+    "category": "Herbs, Chillies & Sprouts",
+    "categoryId": "1304",
+    "subCategory": "Fruit & Vegetables",
+    "subCategoryId": "2100"
+   }
+  ],
+  "restrictions": {
+   "delivery": [
+    "REMOTE SERVICE"
+   ],
+   "liquorAgeRestrictionFlag": false,
+   "promotionalLimit": 50,
+   "restrictedByOrganisation": false,
+   "retailLimit": 50,
+   "tobaccoAgeRestrictionFlag": false
+  },
+  "size": "8g",
+  "variations": {
+   "total": 3
+  },
+  "adId": null,
+  "adSource": null,
+  "availability": true,
+  "availabilityType": "InStoreAndOnline",
+  "availableQuantity": 13,
+  "featured": false,
+  "locations": [
+   {
+    "aisle": "Fresh produce",
+    "aisleSide": "Front of Store",
+    "description": "Located in Fresh produce at $STORE",
+    "facing": 0,
+    "order": 0,
+    "shelf": null
+   }
+  ],
+  "pricing": {
+   "comparable": "$5.25/ 10g",
+   "multiBuyPromotion": {
+    "id": "730824296",
+    "minQuantity": 2,
+    "reward": 3.25,
+    "type": "MultibuyMultiSku",
+    "unitPriceDisplay": "$4.06/ 10g"
+   },
+   "now": 4.2,
+   "offerDescription": "Pick any 2 for $6.50",
+   "onlineSpecial": false,
+   "promotionType": "SPECIAL",
+   "rawPriceNow": 4.2,
+   "specialType": "MULTI_SAVE",
+   "unit": {
+    "isIncremental": false,
+    "isWeighted": false,
+    "ofMeasureQuantity": 10,
+    "ofMeasureType": "g",
+    "ofMeasureUnits": "g",
+    "price": 5.25,
+    "quantity": 1
+   },
+   "was": 0
+  }
+ },
+ {
+  "_type": "PRODUCT",
+  "brand": "Birch & Waite",
+  "description": "BIRCH & WAITE DRESSINGS:GOURMET COLESLAW :.:250 ML",
+  "id": 1472694,
+  "imageUris": [
+   {
+    "altText": "",
+    "type": "default",
+    "uri": "/1/1472694.jpg"
+   }
+  ],
+  "merchandiseHeir": {
+   "category": "VALUE ADDED FP",
+   "categoryGroup": "FRUIT",
+   "className": "DRESSING",
+   "subCategory": "SAUCES",
+   "tradeProfitCentre": "FRESH PROD"
+  },
+  "name": "Dressings Gourmet Coleslaw",
+  "onlineHeirs": [
+   {
+    "aisle": "Sauces & Salad Dressing",
+    "aisleId": "8893805",
+    "category": "Packaged Salad",
+    "categoryId": "8893800",
+    "subCategory": "Fruit & Vegetables",
+    "subCategoryId": "2100"
+   }
+  ],
+  "restrictions": {
+   "liquorAgeRestrictionFlag": false,
+   "promotionalLimit": 50,
+   "restrictedByOrganisation": false,
+   "retailLimit": 50,
+   "tobaccoAgeRestrictionFlag": false
+  },
+  "size": "250mL",
+  "adId": null,
+  "adSource": null,
+  "availability": true,
+  "availabilityType": "InStoreAndOnline",
+  "availableQuantity": 4,
+  "featured": false,
+  "locations": [
+   {
+    "aisle": "Fresh produce",
+    "aisleSide": "Front of Store",
+    "description": "Located in Fresh produce at $STORE",
+    "facing": 0,
+    "order": 0,
+    "shelf": null
+   }
+  ],
+  "pricing": {
+   "comparable": "$2.20/ 100mL",
+   "now": 5.5,
+   "onlineSpecial": false,
+   "promotionType": "SPECIAL",
+   "rawPriceNow": 5.5,
+   "unit": {
+    "isIncremental": false,
+    "isWeighted": false,
+    "ofMeasureQuantity": 100,
+    "ofMeasureType": "ml",
+    "ofMeasureUnits": "ml",
+    "price": 2.2,
+    "quantity": 1
+   },
+   "was": 0
+  }
+ }
+]
