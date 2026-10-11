@@ -91,7 +91,7 @@ class CostcoCollector(Collector):
             price_cents=price_c,
             was_cents=was_c,
             is_special=is_special,
-            special_type="member_saving" if is_special else None,
+            special_type="costco_saving" if is_special else None,
             promo_text=f"Save {coupon['formattedDiscountValue']}" if discount and coupon.get("formattedDiscountValue") else None,
             unit_price=float(ppu) if ppu else None,
             unit_measure=measure[0] if ppu else None,
