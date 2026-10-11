@@ -58,10 +58,11 @@ def build_products(conn: sqlite3.Connection) -> list[dict[str, Any]]:
             -- One row per product: its latest price. (Woolworths' anonymous default store changes
             -- from week to week, so an older store's price must not show as a second listing.)
             PARTITION BY o.retailer_product_id
-            ORDER BY substr(o.observed_at, 1, 10) DESC, o.is_special DESC,
+            -- Latest run first; within a run, Woolworths' in-store price before its online one.
+            ORDER BY r.started_at DESC, o.is_special DESC,
                      CASE o.price_basis WHEN 'in_store' THEN 0 ELSE 1 END, o.observed_at DESC, o.id DESC
           ) AS rn
-          FROM price_observations o
+          FROM price_observations o JOIN collection_runs r ON r.id = o.run_id
           WHERE o.retailer_product_id IN ({','.join('?' * len(scope))})
         )
         SELECT l.*, p.chain, p.retailer_product_id AS store_product_id, p.name, p.display_name, p.brand,
