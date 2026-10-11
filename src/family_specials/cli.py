@@ -19,7 +19,10 @@ def cmd_collect(args) -> int:
     conn = db.connect()
     failures = 0
     for chain in chains:
+        blocked = False
         for kind in kinds:
+            if blocked:
+                break  # blocked once: leave this store alone for the rest of the run
             if kind == "category" and (not config.tracked_categories(chain)
                                        or getattr(get_collector_class(chain), "specials_are_categories", False)):
                 continue
@@ -30,6 +33,7 @@ def cmd_collect(args) -> int:
             print(f"{chain:17} {kind:8} {r.status:8} requests={r.requests:<4} items={r.items:<5} "
                   f"observations={r.observations}" + (f"\n    {r.error.splitlines()[0]}" if r.error else ""))
             failures += r.status in ("blocked", "error")
+            blocked = r.status == "blocked"
     return 1 if failures else 0
 
 
@@ -130,6 +134,8 @@ def cmd_update(args) -> int:
     problems = []
     for chain in chains if args.collect else []:
         for kind in kinds:
+            if any(p.startswith(chain + " ") for p in problems):
+                break  # blocked once: leave this store alone for the rest of the run
             if kind == "category" and (not config.tracked_categories(chain)
                                        or getattr(get_collector_class(chain), "specials_are_categories", False)):
                 continue
