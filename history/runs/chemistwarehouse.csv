@@ -1,3 +1,4 @@
 chain,kind,run_where,started_at,finished_at,status,requests_made,items_seen,observations_added,error
 chemistwarehouse,specials,mac,2026-10-05T03:10:01Z,2026-10-05T03:10:33Z,ok,8,437,437,
 chemistwarehouse,specials,github,2026-10-11T22:28:42Z,2026-10-11T22:29:16Z,ok,8,436,436,
+chemistwarehouse,specials,github,2026-10-14T20:54:50Z,2026-10-14T20:55:20Z,ok,8,428,428,
