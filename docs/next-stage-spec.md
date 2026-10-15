@@ -1,5 +1,7 @@
 # Next stage: GitHub, a family app link, automatic updates, and the watchlist
 
+> **Update 16 Oct 2026:** Tong Li has been dropped (store priority is now Woolworths, Coles, Chemist Warehouse, Costco, ALDI), and Coles is paused for good. The app's next steps are in [app-plan.md](app-plan.md) and [weekly-routine.md](weekly-routine.md).
+
 Phase 1 is done. Read CLAUDE.md, the README, the Phase 1 report and store-recon.md first, then save this spec to docs/next-stage-spec.md.
 
 I'm working on this on my own. Work through the parts in order and stop where it says.

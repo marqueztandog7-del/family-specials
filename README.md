@@ -72,7 +72,6 @@ The accuracy report goes to `data/reports/` (private: it uses receipt names).
 |---|---|---|
 | GitHub Actions (`.github/workflows/collect.yml`) | Stores with `run_on: github` in `config/stores.yaml` | Wednesday morning (Woolworths, Coles, ALDI), Thursday (Chemist Warehouse), Saturday (ALDI), Monday (Costco), plus a daily catch-up. Times are Sydney time. |
 | Your Mac (`./scripts/mac-update.sh`, on a schedule) | Stores with `run_on: mac` (ones that block GitHub's servers) | Checks at 7:30am and 6:30pm; collects only when due (Woolworths from Wednesday) |
-| By hand | Tong Li, from the flyer | `uv run specials import-tongli <file.csv>` |
 
 Every update does the same thing: it **loads the price history** from `history/`, **collects** each
 store that's due this specials cycle, **appends** the new prices to `history/`, **rebuilds**
@@ -113,7 +112,6 @@ logged (`collection_runs`), together with exactly which pages it read (`run_cove
 | ALDI (from GitHub) | Public JSON API | North Kellyville G449 | Special Buys (each Wed/Sat drop), Super Savers, Lower Prices* | Tracked categories | None (mostly own brands) |
 | Costco (from GitHub) | JSON API the site uses | Online, national | Hot Buys with a member saving and real end dates | Keyword searches | Product detail only (not fetched yet) |
 | Chemist Warehouse (from GitHub) | Algolia search index (approved, limited to tracked categories) | Online, national | Clearance only (see below) | Tracked categories | Some, from supplier image links |
-| Tong Li | None online | Castle Hill | Typed in from the flyer (CSV) | n/a | n/a |
 
 \* Recorded as regular prices with the store's label, not as specials: the store doesn't mark
 them as on special and shows no was price.
@@ -137,14 +135,6 @@ until the family shopping list replaces it. Find category ids with:
 ```bash
 uv run specials categories --chain woolworths --find milk
 uv run specials categories --chain aldi --refresh    # re-read the store's category tree
-```
-
-### Tong Li (manual)
-
-Copy `config/tongli_template.csv`, type in the flyer's specials, then:
-
-```bash
-uv run specials import-tongli ~/Downloads/tongli-week-41.csv
 ```
 
 ## Collection rules (built into the code)

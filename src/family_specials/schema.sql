@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS households (
 -- A specific store whose prices we record (or a chain's online/national price list).
 CREATE TABLE IF NOT EXISTS stores (
   id INTEGER PRIMARY KEY,
-  chain TEXT NOT NULL,              -- woolworths | coles | aldi | costco | chemistwarehouse | tongli
+  chain TEXT NOT NULL,              -- woolworths | coles | aldi | costco | chemistwarehouse
   store_ref TEXT NOT NULL,          -- the retailer's own store id, e.g. '0883', 'G449', 'online'
   name TEXT NOT NULL,
   suburb TEXT,

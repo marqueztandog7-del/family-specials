@@ -119,15 +119,6 @@ def cmd_search(args) -> int:
     return 0
 
 
-def cmd_import_tongli(args) -> int:
-    from .manual import import_tongli_csv
-
-    conn = db.connect()
-    r = import_tongli_csv(conn, args.csv)
-    print(f"Imported {r.items} Tong Li items ({r.observations} prices). Run {r.run_id}: {r.status}")
-    return 0
-
-
 def cmd_update(args) -> int:
     """Load history, collect what's due, append to history, rebuild the page's data files.
     Used by the GitHub Actions schedule (--where github) and the Mac command (--where mac)."""
@@ -256,10 +247,6 @@ def main(argv: list[str] | None = None) -> int:
 
     p = sub.add_parser("status", help="latest runs and database counts")
     p.set_defaults(func=cmd_status)
-
-    p = sub.add_parser("import-tongli", help="import Tong Li specials from a CSV (see config/tongli_template.csv)")
-    p.add_argument("csv")
-    p.set_defaults(func=cmd_import_tongli)
 
     p = sub.add_parser("update", help="load history, collect what's due, append history, rebuild page data")
     p.add_argument("--where", choices=["github", "mac"],

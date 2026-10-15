@@ -1,6 +1,6 @@
 # Family Specials Finder
 
-Cost-of-living app for our household in North Kellyville NSW 2155 first, possibly the public later. Stores in priority order: Woolworths, Coles, Chemist Warehouse, Costco, ALDI, Tong Li.
+Cost-of-living app for our household in North Kellyville NSW 2155 first, possibly the public later. Stores in priority order: Woolworths, Coles, Chemist Warehouse, Costco, ALDI.
 
 - Local notes, kept out of the public repo (listed in .gitignore): RECON.md (what each store exposes, store IDs, cycles, terms of use), PLAN.md (build plan and status; check it before starting work), PHASE1_REPORT.md and docs/decisions.md (decisions log; keep it up to date).
 - README.md: how to run it, and each store's coverage and limits.
@@ -9,11 +9,11 @@ Cost-of-living app for our household in North Kellyville NSW 2155 first, possibl
 
 A cost-of-living app, built for our family first and possibly the public later. Users add the things they buy (by searching, scanning a receipt or importing purchase history) to a watchlist. The app matches each watched item to the same product and to close alternatives at every store we use, and tells them when any of those go on special.
 
-Stores, in priority order: Woolworths, Coles, Chemist Warehouse, Costco, ALDI, Tong Li.
+Stores, in priority order: Woolworths, Coles, Chemist Warehouse, Costco, ALDI. (Tong Li was dropped on 16 Oct 2026.)
 
 Watch levels: 1 exact (one product at one store), 2 same product at any store (barcode, else brand + normalised name + size, with a confidence score), 3 similar (a rule such as "beef mince, any brand, 500 g to 2 kg", including store-brand equivalents).
 
-Every stage must keep these possible. When a design choice would block one of them, stop and raise it. Current stage: docs/next-stage-spec.md. Decisions so far: docs/decisions.md.
+Every stage must keep these possible. When a design choice would block one of them, stop and raise it. The product brief is docs/weekly-routine.md: every feature should make that routine faster or cheaper. The app plan is docs/app-plan.md (not started until the Part 5 accuracy report is approved). The previous stage is docs/next-stage-spec.md. Decisions so far: docs/decisions.md.
 
 ## Pricing rules (apply everywhere)
 
@@ -63,7 +63,7 @@ Every stage must keep these possible. When a design choice would block one of th
 - Respect robots.txt, including `*` wildcards (the client checks every request). Store search pages are disallowed, so use category pages. Coles' `/*/*/*/on-special*` rule also blocks the `/_next/data/.../on-special.json` route, so Coles specials come from the normal `/on-special?page=N` pages.
 - No CAPTCHA solving, no proxy rotation, no logins, and no bypassing bot protection. Stop at the first sign of blocking.
 - Ask before calling a store's third-party search service with the site's own browser key. Chemist Warehouse's Algolia is approved (5 Oct 2026), limited to the categories our searched or watched items fall in.
-- Image-only sources (catalogue flipbooks, flyer photos) go through extraction and then a human review before anything is saved.
+- Image-only sources (catalogue flipbooks) aren't collected. There is no flyer-upload path.
 - One store breaking must never stop the others.
 - Store timestamps in UTC; specials cycles follow Sydney time (daylight saving).
 

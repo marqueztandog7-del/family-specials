@@ -22,7 +22,7 @@ from .timeutil import iso, now_utc
 
 SITE_DATA = config.PROJECT_ROOT / "site" / "data"
 STORE_NAMES = {"woolworths": "Woolworths", "coles": "Coles", "aldi": "ALDI", "costco": "Costco",
-               "chemistwarehouse": "Chemist Warehouse", "tongli": "Tong Li"}
+               "chemistwarehouse": "Chemist Warehouse"}
 BASIS_LABEL = {"in_store": "in store", "online": "online", "online_incl_delivery": "online, incl. delivery"}
 
 

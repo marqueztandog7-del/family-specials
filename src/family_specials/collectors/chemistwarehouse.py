@@ -4,7 +4,7 @@ Approved 5 Oct 2026, limited to the categories in tracked_categories.yaml. Chemi
 Warehouse shows "$X Off RRP" on nearly everything: that's everyday pricing, never a
 special. The index's `in_catalogue` flag is NOT reliable (86% of items carry it, and
 product pages show no catalogue badge), so the only specials recorded here are clearance
-items. Real catalogue specials need the catalogue images (the "add flyer" path).
+items. Its real catalogue specials are only published as page images, which we don't collect.
 """
 
 from __future__ import annotations

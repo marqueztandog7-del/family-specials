@@ -12,7 +12,7 @@ from .timeutil import SYDNEY, iso, now_utc, parse_iso
 
 # How long after we last saw a price we still treat it as current. Weekly chains are
 # re-collected every cycle; ALDI Special Buys stay on shelves "while stocks last".
-FRESH_DAYS = {"woolworths": 8, "coles": 8, "aldi": 21, "costco": 8, "chemistwarehouse": 8, "tongli": 21}
+FRESH_DAYS = {"woolworths": 8, "coles": 8, "aldi": 21, "costco": 8, "chemistwarehouse": 8}
 BASIS_LABEL = {"in_store": "in store", "online": "online", "online_incl_delivery": "online, incl. delivery"}
 
 
@@ -97,7 +97,7 @@ def status(conn: sqlite3.Connection) -> dict[str, Any]:
 
 def _store_label(r: dict[str, Any]) -> str:
     names = {"woolworths": "Woolworths", "coles": "Coles", "aldi": "ALDI", "costco": "Costco",
-             "chemistwarehouse": "Chemist Warehouse", "tongli": "Tong Li"}
+             "chemistwarehouse": "Chemist Warehouse"}
     return names.get(r["chain"], r["chain"])
 
 

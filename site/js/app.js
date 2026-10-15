@@ -3,7 +3,7 @@ import { bestUnit, getStatus, refresh, search } from "./data.js";
 
 const STORES = [
   ["woolworths", "Woolworths"], ["coles", "Coles"], ["chemistwarehouse", "Chemist Warehouse"],
-  ["costco", "Costco"], ["aldi", "ALDI"], ["tongli", "Tong Li"],
+  ["costco", "Costco"], ["aldi", "ALDI"],
 ];
 const $ = (s) => document.querySelector(s);
 const state = { query: "", chains: [], specialsOnly: true, sort: "match", view: "search" };
@@ -60,7 +60,7 @@ async function renderStatus() {
   const el = $("#stores");
   try {
     const s = await getStatus();
-    const where = { github: "automatic", mac: "from our Mac", manual: "typed in from the flyer", paused: "paused" };
+    const where = { github: "automatic", mac: "from our Mac", paused: "paused" };
     el.innerHTML = s.stores.map((x) => `<div class="store-row">
         <div><b>${esc(x.name)}</b><div class="meta">${esc(x.store)}</div></div>
         <div class="right">${x.last_updated ? esc(dateTime(x.last_updated)) : "not yet"}

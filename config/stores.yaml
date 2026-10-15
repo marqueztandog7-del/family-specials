@@ -1,4 +1,4 @@
-# Which stores we collect from, and how politely.
+# Which stores we collect from, and how politely. Listed in priority order.
 # Edit freely. Store refs come from RECON.md.
 
 household:
@@ -51,34 +51,6 @@ chains:
     politeness: {delay_seconds: [25, 40], max_requests_per_run: 40}
     cycle: {type: weekly, starts: wednesday}
 
-  aldi:
-    enabled: true
-    run_on: github   # GitHub test 12 Oct: works
-    store:
-      ref: G449
-      name: ALDI North Kellyville
-      suburb: North Kellyville
-      postcode: "2155"
-      price_scope: store
-    politeness: {delay_seconds: [3, 6], max_requests_per_run: 60}
-    cycle: {type: twice_weekly, days: [wednesday, saturday]}
-    special_buys: {days_back: 7, days_ahead: 14}
-
-  costco:
-    enabled: true
-    run_on: github   # GitHub test 12 Oct: works
-    store:
-      ref: online
-      name: Costco online (national; prices include delivery)
-      suburb: null
-      postcode: null
-      price_scope: online_national
-      notes: "Nearest warehouse: Marsden Park (9 km). Warehouse shelf prices are not published online."
-    politeness: {delay_seconds: [3, 6], max_requests_per_run: 60}
-    cycle: {type: weekly, starts: monday}
-    specials_categories:
-      - {code: hot-buys, name: Hot Buys}
-
   chemistwarehouse:
     enabled: true
     run_on: github   # GitHub test 12 Oct: works
@@ -97,16 +69,32 @@ chains:
       search_key_env: CW_ALGOLIA_SEARCH_KEY  # set in .env (not committed) or as a GitHub secret
       index: prod_cwr-cw-au_products_en
       hits_per_page: 100
-    nexus_client_id: 3476  # catalogue viewer (images only), for the future flyer path
+    nexus_client_id: 3476  # catalogue viewer (images only; not collected)
 
-  tongli:
+  costco:
     enabled: true
-    run_on: manual
+    run_on: github   # GitHub test 12 Oct: works
     store:
-      ref: castle-hill
-      name: Tong Li Castle Hill
-      suburb: Castle Hill
-      postcode: "2154"
-      price_scope: manual
-      notes: "No online data. Entered by hand from the in-store flyer (CSV import)."
-    cycle: {type: manual}
+      ref: online
+      name: Costco online (national; prices include delivery)
+      suburb: null
+      postcode: null
+      price_scope: online_national
+      notes: "Nearest warehouse: Marsden Park (9 km). Warehouse shelf prices are not published online."
+    politeness: {delay_seconds: [3, 6], max_requests_per_run: 60}
+    cycle: {type: weekly, starts: monday}
+    specials_categories:
+      - {code: hot-buys, name: Hot Buys}
+
+  aldi:
+    enabled: true
+    run_on: github   # GitHub test 12 Oct: works
+    store:
+      ref: G449
+      name: ALDI North Kellyville
+      suburb: North Kellyville
+      postcode: "2155"
+      price_scope: store
+    politeness: {delay_seconds: [3, 6], max_requests_per_run: 60}
+    cycle: {type: twice_weekly, days: [wednesday, saturday]}
+    special_buys: {days_back: 7, days_ahead: 14}
