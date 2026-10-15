@@ -16,6 +16,7 @@ from typing import Any
 
 from . import config
 from .history import scope_product_ids
+from .runner import is_paused_for_good
 from .search import FRESH_DAYS
 from .timeutil import iso, now_utc
 
@@ -133,7 +134,8 @@ def build_status(conn: sqlite3.Connection, product_counts: dict[str, int]) -> di
             "chain": chain,
             "name": STORE_NAMES.get(chain, chain),
             "store": latest_store["name"] if latest_store else cfg["store"]["name"],
-            "updates_from": cfg.get("run_on", "github") if cfg.get("enabled", True) else "paused",
+            "updates_from": ("paused" if not cfg.get("enabled", True) or is_paused_for_good(conn, chain)
+                             else cfg.get("run_on", "github")),
             "last_updated": last_ok,
             "last_attempt": dict(last) if last else None,
             "products": product_counts.get(chain, 0),

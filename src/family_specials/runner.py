@@ -113,11 +113,24 @@ def cycle_start(chain: str, at: datetime | None = None) -> datetime | None:
     return None
 
 
+def is_paused_for_good(conn: sqlite3.Connection, chain: str) -> bool:
+    """For stores on a trial (Coles): one blocked run since the trial started pauses them for good.
+    Only a person changing trial_since in config/stores.yaml can start a new trial."""
+    cfg = config.chain_config(chain)
+    if not cfg.get("pause_for_good_on_block"):
+        return False
+    return conn.execute(
+        "SELECT 1 FROM collection_runs WHERE chain = ? AND status = 'blocked' AND started_at >= ? LIMIT 1",
+        (chain, str(cfg.get("trial_since", "1970-01-01")))).fetchone() is not None
+
+
 def is_due(conn: sqlite3.Connection, chain: str, kind: str, at: datetime | None = None) -> bool:
     """Due if there's been no successful run of this kind since the current cycle started.
     This keeps us to at most one full run per cycle per store."""
     start = cycle_start(chain, at)
     if start is None:
+        return False
+    if is_paused_for_good(conn, chain):
         return False
     if kind == "category" and not config.tracked_categories(chain):
         return False

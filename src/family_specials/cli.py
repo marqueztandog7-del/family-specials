@@ -6,6 +6,7 @@ import argparse
 import logging
 import os
 import sys
+from pathlib import Path
 
 from . import config, db
 
@@ -122,7 +123,7 @@ def cmd_update(args) -> int:
     from .collectors import get_collector_class, online_chains
     from .export import export_site
     from .history import import_history, publish_new_runs
-    from .runner import is_due, run_chain
+    from .runner import is_due, is_paused_for_good, run_chain
 
     conn = db.connect()
     loaded = import_history(conn)
@@ -139,6 +140,9 @@ def cmd_update(args) -> int:
             if kind == "category" and (not config.tracked_categories(chain)
                                        or getattr(get_collector_class(chain), "specials_are_categories", False)):
                 continue
+            if is_paused_for_good(conn, chain):
+                print(f"{chain:17} paused for good (challenged during its trial; see config/stores.yaml)")
+                break
             if not args.force and not is_due(conn, chain, kind):
                 print(f"{chain:17} {kind:8} not due")
                 continue
@@ -155,6 +159,38 @@ def cmd_update(args) -> int:
     if problems:
         print("PROBLEMS: " + "; ".join(problems))
         return 1
+    return 0
+
+
+def cmd_backup(args) -> int:
+    from .backup import BACKUP_DIR, BackupError, is_due, notify, run_backup
+
+    root = Path(args.dest) if args.dest else BACKUP_DIR
+    if args.if_due and not is_due(root):
+        print("Backup: not due (already backed up since this Wednesday)")
+        return 0
+    try:
+        r = run_backup(root=root, keep=args.keep)
+    except Exception as e:  # noqa: BLE001 - any failure must be reported, never silent
+        msg = f"Backup failed: {e}"
+        print("BACKUP FAILED: " + str(e))
+        notify(msg)
+        return 1
+    print(f"Backup OK: {r.folder}  database {r.db_bytes / 1e6:.0f} MB -> {r.compressed_bytes / 1e6:.0f} MB "
+          f"compressed, {r.private_files} private files" + (f"; deleted old: {', '.join(r.deleted)}" if r.deleted else ""))
+    return 0
+
+
+def cmd_restore(args) -> int:
+    from .backup import BACKUP_DIR, backups, restore
+
+    folder = Path(args.from_) if args.from_ else (backups(BACKUP_DIR) or [None])[0]
+    if folder is None:
+        print("No backups found.")
+        return 1
+    r = restore(folder, Path(args.to))
+    print(f"Restored {folder.name} to {args.to}: database OK ({r['counts']['price_observations']} prices, "
+          f"{r['counts']['retailer_products']} products), private files: {', '.join(r['private']) or 'none'}")
     return 0
 
 
@@ -218,6 +254,17 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--no-collect", dest="collect", action="store_false",
                    help="only load history and rebuild the page data (after pulling)")
     p.set_defaults(func=cmd_update)
+
+    p = sub.add_parser("backup", help="back up the database and data/private to iCloud Drive")
+    p.add_argument("--if-due", action="store_true", help="only if no backup since this Wednesday")
+    p.add_argument("--dest", help="backup folder (default: iCloud Drive/family-specials-backups)")
+    p.add_argument("--keep", type=int, default=8, help="how many backups to keep (default 8)")
+    p.set_defaults(func=cmd_backup)
+
+    p = sub.add_parser("restore", help="restore a backup into a folder (default: the latest backup)")
+    p.add_argument("--from", dest="from_", help="a backup folder (default: the newest)")
+    p.add_argument("--to", required=True, help="folder to restore into, e.g. data (existing files are kept aside)")
+    p.set_defaults(func=cmd_restore)
 
     p = sub.add_parser("serve", help="serve the family page locally")
     p.add_argument("--host", default="127.0.0.1")

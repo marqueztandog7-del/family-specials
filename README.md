@@ -43,7 +43,7 @@ uv run specials status                 # what was collected, and when
 | Where | What | When |
 |---|---|---|
 | GitHub Actions (`.github/workflows/collect.yml`) | Stores with `run_on: github` in `config/stores.yaml` | Wednesday morning (Woolworths, Coles, ALDI), Thursday (Chemist Warehouse), Saturday (ALDI), Monday (Costco), plus a daily catch-up. Times are Sydney time. |
-| Your Mac (`./scripts/mac-update.sh`) | Stores with `run_on: mac` (ones that block GitHub's servers) | Whenever you run it, or on a schedule if you install the launchd file in `scheduling/` |
+| Your Mac (`./scripts/mac-update.sh`, on a schedule) | Stores with `run_on: mac` (ones that block GitHub's servers) | Checks at 7:30am and 6:30pm; collects only when due (Woolworths from Wednesday) |
 | By hand | Tong Li, from the flyer | `uv run specials import-tongli <file.csv>` |
 
 Every update does the same thing: it **loads the price history** from `history/`, **collects** each
@@ -81,7 +81,7 @@ logged (`collection_runs`), together with exactly which pages it read (`run_cove
 | Store | Source | Our store | Specials | Regular prices | Barcodes |
 |---|---|---|---|---|---|
 | Woolworths (from the Mac: it blocks GitHub) | JSON API the site uses | Woolworths' default store for anonymous visitors, which changes (#7008 on 5 Oct, #2631 on 12 Oct); pinning Kellyville North needs a login | Half Price, Lower Shelf Price*, Seasonal*, Buy More Save More, Online Only | Tracked categories | In listings (almost all) |
-| Coles (paused: challenges scripts after a page or two) | The site's page data | Kellyville #0883 (set with a cookie, no login) | Everything on /on-special | Tracked categories | Product pages only (not fetched yet) |
+| Coles (from the Mac, trial: one small weekly read; paused for good at the first challenge) | Data embedded in its normal web pages | Kellyville #0883 (set with a cookie, no login) | Half-price pages only | Tracked categories | Product pages only (not fetched yet) |
 | ALDI (from GitHub) | Public JSON API | North Kellyville G449 | Special Buys (each Wed/Sat drop), Super Savers, Lower Prices* | Tracked categories | None (mostly own brands) |
 | Costco (from GitHub) | JSON API the site uses | Online, national | Hot Buys with a member saving and real end dates | Keyword searches | Product detail only (not fetched yet) |
 | Chemist Warehouse (from GitHub) | Algolia search index (approved, limited to tracked categories) | Online, national | Clearance only (see below) | Tracked categories | Some, from supplier image links |
@@ -129,19 +129,62 @@ uv run specials import-tongli ~/Downloads/tongli-week-41.csv
   stops that store's run immediately, and the scheduler then waits at least a day before trying it again.
 - Requests identify themselves as `FamilySpecialsFinder/0.1 (household use)`.
 
-## Scheduling on the Mac (optional)
+## The Mac schedule
 
-`scheduling/au.family-specials.collect.plist` runs `scripts/mac-update.sh` at 7:30 and 18:30
-each day (launchd catches up after sleep). Only needed if some stores have to run from the Mac.
-It isn't installed. To install:
+Installed on 16 Oct 2026 as `~/Library/LaunchAgents/au.family-specials.collect.plist` (a copy of
+`scheduling/au.family-specials.collect.plist`). It runs `scripts/mac-update.sh` at **7:30am and 6:30pm**,
+and launchd catches up after the Mac wakes. Most runs are just **checks**:
+
+- A store is only collected when its new specials are due this cycle: **Woolworths** (and Coles'
+  small weekly read) from **Wednesday**. Once collected, later runs that week do nothing.
+- Nothing collected means nothing committed or pushed.
+- **Coles trial rule:** the first time Coles challenges us, it's paused for good, with no
+  automatic retries. Only changing `trial_since` in `config/stores.yaml` by hand starts a new trial.
+- Problems show a Mac notification and go in `data/logs/collect.log`.
 
 ```bash
-cp scheduling/au.family-specials.collect.plist ~/Library/LaunchAgents/
-launchctl load ~/Library/LaunchAgents/au.family-specials.collect.plist
+launchctl kickstart gui/$(id -u)/au.family-specials.collect        # run it now
+launchctl bootout gui/$(id -u)/au.family-specials.collect          # stop the schedule
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/au.family-specials.collect.plist   # start it again
 ```
 
-To stop it: `launchctl unload ~/Library/LaunchAgents/au.family-specials.collect.plist`.
-Logs go to `data/logs/collect.log`.
+## Backups
+
+What only lives on this Mac, the **price database** and **`data/private/`**, is backed up
+to **iCloud Drive → `family-specials-backups`**. The code is on GitHub, so it isn't copied. `.env`
+files, tokens and passwords are never copied.
+
+- **When:** weekly, straight after the Wednesday update (the first scheduled run after Wednesday).
+  To back up now: `uv run specials backup`.
+- **How:** SQLite's own backup method makes a consistent copy of the live database. The copy must
+  pass `PRAGMA integrity_check`, is compressed (xz), and is checked again after it lands in iCloud.
+  The live database and the project's git folder are never put in iCloud.
+- **Keeps:** the newest 8 weekly copies; older ones are deleted. Each backup is a dated folder,
+  e.g. `2026-10-16_1012/`, holding `specials.db.xz`, `private/` and `manifest.json` (sizes,
+  checksums, row counts).
+- **If it fails** (no iCloud, not enough space, a failed check): a Mac notification, a
+  `BACKUP FAILED` line in `data/logs/collect.log`, and nothing half-written is left behind.
+- **Space:** it checks iCloud has room for the copy plus a 50 MB margin before writing, so it can
+  never fill your iCloud.
+
+### How to restore
+
+1. Stop the schedule: `launchctl bootout gui/$(id -u)/au.family-specials.collect`
+2. Restore the newest backup into the project's `data/` folder (or pick one with `--from`):
+
+   ```bash
+   cd ~/Claude/family-specials
+   uv run specials restore --to data
+   uv run specials restore --from ~/Library/Mobile\ Documents/com~apple~CloudDocs/family-specials-backups/2026-10-16_1012 --to data
+   ```
+
+   This unpacks `specials.db` and `private/`, checks the database is sound, and keeps any
+   existing files beside it as `*.before-restore-<time>`. Nothing is overwritten.
+3. Check it: `uv run specials status`.
+4. Start the schedule again (see above).
+
+To practise without touching anything, restore into a temporary folder:
+`uv run specials restore --to /tmp/restore-test`.
 
 ## The database
 

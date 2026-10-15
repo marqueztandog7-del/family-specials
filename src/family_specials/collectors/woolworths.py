@@ -23,7 +23,13 @@ VOLATILE = {
     "AdID", "AdIndex", "AdStatus", "IsSponsoredAd", "Diagnostics", "QuantityInTrolley", "IsInTrolley",
     "HasBeenBoughtBefore", "NextAvailabilityDate", "TileID", "Source", "DisplayQuantity",
     "IsPersonalisedByPurchaseHistory", "IsFromFacetedSearch", "SupplyLimitMessage",
+    # Promotion and stock-limit flags that change week to week without the product changing.
+    "OfferId", "MaxSupplyLimitMessage", "SupplyLimit", "ProductLimit", "SupplyLimitSource", "HasHeaderTag",
+    "IsCentreTag", "IsFooterEnabled", "HasProductSubs", "NumberOfSubstitutes",
 }
+# Website navigation (which seasonal menus a product appears in) changes weekly; not product data.
+VOLATILE_ATTRIBUTES = {"piesdepartmentnamesjson", "PiesProductDepartmentsjson", "piescategorynamesjson",
+                       "piessubcategorynamesjson", "PiesProductDepartmentNodeId", "specialsgroupid"}
 PRICE_KEYS = {
     "Price", "WasPrice", "InstorePrice", "InstoreWasPrice", "SavingsAmount", "InstoreSavingsAmount",
     "CupPrice", "InstoreCupPrice", "CupMeasure", "CupString", "InstoreCupString", "HasCupPrice",
@@ -210,6 +216,9 @@ class WoolworthsCollector(Collector):
         if not observations:
             return None
         raw_product = {k: v for k, v in p.items() if k not in VOLATILE and k not in PRICE_KEYS}
+        if isinstance(raw_product.get("AdditionalAttributes"), dict):
+            raw_product["AdditionalAttributes"] = {k: v for k, v in raw_product["AdditionalAttributes"].items()
+                                                   if k not in VOLATILE_ATTRIBUTES}
         raw_price = {k: p.get(k) for k in PRICE_KEYS if k in p}
         return NormalisedItem(product=product, gtins=gtins, observations=observations,
                               raw_product=raw_product, raw_price=raw_price)

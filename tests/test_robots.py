@@ -21,6 +21,8 @@ def test_coles_rules():
     assert r.allowed("/on-special")
     assert r.allowed("/on-special?page=2")
     assert r.allowed("/on-special?filter_Special=halfprice")
+    assert r.allowed("/on-special?filter_Special=halfprice&page=2")   # the slow weekly read
+    assert r.allowed("/browse/dairy-eggs-fridge/milk/full-cream-milk?page=2")
     assert not r.allowed("/on-special?filter_Special=multisave")
     assert not r.allowed("/search/products?q=milk")
     # The lighter Next.js data route for specials is caught by the category-specials rule.

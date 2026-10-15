@@ -31,10 +31,15 @@ chains:
       # Left out to keep volume down; tracked categories give us regular prices instead.
 
   coles:
-    # Paused 5 Oct 2026: Coles served a bot challenge after ~20 script requests in an hour.
-    # Re-enable only after a single test request shows normal pages again (see PHASE1_REPORT.md).
-    enabled: false
-    run_on: mac   # GitHub test 12 Oct: first page loaded, then a challenge page (same as the Mac on 5 Oct)
+    # One slow, small weekly read from the Mac (agreed 16 Oct 2026): half-price pages plus our
+    # tracked categories, 25-40 seconds apart, at most 40 requests. At the FIRST challenge Coles is
+    # paused for good: no automatic retries (pause_for_good_on_block). To try again later, set a new
+    # trial_since date here by hand.
+    enabled: true
+    run_on: mac   # GitHub test 12 Oct: first page loaded, then a challenge page
+    pause_for_good_on_block: true
+    trial_since: "2026-10-16"
+    specials_mode: half_price
     store:
       ref: "0883"
       name: Coles Kellyville
@@ -42,7 +47,7 @@ chains:
       postcode: "2155"
       price_scope: store
       notes: "Click & Collect store, set with the fulfillmentStoreId cookie (no login)."
-    politeness: {delay_seconds: [4, 8], max_requests_per_run: 220}
+    politeness: {delay_seconds: [25, 40], max_requests_per_run: 40}
     cycle: {type: weekly, starts: wednesday}
 
   aldi:

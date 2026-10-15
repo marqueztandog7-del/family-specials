@@ -1,4 +1,4 @@
-"""Coles: the Next.js page data behind /on-special and the category pages.
+"""Coles: the data embedded in its normal web pages (/on-special and /browse/...).
 
 Prices are pinned to our Click & Collect store with the fulfillmentStoreId cookie (set in runner.py).
 """
@@ -35,41 +35,31 @@ class ColesCollector(Collector):
     # -- requests ---------------------------------------------------------
 
     def _html_page_props(self, path: str, page: int = 1) -> dict[str, Any]:
-        params = {"page": page} if page > 1 else None
-        html = self.client.get(BASE + path, params=params, expect="html", require="__NEXT_DATA__").text
+        """Read one normal Coles web page and the data embedded in it. Only web pages are used
+        (no data routes): robots.txt blocks the specials data route, and Coles challenged the
+        category data route from GitHub on 12 Oct."""
+        sep = "&" if "?" in path else "?"
+        url = BASE + path + (f"{sep}page={page}" if page > 1 else "")  # keeps any filter first, as robots.txt allows
+        html = self.client.get(url, expect="html", require="__NEXT_DATA__").text
         data = json.loads(NEXT_DATA_RE.search(html).group(1))
-        self._build_id = data["buildId"]  # changes on every Coles deploy
+        self._build_id = data["buildId"]
         return data["props"]["pageProps"]
 
     def _load_on_special_page(self) -> None:
-        if self._build_id is None:
+        if self._first_page is None:
             self._first_page = self._html_page_props("/on-special")
 
-    def _data(self, path: str, params: dict[str, Any]) -> dict[str, Any]:
-        self._load_on_special_page()
-        url = f"{BASE}/_next/data/{self._build_id}/en/{path}.json"
-        resp = self.client.get(url, params=params, headers={"x-nextjs-data": "1", "Accept": "application/json"})
-        return resp.json()["pageProps"]
-
-    def _read(self, scope_type: str, scope_ref: str, name: str, path: str, slug_params: list[str],
+    def _read(self, scope_type: str, scope_ref: str, name: str, path: str,
               context: dict[str, Any]) -> Iterator[RawItem]:
         cov = Coverage(scope_type, scope_ref, name)
         self.coverage.append(cov)
         page, total_pages = 1, 1
         seen: set[int] = set()
         while page <= self.pages_to_read(total_pages):
-            if path == "on-special":
-                # robots.txt's "Disallow: /*/*/*/on-special*" also covers the lighter
-                # /_next/data/.../on-special.json route, so specials use the normal web pages.
-                if page == 1 and self._first_page is not None:
-                    props = self._first_page
-                else:
-                    props = self._html_page_props("/on-special", page)
-                    if page == 1:
-                        self._first_page = props
+            if path == "/on-special" and page == 1 and self._first_page is not None:
+                props = self._first_page
             else:
-                params = [("slug", s) for s in slug_params] + ([("page", page)] if page > 1 else [])
-                props = self._data(path, params)
+                props = self._html_page_props(path, page)
             sr = props.get("searchResults") or {}
             if page == 1:
                 cov.items_total = sr.get("noOfResults") or 0
@@ -93,24 +83,28 @@ class ColesCollector(Collector):
     # -- interface --------------------------------------------------------
 
     def fetch_specials(self) -> Iterator[RawItem]:
-        # Only the top-level /on-special list: robots.txt disallows category-level specials pages.
-        yield from self._read("specials_group", "on-special", "On special", "on-special", [], {})
+        if self.cfg.get("specials_mode") == "half_price":
+            # The small weekly read: only the half-price filter, which robots.txt explicitly allows.
+            path = "/on-special?filter_Special=halfprice"
+            yield from self._read("specials_group", path.lstrip("/"), "Half price", path, {})
+        else:
+            # Only the top-level list: robots.txt disallows category-level specials pages.
+            yield from self._read("specials_group", "on-special", "On special", "/on-special", {})
 
     def fetch_category(self, category: dict[str, Any]) -> Iterator[RawItem]:
-        slugs = category["slug"].strip("/").split("/")
-        yield from self._read("category", category["slug"], category.get("name", ""),
-                              "browse/" + "/".join(slugs), slugs, {})
+        slug = category["slug"].strip("/")
+        yield from self._read("category", slug, category.get("name", ""), f"/browse/{slug}", {})
 
     def discover_categories(self) -> list[CategoryInfo]:
         """Top-level categories come from the specials page; their subcategories need one
-        request per top-level category (about 20 requests)."""
+        web page per top-level category (about 20 requests)."""
         self._load_on_special_page()
         tops = (self._first_page.get("searchResults") or {}).get("catalogGroupView") or []
         out: list[CategoryInfo] = []
         for top in tops:
             out.append(CategoryInfo(top["seoToken"], top["name"], top["name"], f"/browse/{top['seoToken']}"))
             try:
-                props = self._data(f"browse/{top['seoToken']}", {"slug": top["seoToken"]})
+                props = self._html_page_props(f"/browse/{top['seoToken']}")
             except NotFound:
                 continue  # some specials groupings (e.g. "Deliver More Range") aren't browse categories
             for sub in (props.get("searchResults") or {}).get("catalogGroupView") or []:

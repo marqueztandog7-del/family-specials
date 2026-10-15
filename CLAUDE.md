@@ -75,4 +75,6 @@ Every stage must keep these possible. When a design choice would block one of th
   - GitHub Actions (`.github/workflows/collect.yml`) runs the stores with `run_on: github`; `scripts/mac-update.sh` runs the ones with `run_on: mac`.
   - Both use `specials update`: load `history/` → collect what's due → append to `history/` → rebuild `site/data/`.
   - Per-store history files mean GitHub and the Mac never edit the same file.
+- **Mac schedule** (installed 16 Oct 2026): launchd runs `scripts/mac-update.sh` at 7:30am and 6:30pm. Collection happens only when due; otherwise it's a check that commits nothing. A weekly backup goes to iCloud Drive/family-specials-backups (`specials backup`: SQLite backup API, integrity check, xz, newest 8 kept, notification on failure). `.env`, tokens and the live database never go to iCloud.
+- **Coles:** one slow, small weekly read from the Mac (half-price pages and tracked categories, 25–40 s apart). It is paused for good at the first challenge (`pause_for_good_on_block`); never add retries or workarounds.
 - **Published data:** `history/` and `site/data/` hold only products related to what we buy (seen in a tracked category, or matched to a watch item). No member prices and no raw store data.

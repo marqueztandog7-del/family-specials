@@ -169,9 +169,17 @@ def save_item(conn: sqlite3.Connection, run_id: int, item: NormalisedItem, sourc
 
     raw_price = zlib.compress(json.dumps(item.raw_price, separators=(",", ":"), sort_keys=True,
                                          default=str).encode(), 6)
-    for obs in item.observations:
+    # Keep the raw price details only when they changed since this product's last copy
+    # (NULL means "same as the previous stored copy"). Saves most of the weekly growth.
+    previous = conn.execute(
+        """SELECT raw_price_z FROM price_observations WHERE retailer_product_id = ? AND raw_price_z IS NOT NULL
+           ORDER BY id DESC LIMIT 1""", (product_id,)).fetchone()
+    if previous and previous[0] == raw_price:
+        raw_price = None
+    for i, obs in enumerate(item.observations):
         store_id = ensure_store(conn, p.chain, obs.store_ref)
-        _insert_observation(conn, run_id, product_id, store_id, ts, source, obs, raw_price)
+        # Woolworths' in-store and online observations share one raw record: store it once.
+        _insert_observation(conn, run_id, product_id, store_id, ts, source, obs, raw_price if i == 0 else None)
     return len(item.observations)
 
 
@@ -210,7 +218,7 @@ def save_attributes(conn: sqlite3.Connection, product_id: int, chain: str, brand
 
 
 def _insert_observation(conn: sqlite3.Connection, run_id: int, product_id: int, store_id: int, ts: str,
-                        source: str, o: Observation, raw_price: bytes) -> None:
+                        source: str, o: Observation, raw_price: bytes | None) -> None:
     conn.execute(
         """INSERT INTO price_observations(run_id, retailer_product_id, store_id, observed_at, source, price_basis,
            price_per, price_cents, was_cents, rrp_cents, is_special, special_type, promo_text, multibuy_qty,

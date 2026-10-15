@@ -159,7 +159,7 @@ CREATE TABLE IF NOT EXISTS price_observations (
   valid_to TEXT,
   valid_to_source TEXT,             -- store | catalogue | weekly_cycle_assumed | manual
   in_stock INTEGER,                 -- NULL when the store doesn't say
-  raw_price_z BLOB                  -- the store's raw price/promo fields, zlib-compressed JSON
+  raw_price_z BLOB                  -- raw price/promo fields, zlib JSON; NULL = same as the product's previous copy
 );
 CREATE INDEX IF NOT EXISTS idx_obs_product ON price_observations(retailer_product_id, store_id, observed_at);
 CREATE INDEX IF NOT EXISTS idx_obs_run ON price_observations(run_id);

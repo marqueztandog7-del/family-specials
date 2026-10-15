@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <!--
-  Runs scripts/mac-update.sh twice a day: it collects only the stores set to run_on: mac, and only
-  when they're due this specials cycle (Woolworths and Coles weekly from Wednesday, ALDI on
-  Wednesdays and Saturdays, Costco weekly from Monday, Chemist Warehouse weekly from Thursday).
+  Runs scripts/mac-update.sh twice a day. Most runs are checks: it collects only the stores set to
+  run_on: mac, and only when their new specials are due (Woolworths and Coles' small read from
+  Wednesday). Then the weekly backup to iCloud Drive, straight after the Wednesday update.
   If the Mac is asleep at 7:30, launchd runs the job when it wakes.
-  Install: see README.md ("Scheduling").
+  Install: see README.md ("The Mac schedule").
 -->
 <plist version="1.0">
 <dict>
