@@ -165,6 +165,58 @@ CREATE INDEX IF NOT EXISTS idx_obs_product ON price_observations(retailer_produc
 CREATE INDEX IF NOT EXISTS idx_obs_run ON price_observations(run_id);
 CREATE INDEX IF NOT EXISTS idx_obs_special ON price_observations(is_special, observed_at);
 
+-- People in a household (none yet: one shared family watchlist for now).
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY,
+  household_id INTEGER NOT NULL REFERENCES households(id),
+  name TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+-- The watchlist, rebuilt from config/watchlist.yaml on every run.
+CREATE TABLE IF NOT EXISTS watch_items (
+  id INTEGER PRIMARY KEY,
+  household_id INTEGER NOT NULL REFERENCES households(id),
+  key TEXT NOT NULL,
+  name TEXT NOT NULL,
+  tier TEXT,                        -- core | regular | occasional
+  level TEXT NOT NULL,              -- exact | same_product | similar
+  also_similar INTEGER NOT NULL DEFAULT 0,
+  compare_per TEXT,                 -- kg | L | item | can | bag | sheet | wipe | tea bag
+  target_cents REAL,                -- optional target unit price
+  rule_json TEXT NOT NULL,          -- anchor / similar rule / categories
+  active INTEGER NOT NULL DEFAULT 1,
+  created_by_user_id INTEGER REFERENCES users(id),
+  updated_at TEXT NOT NULL,
+  UNIQUE (household_id, key)
+);
+
+-- What matched each watch item, and why. Recomputed after every data update.
+CREATE TABLE IF NOT EXISTS watch_matches (
+  id INTEGER PRIMARY KEY,
+  watch_item_id INTEGER NOT NULL REFERENCES watch_items(id),
+  retailer_product_id INTEGER NOT NULL REFERENCES retailer_products(id),
+  match_type TEXT NOT NULL,         -- anchor | exact | same_product | similar | confirmed
+  reason TEXT NOT NULL,             -- "same barcode", "same brand and size", "similar: ..."
+  confidence REAL NOT NULL,
+  status TEXT NOT NULL,             -- auto | review | confirmed | rejected
+  matcher_version INTEGER NOT NULL,
+  matched_at TEXT NOT NULL,
+  UNIQUE (watch_item_id, retailer_product_id)
+);
+CREATE INDEX IF NOT EXISTS idx_watch_matches_product ON watch_matches(retailer_product_id);
+
+-- Your confirm / reject decisions, loaded from watchlist/decisions.csv. A rejection is permanent.
+CREATE TABLE IF NOT EXISTS match_decisions (
+  watch_item_id INTEGER NOT NULL REFERENCES watch_items(id),
+  chain TEXT NOT NULL,
+  store_product_id TEXT NOT NULL,
+  decision TEXT NOT NULL,           -- confirm | reject
+  decided_at TEXT NOT NULL,
+  note TEXT,
+  PRIMARY KEY (watch_item_id, chain, store_product_id)
+);
+
 -- Store category trees, discovered from each store, used to choose tracked categories.
 CREATE TABLE IF NOT EXISTS store_categories (
   chain TEXT NOT NULL,

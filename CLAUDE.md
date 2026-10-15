@@ -76,5 +76,10 @@ Every stage must keep these possible. When a design choice would block one of th
   - Both use `specials update`: load `history/` → collect what's due → append to `history/` → rebuild `site/data/`.
   - Per-store history files mean GitHub and the Mac never edit the same file.
 - **Mac schedule** (installed 16 Oct 2026): launchd runs `scripts/mac-update.sh` at 7:30am and 6:30pm. Collection happens only when due; otherwise it's a check that commits nothing. A weekly backup goes to iCloud Drive/family-specials-backups (`specials backup`: SQLite backup API, integrity check, xz, newest 8 kept, notification on failure). `.env`, tokens and the live database never go to iCloud.
-- **Coles:** one slow, small weekly read from the Mac (half-price pages and tracked categories, 25–40 s apart). It is paused for good at the first challenge (`pause_for_good_on_block`); never add retries or workarounds.
+- **Coles:** paused for good. Its one trial (16 Oct 2026) was challenged on half-price page 6 (`pause_for_good_on_block`); never add retries or workarounds. The configured read is half-price pages plus watchlist categories only. A possible fallback (not built) is reading Coles' weekly specials emails from the inbox.
+- **Watchlist:**
+  - `config/watchlist.yaml` (names and rules, committed) drives matching and the store categories that are read. `tracked_categories.yaml` only holds extras.
+  - `watchlist/decisions.csv` holds confirm/reject decisions; a rejection is permanent.
+  - Matching (`matching.py`) runs after every update.
+  - The accuracy report is private (`data/reports/`), because it uses receipt names.
 - **Published data:** `history/` and `site/data/` hold only products related to what we buy (seen in a tracked category, or matched to a watch item). No member prices and no raw store data.

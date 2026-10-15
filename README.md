@@ -38,6 +38,34 @@ uv run specials status                 # what was collected, and when
 
 `uv` and `gh` live in `~/.local/bin`. If they aren't found, run `export PATH="$HOME/.local/bin:$PATH"`.
 
+## The watchlist
+
+`config/watchlist.yaml` holds the family watchlist: names and rules only, no receipt data. It was seeded on
+16 Oct 2026 with the 36 Core and Regular items from `data/private/family_regular_items.csv`, each at its
+suggested level. Each item has:
+
+- **a level:** `exact` (one product at one store), `same_product` (the same product at any store: same
+  barcode, otherwise same brand + size + a close name), or `similar` (a rule such as "beef mince, any
+  brand, 500 g to 2 kg", store brands included);
+- **a tier** (core items show first) and the unit to **compare per** (kg, L, item, can, bag, sheet,
+  wipe, tea bag), plus an optional **target** unit price;
+- **the store categories** to read regular prices from. These replace the old 10-item test basket in
+  `tracked_categories.yaml`.
+
+```bash
+uv run specials watch                                  # the watchlist
+uv run specials watch add woolworths 123456            # add a product: same product, any store
+uv run specials watch add woolworths 123456 --similar  # ...and also watch similar items
+uv run specials match                                  # re-run matching + write the accuracy report
+uv run specials review                                 # matches waiting for you
+uv run specials review reject <item> <store> <product id>   # never comes back
+uv run specials review confirm <item> <store> <product id>
+```
+
+Matching runs after every data update, on GitHub and on the Mac. Your decisions are saved in
+`watchlist/decisions.csv`; commit it, along with `config/watchlist.yaml`, so GitHub uses them too.
+The accuracy report goes to `data/reports/` (private: it uses receipt names).
+
 ## How the data updates
 
 | Where | What | When |
@@ -81,7 +109,7 @@ logged (`collection_runs`), together with exactly which pages it read (`run_cove
 | Store | Source | Our store | Specials | Regular prices | Barcodes |
 |---|---|---|---|---|---|
 | Woolworths (from the Mac: it blocks GitHub) | JSON API the site uses | Woolworths' default store for anonymous visitors, which changes (#7008 on 5 Oct, #2631 on 12 Oct); pinning Kellyville North needs a login | Half Price, Lower Shelf Price*, Seasonal*, Buy More Save More, Online Only | Tracked categories | In listings (almost all) |
-| Coles (from the Mac, trial: one small weekly read; paused for good at the first challenge) | Data embedded in its normal web pages | Kellyville #0883 (set with a cookie, no login) | Half-price pages only | Tracked categories | Product pages only (not fetched yet) |
+| Coles (**paused for good**: the one trial on 16 Oct was challenged on half-price page 6) | Data embedded in its normal web pages | Kellyville #0883 (set with a cookie, no login) | Half-price pages only | Tracked categories | Product pages only (not fetched yet) |
 | ALDI (from GitHub) | Public JSON API | North Kellyville G449 | Special Buys (each Wed/Sat drop), Super Savers, Lower Prices* | Tracked categories | None (mostly own brands) |
 | Costco (from GitHub) | JSON API the site uses | Online, national | Hot Buys with a member saving and real end dates | Keyword searches | Product detail only (not fetched yet) |
 | Chemist Warehouse (from GitHub) | Algolia search index (approved, limited to tracked categories) | Online, national | Clearance only (see below) | Tracked categories | Some, from supplier image links |
@@ -138,8 +166,11 @@ and launchd catches up after the Mac wakes. Most runs are just **checks**:
 - A store is only collected when its new specials are due this cycle: **Woolworths** (and Coles'
   small weekly read) from **Wednesday**. Once collected, later runs that week do nothing.
 - Nothing collected means nothing committed or pushed.
-- **Coles trial rule:** the first time Coles challenges us, it's paused for good, with no
-  automatic retries. Only changing `trial_since` in `config/stores.yaml` by hand starts a new trial.
+- **Coles:** paused for good. Its one trial on 16 Oct was challenged on half-price page 6. The read is
+  set to the half-price list plus watchlist categories only, but it won't run again unless you set a
+  new `trial_since` in `config/stores.yaml` by hand.
+- **Plugged in:** the update keeps the Mac awake until it finishes (`caffeinate -s`, mains power only).
+  To have the Mac wake itself before the Wednesday update, see "Waking the Mac" below.
 - Problems show a Mac notification and go in `data/logs/collect.log`.
 
 ```bash
@@ -147,6 +178,25 @@ launchctl kickstart gui/$(id -u)/au.family-specials.collect        # run it now
 launchctl bootout gui/$(id -u)/au.family-specials.collect          # stop the schedule
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/au.family-specials.collect.plist   # start it again
 ```
+
+### Waking the Mac on Wednesday mornings
+
+A scheduled wake is a macOS system setting and needs your password, so you run it yourself in
+Terminal:
+
+```bash
+sudo pmset repeat wakeorpoweron W 07:25:00
+```
+
+The Mac then wakes at 7:25am every Wednesday, ready for the 7:30 update. Notes:
+
+- **Check it:** `pmset -g sched`. **Turn it off:** `sudo pmset repeat cancel`. This removes every
+  repeating wake or sleep schedule, and you've set no others.
+- macOS has no "only when plugged in" option for scheduled wakes, so on battery it wakes too. On
+  battery the update doesn't hold the Mac awake, so it may go back to sleep. Anything missed then
+  runs at the next wake.
+- With the lid closed and no external display, macOS may go straight back to sleep. Leaving the lid
+  open on the charger works best.
 
 ## Backups
 

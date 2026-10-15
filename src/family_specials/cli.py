@@ -122,7 +122,9 @@ def cmd_update(args) -> int:
     Used by the GitHub Actions schedule (--where github) and the Mac command (--where mac)."""
     from .collectors import get_collector_class, online_chains
     from .export import export_site
+    from . import watchlist
     from .history import import_history, publish_new_runs
+    from .matching import run_matching
     from .runner import is_due, is_paused_for_good, run_chain
 
     conn = db.connect()
@@ -151,6 +153,11 @@ def cmd_update(args) -> int:
                   + (f"\n    {r.error.splitlines()[0]}" if r.error else ""))
             if r.status in ("blocked", "error"):
                 problems.append(f"{chain} {kind}: {r.status}")
+    # Re-run matching after every data update (it also decides which products get published).
+    items = watchlist.load()
+    watchlist.sync_to_db(conn, items)
+    m = run_matching(conn, items)
+    print(f"Matching: {m['matched']} matched, {m['review']} to review, {m['confirmed']} confirmed")
     if args.publish:
         pub = publish_new_runs(conn)
         print(f"History: appended {pub['runs']} runs and {pub['observations']} prices")
@@ -270,6 +277,10 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--host", default="127.0.0.1")
     p.add_argument("--port", type=int, default=8000)
     p.set_defaults(func=cmd_serve)
+
+    from .cli_watch import register
+
+    register(sub)
 
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO,

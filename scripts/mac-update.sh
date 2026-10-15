@@ -19,6 +19,9 @@ log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"; }
 notify() { osascript -e "display notification \"$1\" with title \"Family Specials\"" >/dev/null 2>&1 || true; }
 
 log "Update started"
+# Keep the Mac awake until this script finishes, but only when it's plugged in (caffeinate -s
+# only works on mains power). On battery the Mac may sleep; the run then finishes when it wakes.
+caffeinate -s -w $$ &
 if ! git pull -q --rebase --autostash; then
   log "Couldn't pull from GitHub"; notify "Update stopped: couldn't pull from GitHub"; exit 1
 fi

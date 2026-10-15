@@ -59,7 +59,7 @@ def run_chain(conn: sqlite3.Connection, chain: str, kind: str, max_pages: int | 
         if kind == "specials":
             raw_items = collector.fetch_specials()
         else:
-            raw_items = _category_items(collector, config.tracked_categories(chain))
+            raw_items = _category_items(collector, _with_category_details(conn, chain, config.tracked_categories(chain)))
         for raw in raw_items:
             item = collector.normalise(raw)
             if item is None:
@@ -86,6 +86,24 @@ def run_chain(conn: sqlite3.Connection, chain: str, kind: str, max_pages: int | 
         error = error or "Some pages weren't read (see run_coverage)"
     db.finish_run(conn, run_id, status, client.requests_made, items, observations, error)
     return RunResult(chain, kind, run_id, status, client.requests_made, items, observations, error)
+
+
+def _with_category_details(conn: sqlite3.Connection, chain: str, categories: list[dict]) -> list[dict]:
+    """Woolworths needs each category's web path as well as its id: take it from the discovered tree."""
+    if chain != "woolworths":
+        return categories
+    out = []
+    for c in categories:
+        if not c.get("url"):
+            row = conn.execute("SELECT name, url_path FROM store_categories WHERE chain = ? AND category_ref = ?",
+                               (chain, c["id"])).fetchone()
+            if row is None:
+                log.warning("woolworths category %s isn't in the discovered tree; skipped "
+                            "(run: specials categories --chain woolworths --refresh)", c["id"])
+                continue
+            c = {**c, "url": row["url_path"], "name": row["name"]}
+        out.append(c)
+    return out
 
 
 def _category_items(collector, categories):

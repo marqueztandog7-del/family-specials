@@ -16,7 +16,7 @@ from .models import NormalisedItem, Observation
 from .parsing import PARSER_VERSION, is_own_brand, normalise_gtin, parse_size
 from .timeutil import now_iso
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 
 
 def connect(path: Path | None = None) -> sqlite3.Connection:
@@ -63,6 +63,9 @@ def _migrate(conn: sqlite3.Connection, version: int) -> None:
         conn.execute("ALTER TABLE collection_runs ADD COLUMN run_where TEXT")
         conn.execute("ALTER TABLE collection_runs ADD COLUMN published INTEGER NOT NULL DEFAULT 0")
         conn.execute("UPDATE schema_version SET version = 3")
+    if version < 4:
+        # v4: watchlist tables (users, watch_items, watch_matches, match_decisions), created by schema.sql.
+        conn.execute("UPDATE schema_version SET version = 4")
     conn.commit()
 
 

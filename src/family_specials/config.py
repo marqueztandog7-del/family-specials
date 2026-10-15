@@ -58,14 +58,28 @@ def enabled_chains() -> list[str]:
 
 
 def tracked_categories(chain: str) -> list[dict[str, Any]]:
-    """Categories whose regular prices we read each cycle (not just specials)."""
-    out = []
-    for entry in load_yaml("tracked_categories.yaml").get("items", []):
+    """Categories whose regular prices we read each cycle: those of the watch items in
+    config/watchlist.yaml, plus any extras in tracked_categories.yaml. Each is read once even
+    if several watch items share it."""
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+
+    def add(entry: dict[str, Any]) -> None:
+        ref = str(entry.get("id") or entry.get("key") or entry.get("slug") or entry.get("query")
+                  or entry.get("code") or entry.get("category"))
+        if ref not in seen:
+            seen.add(ref)
+            out.append(entry)
+
+    for entry in load_yaml("tracked_categories.yaml").get("items") or []:
         ref = (entry.get("stores") or {}).get(chain)
-        if not ref:
-            continue
-        for cat in ref if isinstance(ref, list) else [ref]:
-            out.append({"item": entry["item"], **cat})
+        for cat in ref if isinstance(ref, list) else ([ref] if ref else []):
+            add({"item": entry["item"], **cat})
+    field = {"woolworths": "id", "aldi": "key", "coles": "slug", "costco": "query",
+             "chemistwarehouse": "category"}.get(chain)
+    for item in load_yaml("watchlist.yaml").get("items") or []:
+        for value in (item.get("categories") or {}).get(chain) or []:
+            add({"item": item["key"], field: str(value), "name": item["name"]})
     return out
 
 
