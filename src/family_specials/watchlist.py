@@ -55,6 +55,11 @@ def load(path: Path | None = None) -> list[WatchItem]:
             target=raw.get("target"), anchor=raw.get("anchor"), similar=raw.get("similar"),
             categories={k: (v if isinstance(v, list) else [v]) for k, v in (raw.get("categories") or {}).items()},
         )
+        for chain, values in item.categories.items():
+            for v in values:
+                if not isinstance(v, str):
+                    raise ValueError(f"{item.key}: category {v!r} for {chain} must be in quotes in watchlist.yaml "
+                                     "(YAML reads 1_4003688 as a number)")
         if item.level not in LEVELS:
             raise ValueError(f"{item.key}: level must be one of {LEVELS}")
         if item.level in ("exact", "same_product") and not item.anchor:

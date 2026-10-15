@@ -52,7 +52,7 @@ class ChemistWarehouseCollector(Collector):
             cov.items_total, cov.pages_total = res.get("nbHits"), total_pages
             for hit in res.get("hits") or []:
                 cov.items_seen += 1
-                yield RawItem(hit, {"category": name})
+                yield RawItem(hit, {"category": name, "category_ref": name})
             page += 1
             cov.pages_read = page
         cov.complete = cov.pages_read >= cov.pages_total

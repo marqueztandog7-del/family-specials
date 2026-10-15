@@ -165,6 +165,16 @@ CREATE INDEX IF NOT EXISTS idx_obs_product ON price_observations(retailer_produc
 CREATE INDEX IF NOT EXISTS idx_obs_run ON price_observations(run_id);
 CREATE INDEX IF NOT EXISTS idx_obs_special ON price_observations(is_special, observed_at);
 
+-- Which store category each product was seen in (during category reads), so rules can insist
+-- that, say, "ricotta" comes from the ricotta category and not the chips aisle.
+CREATE TABLE IF NOT EXISTS product_categories (
+  retailer_product_id INTEGER NOT NULL REFERENCES retailer_products(id),
+  category_ref TEXT NOT NULL,
+  first_seen_at TEXT NOT NULL,
+  last_seen_at TEXT NOT NULL,
+  PRIMARY KEY (retailer_product_id, category_ref)
+);
+
 -- People in a household (none yet: one shared family watchlist for now).
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY,

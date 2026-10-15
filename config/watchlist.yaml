@@ -32,7 +32,7 @@ items:
     level: same_product
     compare_per: kg
     anchor: {chain: woolworths, name: "Woolworths RSPCA Chicken Thigh Fillets Bulk Tray", sold_by: kg}
-    categories: {woolworths: [1_FE29197], aldi: ["1111111146"]}
+    categories: {woolworths: ["1_FE29197"], aldi: ["1111111146"]}
 
   - key: beef-mince
     name: Beef mince
@@ -45,7 +45,7 @@ items:
                 kofta, bolognese, sauce, pie, cooked, chilli, lasagne, rissoles, dog, cat, pet]
       brands: any
       size: {min: 500 g, max: 2 kg}
-    categories: {woolworths: [1_4258C02], aldi: ["1111111144"]}
+    categories: {woolworths: ["1_4258C02"], aldi: ["1111111144"]}
 
   - key: toilet-paper-24
     name: Toilet paper 24 pack
@@ -53,7 +53,7 @@ items:
     level: same_product
     compare_per: item
     anchor: {chain: woolworths, name: "Vevelle Luxury Soft 3 Ply Toilet Tissue 24pk"}
-    categories: {woolworths: [1_E21AF56], aldi: ["1111111260"], costco: [toilet paper], chemistwarehouse: [Toilet Paper]}
+    categories: {woolworths: ["1_E21AF56"], aldi: ["1111111260"], costco: [toilet paper], chemistwarehouse: [Toilet Paper]}
 
   - key: tomatoes
     name: Tomatoes
@@ -67,7 +67,7 @@ items:
                 puree, salsa, juice, relish, ketchup, seeds, plant, seedling, cherry]
       brands: any
       fresh: true
-    categories: {woolworths: [1_44969AD], aldi: ["1111111153"]}
+    categories: {woolworths: ["1_44969AD"], aldi: ["1111111153"]}
 
   - key: twinings-tea-bags
     name: Twinings tea bags
@@ -79,7 +79,7 @@ items:
       any: [tea, bags]
       exclude: [loose, leaf, iced, cold infuse, capsules, pods, k-cup, cups, tin]
       brands: [Twinings]
-    categories: {woolworths: [1_341A912], aldi: ["1111111211"], costco: [twinings]}
+    categories: {woolworths: ["1_341A912"], aldi: ["1111111211"], costco: [twinings]}
 
   - key: paper-towel
     name: Paper towel
@@ -92,7 +92,7 @@ items:
       exclude: [toilet, tissue, tissues, tea towel, hand towel, napkin, serviette, wipes]
       brands: any
       size: {pack: 3}
-    categories: {woolworths: [1_B41531D], aldi: ["1111111260"], costco: [paper towel]}
+    categories: {woolworths: ["1_B41531D"], aldi: ["1111111260"], costco: [paper towel]}
 
   - key: guzzis-linguine
     name: Guzzi's linguine
@@ -100,7 +100,7 @@ items:
     level: same_product
     compare_per: kg
     anchor: {chain: woolworths, name: "Guzzi's Pasta Linguine 375g"}
-    categories: {woolworths: [1_62A8E7A], aldi: ["1111111179"]}
+    categories: {woolworths: ["1_62A8E7A"], aldi: ["1111111179"]}
 
   - key: thickened-cream
     name: Thickened cream
@@ -112,7 +112,7 @@ items:
       exclude: [sour, ice, cheese, whipped, aerosol, spray, lactose, plant, coconut]
       brands: any
       size: {min: 300 ml, max: 600 ml}
-    categories: {woolworths: [1_6830C7C], aldi: ["1111111165"]}
+    categories: {woolworths: ["1_6830C7C"], aldi: ["1111111165"]}
 
   - key: greek-yoghurt
     name: Greek yoghurt
@@ -120,7 +120,7 @@ items:
     level: same_product
     compare_per: kg
     anchor: {chain: woolworths, name: "Farmers Union Greek Style High Protein Yoghurt 500g"}
-    categories: {woolworths: [1_AC76873], aldi: ["1111111164"]}
+    categories: {woolworths: ["1_AC76873"], aldi: ["1111111164"]}
 
   - key: sicilian-olives
     name: Sicilian olives
@@ -131,7 +131,7 @@ items:
       must: [sicilian, olives]
       exclude: [oil, tapenade, stuffed, dip]
       brands: any
-    categories: {woolworths: [1_F97E58C, 1_E80241C], aldi: ["1111111140"]}
+    categories: {woolworths: ["1_F97E58C", "1_E80241C"], aldi: ["1111111140"]}
 
   - key: frozen-carrots-peas-corn
     name: Frozen carrots, peas & corn
@@ -143,7 +143,7 @@ items:
       exclude: [rice, soup, pie, pasties, steam fresh meal, beans]
       brands: any
       frozen: true
-    categories: {woolworths: [1_A96D7F8], aldi: ["1111111192"]}
+    categories: {woolworths: ["1_A96D7F8"], aldi: ["1111111192"]}
 
   - key: baby-cucumbers
     name: Baby cucumbers
@@ -156,7 +156,7 @@ items:
       exclude: [pickled, gherkin, gherkins, dip, tzatziki, seeds, seedling]
       brands: any
       fresh: true
-    categories: {woolworths: [1_6C7228E], aldi: ["1111111153"]}
+    categories: {woolworths: ["1_6C7228E"], aldi: ["1111111153"]}
 
   - key: full-cream-milk
     name: Full cream milk
@@ -170,7 +170,7 @@ items:
                 skim, light, lite, reduced, low fat, condensed, evaporated, kids, toddler, formula, goat, protein]
       brands: any
       size: {min: 2 L, max: 3 L}
-    categories: {woolworths: [1_A8A8E7C], aldi: ["1111111160"], coles: [dairy-eggs-fridge/milk/full-cream-milk]}
+    categories: {woolworths: ["1_A8A8E7C"], aldi: ["1111111160"], coles: [dairy-eggs-fridge/milk/full-cream-milk]}
 
   - key: mutti-tomatoes
     name: Mutti tomatoes
@@ -182,7 +182,7 @@ items:
       any: [chopped, polpa, passata, finely]
       exclude: [paste, sauce, pesto, ketchup]
       brands: [Mutti]
-    categories: {woolworths: [1_288FD91], aldi: ["1111111171"], costco: [mutti]}
+    categories: {woolworths: ["1_288FD91"], aldi: ["1111111171"], costco: [mutti]}
 
   - key: leek
     name: Leek
@@ -190,7 +190,7 @@ items:
     level: same_product
     compare_per: item
     anchor: {chain: woolworths, name: "Leek (each)", generic: true}
-    categories: {woolworths: [1_C9C304A], aldi: ["1111111153"]}
+    categories: {woolworths: ["1_C9C304A"], aldi: ["1111111153"]}
 
   - key: sweet-corn-kernels-420
     name: Sweet corn kernels 420g
@@ -198,7 +198,7 @@ items:
     level: same_product
     compare_per: kg
     anchor: {chain: woolworths, name: "Woolworths Sweet Corn Kernels 420g"}
-    categories: {woolworths: [1_69969BC], aldi: ["1111111171"]}
+    categories: {woolworths: ["1_69969BC"], aldi: ["1111111171"]}
 
   - key: serviettes
     name: Serviettes
@@ -206,7 +206,7 @@ items:
     level: same_product
     compare_per: item
     anchor: {chain: woolworths, name: "Armada 1 Ply Serviettes White 100pk"}
-    categories: {woolworths: [1_D236658], aldi: ["1111111258"]}
+    categories: {woolworths: ["1_D236658"], aldi: ["1111111258"]}
 
   # ------------------------------------------------------------------ Regular
   - key: coca-cola-cans
@@ -220,7 +220,7 @@ items:
       exclude: [zero, diet, no sugar, vanilla, cherry, lime, raspberry, bottle, bottles, mini, glass]
       brands: [Coca-Cola]
       size: {each: 375 ml, pack_min: 24, pack_max: 30}
-    categories: {woolworths: [1_C693949], aldi: ["1111111207"], costco: [coca-cola]}
+    categories: {woolworths: ["1_C693949"], aldi: ["1111111207"], costco: [coca-cola]}
 
   - key: beifang-beef-roll
     name: Beifang sliced beef roll
@@ -228,7 +228,7 @@ items:
     level: same_product
     compare_per: kg
     anchor: {chain: woolworths, name: "Beifang Sliced Beef Roll 225g"}
-    categories: {woolworths: [1_1A5979B], aldi: ["1111111197"]}
+    categories: {woolworths: ["1_1A5979B"], aldi: ["1111111197"]}
 
   - key: pork-rashers
     name: Pork rashers
@@ -236,7 +236,7 @@ items:
     level: same_product
     compare_per: kg
     anchor: {chain: woolworths, name: "Woolworths Pork Rashers Medium", sold_by: kg}
-    categories: {woolworths: [1_10817BA], aldi: ["1111111145"]}
+    categories: {woolworths: ["1_10817BA"], aldi: ["1111111145"]}
 
   - key: beef-chuck-steak
     name: Beef chuck steak
@@ -244,7 +244,7 @@ items:
     level: same_product
     compare_per: kg
     anchor: {chain: woolworths, name: "Woolworths Beef Chuck Steak Medium", sold_by: kg}
-    categories: {woolworths: [1_B5F6C99], aldi: ["1111111144"]}
+    categories: {woolworths: ["1_B5F6C99"], aldi: ["1111111144"]}
 
   - key: san-pellegrino
     name: San Pellegrino sparkling water
@@ -252,7 +252,7 @@ items:
     level: same_product
     compare_per: L
     anchor: {chain: woolworths, name: "S.Pellegrino Sparkling Water 8 x 330ml"}
-    categories: {woolworths: [1_54562CC], aldi: ["1111111209"], costco: [san pellegrino]}
+    categories: {woolworths: ["1_54562CC"], aldi: ["1111111209"], costco: [san pellegrino]}
 
   - key: parmigiano-reggiano
     name: Parmigiano Reggiano
@@ -260,7 +260,7 @@ items:
     level: same_product
     compare_per: kg
     anchor: {chain: woolworths, name: "Zanetti Parmigiano Reggiano 200g"}
-    categories: {woolworths: [1_4003688], aldi: ["1111111163"], costco: [parmigiano]}
+    categories: {woolworths: ["1_4003688"], aldi: ["1111111163"], costco: [parmigiano]}
 
   - key: spam-low-salt
     name: Spam Ham Low Salt
@@ -268,7 +268,7 @@ items:
     level: same_product
     compare_per: kg
     anchor: {chain: woolworths, name: "Spam Ham Low Salt 340g"}
-    categories: {woolworths: [1_6E74E40], aldi: ["1111111171"]}
+    categories: {woolworths: ["1_6E74E40"], aldi: ["1111111171"]}
 
   - key: spudlite-potatoes
     name: Potatoes (Spudlite)
@@ -280,7 +280,7 @@ items:
       exclude: [chips, wedges, mash, salad]
       brands: any
       fresh: true
-    categories: {woolworths: [1_03F7B3C], aldi: ["1111111153"]}
+    categories: {woolworths: ["1_03F7B3C"], aldi: ["1111111153"]}
 
   - key: port-salut
     name: Port Salut
@@ -288,7 +288,7 @@ items:
     level: same_product
     compare_per: kg
     anchor: {chain: woolworths, name: "Port Salut French Cheese 150g"}
-    categories: {woolworths: [1_7039540], aldi: ["1111111163"]}
+    categories: {woolworths: ["1_7039540"], aldi: ["1111111163"]}
 
   - key: cottage-cheese
     name: Cottage cheese
@@ -299,7 +299,7 @@ items:
       must: [cottage, cheese]
       exclude: [dip, cheesecake]
       brands: any
-    categories: {woolworths: [1_35E3CFE], aldi: ["1111111163"]}
+    categories: {woolworths: ["1_35E3CFE"], aldi: ["1111111163"]}
 
   - key: disinfectant-wipes
     name: Disinfectant wipes
@@ -311,7 +311,7 @@ items:
       any: [disinfectant, antibacterial, anti-bacterial]
       exclude: [baby, face, facial, makeup, toilet, pet, hand, body, intimate, glasses, screen, flushable]
       brands: any
-    categories: {woolworths: [1_25C5B7C], aldi: ["1111111253"], costco: [disinfectant wipes]}
+    categories: {woolworths: ["1_25C5B7C"], aldi: ["1111111253"], costco: [disinfectant wipes]}
 
   - key: orange-juice-2l
     name: Orange juice 2L
@@ -323,7 +323,7 @@ items:
       exclude: [cordial, concentrate, mango, apple, pineapple, passionfruit, blend, mixed, kids, poppers, drink]
       brands: any
       size: {min: 2 L, max: 2 L}
-    categories: {woolworths: [1_50B5D00], aldi: ["1111111208"]}
+    categories: {woolworths: ["1_50B5D00"], aldi: ["1111111208"]}
 
   - key: vanilla-ice-cream-2l
     name: Vanilla ice cream 2L
@@ -331,7 +331,7 @@ items:
     level: same_product
     compare_per: L
     anchor: {chain: woolworths, name: "Blue Ribbon Classic Vanilla 2L"}
-    categories: {woolworths: [1_B05DE1A], aldi: ["1111111194"]}
+    categories: {woolworths: ["1_B05DE1A"], aldi: ["1111111194"]}
 
   - key: asian-greens
     name: Asian greens
@@ -344,7 +344,7 @@ items:
       exclude: [seeds, seedling, sauce, noodles, stir fry kit, dumplings]
       brands: any
       fresh: true
-    categories: {woolworths: [1_F259694], aldi: ["1111111153"]}
+    categories: {woolworths: ["1_F259694"], aldi: ["1111111153"]}
 
   - key: puff-pastry
     name: Puff pastry
@@ -356,7 +356,7 @@ items:
       exclude: [shortcrust, filo, pies, pie, rolls, sausage, croissant, cases]
       brands: any
       size: {min: 1 kg, max: 1 kg}
-    categories: {woolworths: [1_C288C97], aldi: ["1111111195"]}
+    categories: {woolworths: ["1_C288C97"], aldi: ["1111111195"]}
 
   - key: ricotta
     name: Ricotta
@@ -365,9 +365,10 @@ items:
     compare_per: kg
     similar:
       must: [ricotta]
-      exclude: [baked, sliced, ravioli, cannelloni, tortellini, pasta, cheesecake, lasagne]
+      exclude: [baked, sliced, ravioli, cannelloni, tortellini, pasta, cheesecake, lasagne, chips, crisps, triangles,
+                pastries, pastry, spinach, gnocchi, pie, quiche]
       brands: any
-    categories: {woolworths: [1_35E3CFE], aldi: ["1111111163"]}
+    categories: {woolworths: ["1_35E3CFE"], aldi: ["1111111163"]}
 
   - key: umami-edamame-salad
     name: Edamame salad
@@ -375,7 +376,7 @@ items:
     level: same_product
     compare_per: kg
     anchor: {chain: woolworths, name: "Umami Edamame Salad 200g"}
-    categories: {woolworths: [1_A96D7F8], aldi: ["1111111192"]}
+    categories: {woolworths: ["1_A96D7F8"], aldi: ["1111111192"]}
 
   - key: trolli-sour-strapz
     name: Trolli sour straps
@@ -383,7 +384,7 @@ items:
     level: same_product
     compare_per: kg
     anchor: {chain: woolworths, name: "Trolli Sour Strapz Watermelon 140g"}
-    categories: {woolworths: [1_B2412F6], aldi: ["1588161408332088"]}
+    categories: {woolworths: ["1_B2412F6"], aldi: ["1588161408332088"]}
 
   - key: garbage-bags
     name: Garbage bags
@@ -394,6 +395,6 @@ items:
       must: [bags]
       any: [garbage, bin]
       exclude: [kitchen tidy, tidy, small, medium, compost, compostable, pet, nappy, dog, freezer, sandwich, zip,
-                storage, vacuum, laundry, shopping, recycling bin]
+                storage, vacuum, laundry, shopping, recycling bin, garden]
       brands: any
-    categories: {woolworths: [1_DC94DF2], aldi: ["1111111255"], costco: [garbage bags]}
+    categories: {woolworths: ["1_DC94DF2"], aldi: ["1111111255"], costco: [garbage bags]}

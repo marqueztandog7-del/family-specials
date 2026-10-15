@@ -26,7 +26,7 @@ from .parsing import parse_size
 from .timeutil import iso, now_iso, now_utc
 from .watchlist import WatchItem
 
-MATCHER_VERSION = 1
+MATCHER_VERSION = 2
 AUTO = 0.85      # at or above: matched automatically
 REVIEW = 0.60    # between REVIEW and AUTO: goes to the review list
 RECENT_WEEKS = 8
@@ -105,6 +105,7 @@ class Product:
     pack: int | None
     comparable: bool
     sold_by_kg: bool
+    categories: frozenset = frozenset()   # store category refs this product was seen in
 
 
 def load_products(conn: sqlite3.Connection, weeks: int = RECENT_WEEKS) -> list[Product]:
@@ -115,6 +116,9 @@ def load_products(conn: sqlite3.Connection, weeks: int = RECENT_WEEKS) -> list[P
     kg = {r[0] for r in conn.execute(
         "SELECT DISTINCT retailer_product_id FROM price_observations WHERE price_per = 'kg' AND observed_at >= ?",
         (cutoff,))}
+    cats: dict[int, set[str]] = {}
+    for pid, ref in conn.execute("SELECT retailer_product_id, category_ref FROM product_categories"):
+        cats.setdefault(pid, set()).add(ref)
     rows = conn.execute(
         """SELECT p.*, a.total_quantity, a.base_unit, a.size_quantity, a.pack_count, a.comparable
            FROM retailer_products p LEFT JOIN product_attributes a ON a.retailer_product_id = p.id
@@ -129,7 +133,7 @@ def load_products(conn: sqlite3.Connection, weeks: int = RECENT_WEEKS) -> list[P
             brand=normalise(r["brand"]) if r["brand"] else None, category=(r["category_path"] or "").lower(),
             gtins=gtins.get(r["id"], set()), total=r["total_quantity"], base=r["base_unit"],
             each=r["size_quantity"], pack=r["pack_count"], comparable=bool(r["comparable"]),
-            sold_by_kg=r["id"] in kg,
+            sold_by_kg=r["id"] in kg, categories=frozenset(cats.get(r["id"], ())),
         ))
     return out
 
@@ -145,21 +149,53 @@ class Match:
     confidence: float
 
 
+STOP_WORDS = {"and", "the", "with", "of", "in", "a", "pack", "each", "per", "x", "approx", "punnet", "tub", "jar",
+              "bag", "bottle", "can", "cans", "multipack"}
+SIZE_TOKEN = re.compile(r"^\d+(\.\d+)?(g|kg|ml|l|lt|ltr|pk|pack|ea|x)?$")
+
+
+def _singular(w: str) -> str:
+    if len(w) > 4 and w.endswith("ies"):
+        return w[:-3] + "y"
+    if len(w) > 4 and w.endswith("oes"):
+        return w[:-2]
+    if len(w) > 3 and w.endswith("s") and not w.endswith("ss"):
+        return w[:-1]
+    return w
+
+
+def content_words(norm: str) -> set[str]:
+    """The words that identify a product: no sizes, no filler."""
+    return {_singular(w) for w in norm.split() if w not in STOP_WORDS and not SIZE_TOKEN.match(w)}
+
+
+def name_score(target_norm: str, product_norm: str) -> float:
+    """0-1. Mostly: how many of the target's words the product has (coverage), less any extra words
+    the product adds (so 'Greek Style High Protein Yoghurt' doesn't match 'Greek Style Yoghurt Light')."""
+    t, p = content_words(target_norm), content_words(product_norm)
+    if not t or not p:
+        return 0.0
+    coverage = len(t & p) / len(t)
+    extra = len(p - t) / len(p)
+    order = fuzz.token_sort_ratio(" ".join(sorted(t)), " ".join(sorted(p))) / 100
+    return 0.55 * coverage + 0.25 * (1 - extra) + 0.20 * order
+
+
 def find_by_name(products: list[Product], text: str, chain: str | None = None, sold_by: str | None = None,
-                 generic: bool = False) -> tuple[Product, float] | None:
+                 generic: bool = False, categories: set[str] | None = None) -> tuple[Product, float] | None:
     """Best product for a name such as 'Guzzi's Pasta Linguine 375g' or a receipt line. Returns
-    (product, confidence 0-1). Size must agree when both sides have one."""
+    (product, confidence 0-1). Pack size must agree when both sides have one. If `categories` is
+    given, only products seen in those store categories are considered (when any are known)."""
     target = normalise(text)
     target_size = parse_size(text)
+    pool = [p for p in products if (not chain or p.chain == chain) and (sold_by != "kg" or p.sold_by_kg)]
+    if categories:
+        in_cat = [p for p in pool if p.categories & categories]
+        if in_cat:
+            pool = in_cat
     best: tuple[Product, float] | None = None
-    for p in products:
-        if chain and p.chain != chain:
-            continue
-        if sold_by == "kg" and not p.sold_by_kg:
-            continue
-        score = fuzz.token_set_ratio(target, p.norm) / 100
-        partial = fuzz.token_sort_ratio(target, p.norm) / 100
-        score = 0.7 * score + 0.3 * partial
+    for p in pool:
+        score = name_score(target, p.norm)
         if target_size.comparable and p.comparable and target_size.base_unit == p.base and p.total:
             if abs(target_size.total_quantity - p.total) > 0.02 * p.total:
                 score -= 0.3          # different pack size: a different product
@@ -201,6 +237,9 @@ def similar_matches(item: WatchItem, products: list[Product]) -> list[Match]:
     summary = rule_summary(item)
     out = []
     for p in products:
+        allowed = {str(c) for c in item.categories.get(p.chain, [])}
+        if allowed and p.categories and not (p.categories & allowed):
+            continue   # seen only in other categories (e.g. "ricotta" chips in the snacks aisle)
         if not all(has_term(p.norm, w) for w in must):
             continue
         if any_ and not any(has_term(p.norm, w) for w in any_):
@@ -266,7 +305,8 @@ def same_product_matches(item: WatchItem, products: list[Product]) -> tuple[Matc
             anchor = Match(p, "anchor", f"anchor: {p.chain} product {p.store_id}", 1.0)
     else:
         found = find_by_name([x for x in products if x.chain == a["chain"]], a["name"], sold_by=a.get("sold_by"),
-                             generic=bool(a.get("generic")))
+                             generic=bool(a.get("generic")),
+                             categories={str(c) for c in item.categories.get(a["chain"], [])})
         if found and found[1] >= REVIEW:
             anchor = Match(found[0], "anchor", f"anchor: {a['chain']} product named like '{a['name']}'",
                            round(min(found[1], 1.0), 2))

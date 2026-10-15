@@ -32,7 +32,7 @@ SCOPE_WEEKS = 12
 RUN_FIELDS = ["chain", "kind", "run_where", "started_at", "finished_at", "status", "requests_made",
               "items_seen", "observations_added", "error"]
 PRODUCT_FIELDS = ["product_id", "name", "display_name", "brand", "size_text", "url", "image_url",
-                  "category_path", "gtins", "first_seen_at", "last_seen_at"]
+                  "category_path", "gtins", "first_seen_at", "last_seen_at", "categories"]
 OBS_FIELDS = ["run_started_at", "run_kind", "observed_at", "store_ref", "product_id", "source", "price_basis",
               "price_per", "price_cents", "was_cents", "rrp_cents", "is_special", "special_type", "promo_text",
               "multibuy_qty", "multibuy_cents", "unit_price", "unit_measure", "unit_price_text", "valid_from",
@@ -121,6 +121,9 @@ def _write_products(conn, chain: str, pids: set[int], path: Path) -> None:
     ):
         gtins = "|".join(f"{g['gtin14']}:{g['source']}:{g['is_global']}" for g in conn.execute(
             "SELECT * FROM retailer_product_gtins WHERE retailer_product_id = ? ORDER BY gtin14", (p["id"],)))
+        cats = sorted({r[0] for r in conn.execute(
+            "SELECT category_ref FROM product_categories WHERE retailer_product_id = ?", (p["id"],))}
+            | set(filter(None, (existing.get(p["retailer_product_id"], {}).get("categories") or "").split("|"))))
         old = existing.get(p["retailer_product_id"], {})
         existing[p["retailer_product_id"]] = {
             "product_id": p["retailer_product_id"], "name": p["name"], "display_name": p["display_name"] or "",
@@ -128,6 +131,7 @@ def _write_products(conn, chain: str, pids: set[int], path: Path) -> None:
             "image_url": p["image_url"] or "", "category_path": p["category_path"] or "", "gtins": gtins,
             "first_seen_at": min(filter(None, [old.get("first_seen_at"), p["first_seen_at"]])),
             "last_seen_at": max(filter(None, [old.get("last_seen_at"), p["last_seen_at"]])),
+            "categories": "|".join(cats),
         }
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as f:
@@ -209,6 +213,10 @@ def _upsert_product(conn, chain: str, row: dict[str, str]) -> int:
              row["first_seen_at"], row["last_seen_at"])).lastrowid
         db.save_attributes(conn, pid, chain, row["brand"] or None, row["size_text"] or None,
                            row["display_name"] or row["name"], row["last_seen_at"])
+    for ref in filter(None, (row.get("categories") or "").split("|")):
+        conn.execute(
+            """INSERT OR IGNORE INTO product_categories(retailer_product_id, category_ref, first_seen_at, last_seen_at)
+               VALUES (?,?,?,?)""", (pid, ref, row["first_seen_at"], row["last_seen_at"]))
     for part in filter(None, (row.get("gtins") or "").split("|")):
         gtin14, source, is_global = (part.split(":") + ["", ""])[:3]
         if normalise_gtin(gtin14):
@@ -256,3 +264,51 @@ def _int(v: str | None) -> int | None:
 
 def _float(v: str | None) -> float | None:
     return float(v) if v not in (None, "") else None
+
+
+def rewrite_products(conn: sqlite3.Connection, history_dir: Path = HISTORY_DIR) -> int:
+    """Rewrite every store's product file for all in-scope products (e.g. after a backfill)."""
+    scope = scope_product_ids(conn)
+    by_chain: dict[str, set[int]] = {}
+    for pid, chain in conn.execute("SELECT id, chain FROM retailer_products"):
+        if pid in scope:
+            by_chain.setdefault(chain, set()).add(pid)
+    for chain, pids in by_chain.items():
+        _write_products(conn, chain, pids, history_dir / "products" / f"{chain}.csv")
+    return sum(len(p) for p in by_chain.values())
+
+
+def backfill_category_links(conn: sqlite3.Connection) -> dict[str, int]:
+    """Rebuild which category each product came from, for category runs made before categories were
+    recorded (16 Oct 2026). Only where it's exact: products are saved in the order they're read and
+    each category's count is in run_coverage, so if every item read was saved, the order lines up.
+    Runs where some items weren't saved (Woolworths items with no price) are skipped, never guessed."""
+    done = {"exact_runs": 0, "skipped_runs": 0, "links": 0}
+    runs = conn.execute("""SELECT id, chain FROM collection_runs WHERE status IN ('ok', 'partial')
+                           AND (kind = 'category' OR chain = 'chemistwarehouse') ORDER BY id""").fetchall()
+    for run in runs:
+        cov = conn.execute("SELECT scope_ref, items_seen FROM run_coverage WHERE run_id = ? ORDER BY id",
+                           (run["id"],)).fetchall()
+        groups: list[tuple[int, str]] = []
+        prev = None
+        for pid, ts in conn.execute("SELECT retailer_product_id, observed_at FROM price_observations WHERE run_id = ? "
+                                    "ORDER BY id", (run["id"],)):
+            if pid != prev:
+                groups.append((pid, ts))
+                prev = pid
+        if not cov or sum(c["items_seen"] for c in cov) != len(groups):
+            done["skipped_runs"] += 1
+            continue
+        i = 0
+        for c in cov:
+            ref = c["scope_ref"].removeprefix("query:")
+            for pid, ts in groups[i:i + c["items_seen"]]:
+                conn.execute(
+                    """INSERT INTO product_categories(retailer_product_id, category_ref, first_seen_at, last_seen_at)
+                       VALUES (?,?,?,?) ON CONFLICT(retailer_product_id, category_ref) DO UPDATE SET
+                       last_seen_at = MAX(last_seen_at, excluded.last_seen_at)""", (pid, ref, ts, ts))
+                done["links"] += 1
+            i += c["items_seen"]
+        done["exact_runs"] += 1
+    conn.commit()
+    return done

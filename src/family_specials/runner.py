@@ -48,7 +48,8 @@ def make_client(chain: str) -> PoliteClient:
     )
 
 
-def run_chain(conn: sqlite3.Connection, chain: str, kind: str, max_pages: int | None = None) -> RunResult:
+def run_chain(conn: sqlite3.Connection, chain: str, kind: str, max_pages: int | None = None,
+              only_categories: list[str] | None = None) -> RunResult:
     """kind: 'specials' or 'category' (the tracked categories in tracked_categories.yaml)."""
     cfg = config.chain_config(chain)
     if is_paused_for_good(conn, chain):
@@ -64,12 +65,15 @@ def run_chain(conn: sqlite3.Connection, chain: str, kind: str, max_pages: int | 
         if kind == "specials":
             raw_items = collector.fetch_specials()
         else:
-            raw_items = _category_items(collector, _with_category_details(conn, chain, config.tracked_categories(chain)))
+            cats = config.tracked_categories(chain)
+            if only_categories:
+                cats = [c for c in cats if str(_ref(c)) in only_categories]
+            raw_items = _category_items(collector, _with_category_details(conn, chain, cats))
         for raw in raw_items:
             item = collector.normalise(raw)
             if item is None:
                 continue
-            observations += db.save_item(conn, run_id, item, source)
+            observations += db.save_item(conn, run_id, item, source, raw.context.get("category_ref"))
             items += 1
             if items % 200 == 0:
                 conn.commit()
@@ -111,10 +115,17 @@ def _with_category_details(conn: sqlite3.Connection, chain: str, categories: lis
     return out
 
 
+def _ref(c: dict) -> str:
+    return str(c.get("id") or c.get("key") or c.get("slug") or c.get("query") or c.get("code") or c.get("category"))
+
+
 def _category_items(collector, categories):
     for cat in categories:
+        ref = _ref(cat)   # the same value as in config/watchlist.yaml (id, key, slug, search words, name)
         try:
-            yield from collector.fetch_category(cat)
+            for raw in collector.fetch_category(cat):
+                raw.context = {**raw.context, "category_ref": ref}
+                yield raw
         except NotFound as e:
             # A tracked category was renamed or removed: note it, carry on with the rest.
             log.warning("%s: tracked category not found (%s); update tracked_categories.yaml", collector.chain, e)

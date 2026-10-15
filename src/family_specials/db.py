@@ -16,7 +16,7 @@ from .models import NormalisedItem, Observation
 from .parsing import PARSER_VERSION, is_own_brand, normalise_gtin, parse_size
 from .timeutil import now_iso
 
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 
 
 def connect(path: Path | None = None) -> sqlite3.Connection:
@@ -66,6 +66,9 @@ def _migrate(conn: sqlite3.Connection, version: int) -> None:
     if version < 4:
         # v4: watchlist tables (users, watch_items, watch_matches, match_decisions), created by schema.sql.
         conn.execute("UPDATE schema_version SET version = 4")
+    if version < 5:
+        # v5: product_categories (created by schema.sql); old runs are backfilled where exact.
+        conn.execute("UPDATE schema_version SET version = 5")
     conn.commit()
 
 
@@ -134,7 +137,15 @@ def add_coverage(conn: sqlite3.Connection, run_id: int, cov) -> None:
 # --------------------------------------------------------------------------- items
 
 
-def save_item(conn: sqlite3.Connection, run_id: int, item: NormalisedItem, source: str) -> int:
+def link_category(conn: sqlite3.Connection, product_id: int, category_ref: str, ts: str) -> None:
+    conn.execute(
+        """INSERT INTO product_categories(retailer_product_id, category_ref, first_seen_at, last_seen_at)
+           VALUES (?,?,?,?) ON CONFLICT(retailer_product_id, category_ref) DO UPDATE SET last_seen_at = excluded.last_seen_at""",
+        (product_id, str(category_ref), ts, ts))
+
+
+def save_item(conn: sqlite3.Connection, run_id: int, item: NormalisedItem, source: str,
+              category_ref: str | None = None) -> int:
     """Upsert the product, its barcodes, raw snapshot and attributes; append observations.
     Returns the number of observations added."""
     ts = now_iso()
@@ -167,6 +178,8 @@ def save_item(conn: sqlite3.Connection, run_id: int, item: NormalisedItem, sourc
                 (product_id, gt.gtin14, gt.raw, int(gt.is_global), g.source, ts),
             )
 
+    if category_ref:
+        link_category(conn, product_id, category_ref, ts)
     _save_snapshot(conn, product_id, item.raw_product, ts)
     save_attributes(conn, product_id, p.chain, p.brand, p.size_text, p.display_name or p.name, ts)
 

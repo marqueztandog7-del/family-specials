@@ -159,7 +159,7 @@ def cmd_update(args) -> int:
             if not args.force and not is_due(conn, chain, kind):
                 print(f"{chain:17} {kind:8} not due")
                 continue
-            r = run_chain(conn, chain, kind, max_pages=args.max_pages)
+            r = run_chain(conn, chain, kind, max_pages=args.max_pages, only_categories=args.category)
             print(f"{chain:17} {kind:8} {r.status:8} requests={r.requests:<4} items={r.items:<5}"
                   + (f"\n    {r.error.splitlines()[0]}" if r.error else ""))
             if r.status in ("blocked", "error"):
@@ -269,6 +269,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--force", action="store_true", help="run even if not due this cycle")
     p.add_argument("--max-pages", type=int, help="testing: at most N pages per group/category")
     p.add_argument("--no-publish", dest="publish", action="store_false", help="don't append to history files")
+    p.add_argument("--category", action="append", help="category reads: only this category id (repeatable)")
     p.add_argument("--no-collect", dest="collect", action="store_false",
                    help="only load history and rebuild the page data (after pulling)")
     p.set_defaults(func=cmd_update)

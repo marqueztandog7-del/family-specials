@@ -97,3 +97,23 @@ def test_rejected_matches_never_come_back(tmp_path, monkeypatch):
         status = dict(conn.execute("SELECT p.retailer_product_id, m.status FROM watch_matches m "
                                    "JOIN retailer_products p ON p.id = m.retailer_product_id").fetchall())
         assert status == {"1": "auto", "2": "rejected"}
+
+
+def test_anchor_needs_the_distinctive_words_not_just_shared_ones():
+    products = [P(1, "woolworths", "Farmers Union Greek Style Yogurt Light 500g", "Farmers Union"),
+                P(2, "woolworths", "Farmers Union Greek Style High Protein Yoghurt 500g", "Farmers Union")]
+    best = find_by_name(products, YOGHURT.anchor["name"])
+    assert best[0].id == 2 and best[1] >= 0.85
+    only_light = find_by_name(products[:1], YOGHURT.anchor["name"])
+    assert only_light[1] < 0.85          # the Light one alone goes to review, not an automatic match
+
+
+def test_similar_rule_respects_the_items_categories():
+    ricotta = WatchItem("ricotta", "Ricotta", "regular", "similar", "kg",
+                        similar={"must": ["ricotta"], "brands": "any"}, categories={"woolworths": ["cheese-cat"]})
+    tub = P(1, "woolworths", "Perfect Italiano Ricotta Tub 500g")
+    chips = P(2, "woolworths", "Kettle Potato Chips Hot Honey & Ricotta 165g")
+    unknown = P(3, "aldi", "Ricotta Tub 375g")          # no category known for ALDI here: allowed
+    tub.categories, chips.categories = frozenset({"cheese-cat"}), frozenset({"chips-cat"})
+    got = {m.product.id for m in match_item(ricotta, [tub, chips, unknown])}
+    assert got == {1, 3}
