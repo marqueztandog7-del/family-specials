@@ -18,8 +18,13 @@ def cmd_collect(args) -> int:
     chains = args.chain or [c for c in config.enabled_chains() if c in online_chains()]
     kinds = ["specials", "category"] if args.kind == "all" else [args.kind]
     conn = db.connect()
+    from .runner import is_paused_for_good
+
     failures = 0
     for chain in chains:
+        if is_paused_for_good(conn, chain):
+            print(f"{chain:17} paused for good; not collecting")
+            continue
         blocked = False
         for kind in kinds:
             if blocked:
@@ -42,9 +47,15 @@ def cmd_categories(args) -> int:
     from .collectors import get_collector_class
     from .runner import make_client
 
+    from .runner import PausedForGood
+
     conn = db.connect()
     if args.refresh:
-        client = make_client(args.chain)
+        try:
+            client = make_client(args.chain)
+        except PausedForGood as e:
+            print(e)
+            return 1
         try:
             cats = get_collector_class(args.chain)(config.chain_config(args.chain), client).discover_categories()
         finally:

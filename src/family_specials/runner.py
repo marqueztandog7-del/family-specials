@@ -6,12 +6,12 @@ import logging
 import sqlite3
 import traceback
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from . import config, db
 from .collectors import get_collector_class
 from .http import Blocked, BudgetExceeded, NotFound, PoliteClient, RobotsDisallowed
-from .timeutil import most_recent_weekday, now_utc, parse_iso, weekly_cycle
+from .timeutil import iso, most_recent_weekday, now_utc, parse_iso, sydney_midnight, weekly_cycle
 
 log = logging.getLogger(__name__)
 
@@ -32,6 +32,9 @@ class RunResult:
 
 def make_client(chain: str) -> PoliteClient:
     cfg = config.chain_config(chain)
+    if cfg.get("paused_for_good"):
+        # The one place every web request starts from: a store paused for good is never contacted.
+        raise PausedForGood(f"{chain} is paused for good ({cfg['paused_for_good']}); nothing will contact it")
     pol = cfg.get("politeness", {})
     cookies = None
     if chain == "coles":
@@ -48,6 +51,8 @@ def make_client(chain: str) -> PoliteClient:
 def run_chain(conn: sqlite3.Connection, chain: str, kind: str, max_pages: int | None = None) -> RunResult:
     """kind: 'specials' or 'category' (the tracked categories in tracked_categories.yaml)."""
     cfg = config.chain_config(chain)
+    if is_paused_for_good(conn, chain):
+        raise PausedForGood(f"{chain} is paused for good; not collecting")
     run_id = db.start_run(conn, chain, kind)
     items = observations = 0
     status, error = "ok", None
@@ -131,15 +136,23 @@ def cycle_start(chain: str, at: datetime | None = None) -> datetime | None:
     return None
 
 
-def is_paused_for_good(conn: sqlite3.Connection, chain: str) -> bool:
-    """For stores on a trial (Coles): one blocked run since the trial started pauses them for good.
-    Only a person changing trial_since in config/stores.yaml can start a new trial."""
+class PausedForGood(Exception):
+    """This store is paused for good. Nothing may contact it."""
+
+
+def is_paused_for_good(conn: sqlite3.Connection | None, chain: str) -> bool:
+    """True if the store is paused for good: marked so in config/stores.yaml (paused_for_good), or a
+    trial store (pause_for_good_on_block) was blocked at any point since its trial started.
+    trial_since is a Sydney date; run times are UTC, so it's converted before comparing."""
     cfg = config.chain_config(chain)
-    if not cfg.get("pause_for_good_on_block"):
+    if cfg.get("paused_for_good"):
+        return True
+    if not cfg.get("pause_for_good_on_block") or conn is None:
         return False
+    since = iso(sydney_midnight(date.fromisoformat(str(cfg.get("trial_since", "1970-01-01")))))
     return conn.execute(
         "SELECT 1 FROM collection_runs WHERE chain = ? AND status = 'blocked' AND started_at >= ? LIMIT 1",
-        (chain, str(cfg.get("trial_since", "1970-01-01")))).fetchone() is not None
+        (chain, since)).fetchone() is not None
 
 
 def is_due(conn: sqlite3.Connection, chain: str, kind: str, at: datetime | None = None) -> bool:

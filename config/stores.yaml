@@ -31,15 +31,16 @@ chains:
       # Left out to keep volume down; tracked categories give us regular prices instead.
 
   coles:
-    # One slow, small weekly read from the Mac (agreed 16 Oct 2026): half-price pages plus our
-    # tracked categories, 25-40 seconds apart, at most 40 requests. At the FIRST challenge Coles is
-    # paused for good: no automatic retries (pause_for_good_on_block). To try again later, set a new
-    # trial_since date here by hand.
-    enabled: true
-    run_on: mac   # GitHub test 12 Oct: first page loaded, then a challenge page
+    # PAUSED FOR GOOD (16 Oct 2026): the one slow trial was challenged on half-price page 6 at
+    # 9:49am Sydney. Nothing contacts Coles: not the Mac schedule, GitHub, manual commands or category
+    # discovery (make_client refuses). No retries and no workarounds, including via a browser.
+    # Only you can lift this, by deleting paused_for_good (and setting a new trial_since).
+    paused_for_good: "challenged during its trial on 16 Oct 2026"
+    enabled: false
+    run_on: mac
     pause_for_good_on_block: true
     trial_since: "2026-10-16"
-    specials_mode: half_price
+    specials_mode: half_price   # if ever resumed: half-price list + watchlist categories only
     store:
       ref: "0883"
       name: Coles Kellyville
