@@ -165,6 +165,7 @@ def cmd_update(args) -> int:
             if r.status in ("blocked", "error"):
                 problems.append(f"{chain} {kind}: {r.status}")
     # Re-run matching after every data update (it also decides which products get published).
+    db.reparse_attributes(conn)
     items = watchlist.load()
     watchlist.sync_to_db(conn, items)
     m = run_matching(conn, items)

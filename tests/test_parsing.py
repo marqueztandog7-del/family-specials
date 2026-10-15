@@ -20,6 +20,9 @@ from family_specials.parsing import (
         ("0.5 kg", None, 500, "g", None, True),
         ("380g", "Crinkle Cut Chips Lunchbox Multipack 20 Pack", 380, "g", None, True),
         ("36 pack", None, 36, "each", 36, True),
+        (None, "Coca-Cola Classic Soft Drink Cans 375mL x 10 pack", 3750, "ml", 10, True),  # measure first
+        (None, "S.Pellegrino Sparkling Water 330ml x 8pk", 2640, "ml", 8, True),
+        (None, "Viva White Paper Towel 3 x 60 pack", 180, "each", 3, True),                  # 3 rolls of 60
         ("100 tablets", None, 100, "each", 100, True),
         (None, "Premier Protein Chocolate Protein Shakes 24 x 325ml", 7800, "ml", 24, True),  # Costco: size in name
         (None, "Quilton Toilet Tissue 36 Pack", 36, "each", 36, True),

@@ -37,6 +37,9 @@ def cmd_match(args) -> int:
     from .match_report import write_report
 
     conn = db.connect()
+    reparsed = db.reparse_attributes(conn)
+    if reparsed:
+        print(f"Re-read sizes for {reparsed} products (parser updated)")
     items = watchlist.load()
     watchlist.sync_to_db(conn, items)
     counts = run_matching(conn, items)

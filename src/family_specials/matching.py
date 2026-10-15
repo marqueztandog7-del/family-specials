@@ -26,7 +26,7 @@ from .parsing import parse_size
 from .timeutil import iso, now_iso, now_utc
 from .watchlist import WatchItem
 
-MATCHER_VERSION = 2
+MATCHER_VERSION = 4
 AUTO = 0.85      # at or above: matched automatically
 REVIEW = 0.60    # between REVIEW and AUTO: goes to the review list
 RECENT_WEEKS = 8
@@ -36,7 +36,7 @@ ABBREVIATIONS = {
     "ww": "woolworths", "disinf": "disinfectant", "dbl": "double", "lgth": "length", "lmn": "lemon",
     "gngr": "ginger", "tb": "tea bags", "ea": "each", "ec": "east coast", "pk": "pack", "pkt": "pack",
     "yogurt": "yoghurt", "s pellegrino": "san pellegrino", "spellegrino": "san pellegrino",
-    "coca cola": "coca-cola", "cocacola": "coca-cola", "spud lite": "spudlite", "choi": "choy", "bok": "pak",
+    "coca cola": "coca-cola", "cocacola": "coca-cola", "sanpellegrino": "san pellegrino", "spud lite": "spudlite", "choi": "choy", "bok": "pak",
     "buk": "pak", "strapz": "straps", "borgs": "borg's", "eastcoast": "east coast", "x-large": "extra large",
     "xl": "extra large",
 }
@@ -106,6 +106,7 @@ class Product:
     comparable: bool
     sold_by_kg: bool
     categories: frozenset = frozenset()   # store category refs this product was seen in
+    variable_weight: bool = False         # e.g. "380g - 800g": weighed, priced per kg in store
 
 
 def load_products(conn: sqlite3.Connection, weeks: int = RECENT_WEEKS) -> list[Product]:
@@ -134,6 +135,7 @@ def load_products(conn: sqlite3.Connection, weeks: int = RECENT_WEEKS) -> list[P
             gtins=gtins.get(r["id"], set()), total=r["total_quantity"], base=r["base_unit"],
             each=r["size_quantity"], pack=r["pack_count"], comparable=bool(r["comparable"]),
             sold_by_kg=r["id"] in kg, categories=frozenset(cats.get(r["id"], ())),
+            variable_weight=bool(WEIGHT_RANGE.search(f"{name} {r['size_text'] or ''}")),
         ))
     return out
 
@@ -149,6 +151,7 @@ class Match:
     confidence: float
 
 
+WEIGHT_RANGE = re.compile(r"\d+(\.\d+)?\s*(g|kg)\s*-\s*\d+(\.\d+)?\s*(g|kg)", re.I)
 STOP_WORDS = {"and", "the", "with", "of", "in", "a", "pack", "each", "per", "x", "approx", "punnet", "tub", "jar",
               "bag", "bottle", "can", "cans", "multipack"}
 SIZE_TOKEN = re.compile(r"^\d+(\.\d+)?(g|kg|ml|l|lt|ltr|pk|pack|ea|x)?$")
@@ -188,17 +191,21 @@ def find_by_name(products: list[Product], text: str, chain: str | None = None, s
     given, only products seen in those store categories are considered (when any are known)."""
     target = normalise(text)
     target_size = parse_size(text)
-    pool = [p for p in products if (not chain or p.chain == chain) and (sold_by != "kg" or p.sold_by_kg)]
-    if categories:
-        in_cat = [p for p in pool if p.categories & categories]
-        if in_cat:
-            pool = in_cat
+    pool = [p for p in products if (not chain or p.chain == chain)
+            and (sold_by != "kg" or p.sold_by_kg or p.variable_weight)]
+    # Prefer products seen in the item's own categories; one listed elsewhere (Woolworths files the
+    # Zanetti Parmigiano under Soft Cheese) still wins if its name fits clearly better (small penalty).
+    in_cat = {p.id for p in pool if categories and p.categories & categories}
     best: tuple[Product, float] | None = None
     for p in pool:
         score = name_score(target, p.norm)
         if target_size.comparable and p.comparable and target_size.base_unit == p.base and p.total:
             if abs(target_size.total_quantity - p.total) > 0.02 * p.total:
                 score -= 0.3          # different pack size: a different product
+            elif target.split()[:1] == p.norm.split()[:1] and content_words(p.norm) <= content_words(target):
+                # Same brand, exact same size, and the product's name only drops words (e.g. "Guzzi's
+                # Linguine 375g" for "Guzzi's Pasta Linguine 375g"), never adds its own (like "Light").
+                score += 0.08
         elif target_size.comparable and p.comparable and target_size.base_unit != p.base:
             score -= 0.2
         if generic:
@@ -207,6 +214,9 @@ def find_by_name(products: list[Product], text: str, chain: str | None = None, s
                 continue
             if p.comparable and p.base in ("g", "ml"):
                 score -= 0.15        # "Leek (each)" shouldn't match a 500 g bag of leeks
+        if in_cat and p.id not in in_cat:
+            score -= 0.05
+        score = min(score, 1.0)
         if best is None or score > best[1]:
             best = (p, score)
     return best
@@ -254,7 +264,9 @@ def similar_matches(item: WatchItem, products: list[Product]) -> list[Match]:
             if any(w in p.category for w in ("frozen", "freezer", "canned", "pantry", "tinned")):
                 continue
             if not any(w in p.category for w in ("fruit", "veg", "produce", "salad")):
-                conf -= 0.15
+                if p.category:
+                    continue   # the store files it outside produce (e.g. baby wipes "cucumber & aloe")
+                conf -= 0.15   # no category known: send to review
         if rule.get("frozen"):
             if not ("frozen" in p.category or "freezer" in p.category or has_term(p.norm, "frozen")):
                 conf -= 0.2

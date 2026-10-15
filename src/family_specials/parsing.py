@@ -10,7 +10,7 @@ import re
 from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
 
-PARSER_VERSION = 1
+PARSER_VERSION = 2
 
 # --------------------------------------------------------------------------- barcodes
 
@@ -128,6 +128,8 @@ COUNT_NOUNS = {
 _NUM = r"(\d{1,3}(?:,\d{3})+|\d+(?:[.,]\d+)?)"
 _UNIT = r"([a-zA-Z]+\.?)"
 MULTI_RE = re.compile(rf"(\d+)\s*[xX×]\s*{_NUM}\s*{_UNIT}\b")
+# "375mL x 10 pack", "330ml x 8pk": the measure first, then how many.
+REV_MULTI_RE = re.compile(rf"{_NUM}\s*{_UNIT}\s*[xX×]\s*(\d+)\s*(?:pack|pk|cans?|bottles?)?\b", re.I)
 SINGLE_RE = re.compile(rf"(?<![\w.]){_NUM}\s*{_UNIT}\b")
 WEIGHED_RE = re.compile(r"\b(per\s*kg|/\s*kg|price per kg|approx\.?)\b", re.I)
 
@@ -174,7 +176,17 @@ def parse_size(size_text: str | None, name: str | None = None) -> SizeInfo:
         if m:
             count, qty, unit = int(m.group(1)), _num(m.group(2)), m.group(3)
             kind = _unit_kind(unit)
-            if kind and kind[0] != "each" and qty > 0:
+            if kind and qty > 0:
+                base, factor, noun = kind
+                if base != "each":
+                    return SizeInfo(qty * factor, base, count, qty * factor * count, base, None, True)
+                # "3 x 60 pack" (paper towel): 3 rolls of 60 sheets = 180 items, pack of 3.
+                return SizeInfo(qty, "each", count, qty * count, "each", noun if noun != "each" else None, True)
+        m = REV_MULTI_RE.search(text)
+        if m:
+            qty, unit, count = _num(m.group(1)), m.group(2), int(m.group(3))
+            kind = _unit_kind(unit)
+            if kind and kind[0] != "each" and qty > 0 and count > 1:
                 base, factor, _ = kind
                 return SizeInfo(qty * factor, base, count, qty * factor * count, base, None, True)
 

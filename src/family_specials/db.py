@@ -137,6 +137,19 @@ def add_coverage(conn: sqlite3.Connection, run_id: int, cov) -> None:
 # --------------------------------------------------------------------------- items
 
 
+def reparse_attributes(conn: sqlite3.Connection) -> int:
+    """Re-read sizes and brands for products parsed by an older parser version (no store requests)."""
+    rows = conn.execute(
+        """SELECT p.id, p.chain, p.brand, p.size_text, COALESCE(p.display_name, p.name) AS name
+           FROM retailer_products p LEFT JOIN product_attributes a ON a.retailer_product_id = p.id
+           WHERE a.parser_version IS NULL OR a.parser_version < ?""", (PARSER_VERSION,)).fetchall()
+    ts = now_iso()
+    for r in rows:
+        save_attributes(conn, r["id"], r["chain"], r["brand"], r["size_text"], r["name"], ts)
+    conn.commit()
+    return len(rows)
+
+
 def link_category(conn: sqlite3.Connection, product_id: int, category_ref: str, ts: str) -> None:
     conn.execute(
         """INSERT INTO product_categories(retailer_product_id, category_ref, first_seen_at, last_seen_at)

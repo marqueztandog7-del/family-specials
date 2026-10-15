@@ -92,7 +92,7 @@ def receipt_test(conn: sqlite3.Connection, items: list[WatchItem],
             seen.add(key)
             expected = find_by_name(products, r["product"])
             got = find_by_name(products, r["receipt_name"])
-            if expected is None or expected[1] < 0.85:
+            if expected is None or expected[1] < 0.70:   # short canonical names score lower; size must still agree
                 product_ok, got_name = None, got[0].name if got else None
             else:
                 product_ok = got is not None and got[0].id == expected[0].id
