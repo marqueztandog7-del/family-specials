@@ -1,0 +1,2 @@
+chain,kind,run_where,started_at,finished_at,status,requests_made,items_seen,observations_added,error
+coles,specials,mac,2026-10-15T22:46:03Z,2026-10-15T22:49:10Z,blocked,7,288,288,GET https://www.coles.com.au/on-special?filter_Special=halfprice&page=6: page is missing '__NEXT_DATA__' (possible bot challenge)
