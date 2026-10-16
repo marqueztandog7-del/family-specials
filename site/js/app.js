@@ -8,7 +8,7 @@ import * as account from "./account.js";
 
 const $ = (s, el = document) => el.querySelector(s);
 const view = $("#view");
-const APP_VERSION = "v4";
+const APP_VERSION = "v5";
 
 const TABS = { "this-week": "This Week", watchlist: "Watchlist", home: "Home", list: "List", savings: "Savings" };
 // Screens on top of a tab. Alerts and Settings hide the tab bar (as in the designs); item detail keeps it.
@@ -19,6 +19,7 @@ const SUB_SCREENS = {
   welcome: { tab: null, up: "#/welcome", title: "Family Specials", tabs: false, bare: true },
   join: { tab: "home", up: "#/home", title: "Join a family", tabs: false },
   family: { tab: "home", up: "#/home", title: "Family", tabs: false },
+  profile: { tab: null, up: "#/home", title: "Profile", tabs: false },
 };
 const TIER_ORDER = { core: 0, regular: 1, occasional: 2 };
 const TIER_LABEL = { core: "Core", regular: "Regular", occasional: "Occasional" };
@@ -40,7 +41,7 @@ const state = {
   watch: null, status: null, loadedAt: 0, offerToItem: new Map(), offersById: new Map(),
   query: "", searchSeq: 0, productsLoaded: false, filter: "all", dealsOnly: false,
   refs: new Map(), expanded: new Set(), scroll: new Map(), stack: [], pushOn: null,
-  accountsOn: false, user: null, family: null, authMode: "create",
+  accountsOn: false, user: null, family: null, profile: null, authMode: "create",
 };
 
 // ------------------------------------------------------------------ formatting
@@ -398,7 +399,6 @@ function renderHome() {
     <div class="greet">
       <div><span class="caps">${dayPart()} pantry run</span><h2 class="headline-lg" style="margin-top:2px">Hi ${esc(state.family?.me?.nickname || "there")} 🥖</h2>
         <p class="body-sm t3">${upd ? `Prices updated ${esc(dateTime(upd))}` : "Prices not updated yet"}</p></div>
-      <a class="round-btn" href="#/alerts" aria-label="${unread ? `Alerts, ${unread} unread` : "Alerts"}">${icon("notifications")}${unread ? `<b class="badge">${unread > 99 ? "99+" : unread}</b>` : ""}</a>
     </div>
     ${radar}
     <div class="section-head"><div class="title"><h2 class="title-md">New on special</h2><span class="pill terra caps">This week</span></div><a href="#/this-week">See all →</a></div>
@@ -1160,8 +1160,6 @@ function renderSettings() {
     </section>
     <div class="section-head"><h2 class="headline-sm">Coming later</h2><span class="caps t3">Roadmap</span></div>
     <div class="stack-sm roadmap" style="margin-top:10px">
-      <div class="setting-card"><span class="setting-icon">${icon("group")}</span><div class="grow"><p class="title-md">Family members and shared list</p>
-        <p class="body-sm t2">Everyone's list and savings in one place</p></div><span class="pill muted caps">Soon</span></div>
       <div class="setting-card"><span class="setting-icon">${icon("receipt_long")}</span><div class="grow"><p class="title-md">Receipts and purchase history</p>
         <p class="body-sm t2">Track what we actually paid</p></div><span class="pill muted caps">Soon</span></div>
     </div>
@@ -1243,17 +1241,11 @@ async function refreshFamily() {
   return state.family;
 }
 
-/** The gear becomes the person's profile (their initial) once they're signed in. */
+/** The account icon in the top-right corner: the person's initials (or photo, later). */
 function updateHeader() {
-  const gear = $("#gear");
-  if (state.user) {
-    const who = state.family?.me?.nickname || state.user.email || "?";
-    gear.innerHTML = `<span class="avatar sm">${esc(initials(who))}</span>`;
-    gear.setAttribute("aria-label", "Settings and account");
-  } else {
-    gear.innerHTML = icon("settings");
-    gear.setAttribute("aria-label", "Settings");
-  }
+  $("#account-face").innerHTML = faceHTML();
+  const who = state.profile?.name || state.family?.me?.nickname;
+  $("#account-btn").setAttribute("aria-label", who ? `Account menu for ${who}` : "Account menu");
 }
 
 function renderWelcome() {
@@ -1300,7 +1292,7 @@ async function submitAuth(form) {
   } catch (e) {
     return fail(e.message);
   }
-  await refreshFamily();
+  await Promise.all([refreshFamily(), refreshProfile()]);
   updateHeader();
   toast(state.authMode === "signin" ? "Signed in" : "Account created", "check");
   const code = account.pendingCode();
@@ -1472,21 +1464,12 @@ function pantryHTML() {
   </section>`;
 }
 
-/** Settings: the account and the family, at the top. */
+/** Settings: the family, at the top (the account itself is in Profile, under the account icon). */
 function accountSettingsHTML() {
   if (!state.accountsOn || !state.user) return "";
   const f = state.family;
-  const who = f?.me?.nickname || state.user.email;
   return `
-    <div class="section-head" style="margin-top:8px"><h2 class="headline-sm">Account</h2><span class="caps t3">Profile</span></div>
-    <section class="card white" style="margin-top:10px">
-      <div class="row" style="justify-content:flex-start;gap:12px"><span class="avatar">${esc(initials(who))}</span>
-        <div class="grow"><p class="title-md truncate">${esc(f?.me?.nickname || "Signed in")}</p><p class="body-sm t2 truncate">${esc(state.user.email)}</p></div></div>
-      <div class="actions" style="margin-top:14px">
-        <button type="button" class="btn secondary small" data-action="sign-out">${icon("logout")}Sign out</button>
-        <button type="button" class="btn danger small" data-action="delete-account">${icon("delete_sweep")}Delete account</button></div>
-    </section>
-    <div class="section-head"><h2 class="headline-sm">Family</h2><span class="caps t3">Shared Pantry</span></div>
+    <div class="section-head" style="margin-top:8px"><h2 class="headline-sm">Family</h2><span class="caps t3">Shared Pantry</span></div>
     <section class="card white" style="margin-top:10px">
       ${f ? `<div class="row"><div><p class="title-md">${esc(f.name)}</p><p class="body-sm t2">You're ${f.is_owner ? "the owner" : "a member"} · ${plural(f.members.length, "member")}</p></div>
           ${f.is_owner ? `<a class="btn secondary small" href="#/family/invite">${icon("group_add")}Invite</a>` : ""}</div>`
@@ -1496,10 +1479,117 @@ function accountSettingsHTML() {
     </section>`;
 }
 
+async function refreshProfile() {
+  if (!state.user) { state.profile = null; return null; }
+  try {
+    state.profile = await account.myProfile();
+  } catch {
+    state.profile = account.cachedProfile();          // offline: what we knew last time
+  }
+  return state.profile;
+}
+
+/** Who to show on the account icon: their photo (later), else initials from their name, nickname or email. */
+function faceHTML() {
+  if (!state.user) return icon("person");
+  if (state.profile?.photo_url) return `<img src="${esc(state.profile.photo_url)}" alt="">`;
+  const who = state.profile?.name || state.family?.me?.nickname || state.user.email || "?";
+  return esc(state.profile?.name || state.family?.me?.nickname ? initials(who) : who[0].toUpperCase());
+}
+
+/** Profile (from the account menu): name, nickname in the family, email, family and role, sign out. */
+function renderProfile() {
+  if (!state.user) { location.replace("#/welcome"); return; }
+  const f = state.family;
+  const p = state.profile || {};
+  view.innerHTML = `
+    <section class="card white profile-head" style="margin-top:8px">
+      <span class="avatar lg">${faceHTML()}</span>
+      <div class="grow"><p class="headline-sm truncate">${esc(p.name || f?.me?.nickname || "Your profile")}</p>
+        <p class="body-sm t2 truncate">${esc(state.user.email)}</p></div>
+    </section>
+    <div class="section-head"><h2 class="headline-sm">About you</h2><span class="caps t3">Only you see your name</span></div>
+    <section class="card white" style="margin-top:10px">
+      <form id="profile-form" novalidate>
+        <label class="field" style="margin-top:0">Your name<input id="profile-name" type="text" maxlength="60" autocomplete="name"
+          value="${esc(p.name || "")}" placeholder="Optional"></label>
+        ${f ? `<label class="field">Nickname in the family<input id="profile-nickname" type="text" maxlength="30" autocomplete="nickname"
+          value="${esc(f.me.nickname)}" required></label>
+          <p class="body-sm t3" style="margin-top:6px">Your family sees your nickname, not your name.</p>` : ""}
+        <p class="form-error" id="profile-error" role="alert" hidden></p>
+        <button type="submit" class="btn block" style="margin-top:16px">${icon("check")}Save</button>
+      </form>
+    </section>
+    <div class="section-head"><h2 class="headline-sm">Account</h2></div>
+    <section class="card white" style="margin-top:10px">
+      <div class="readonly"><span class="t2">Email</span><span class="truncate" style="max-width:65%">${esc(state.user.email)}</span></div>
+      <div class="readonly"><span class="t2">Family</span><span class="truncate" style="max-width:65%">${f ? esc(f.name) : "Not in a family yet"}</span></div>
+      <div class="readonly"><span class="t2">Role</span>${f ? `<span class="pill ${f.is_owner ? "terra" : "sage"} caps">${f.is_owner ? "Owner" : "Member"}</span>` : `<span class="t3">—</span>`}</div>
+      ${f ? "" : `<div class="actions" style="margin-top:12px"><a class="btn small" href="#/family/new">${icon("group_add")}Start a family</a>
+        <a class="btn secondary small" href="#/join">${icon("person_add")}Join with a code</a></div>`}
+    </section>
+    <button type="button" class="btn secondary block" data-action="sign-out" style="margin-top:16px">${icon("logout")}Sign out</button>
+    <button type="button" class="btn danger block" data-action="delete-account" style="margin-top:10px">${icon("delete_sweep")}Delete account</button>
+    <p class="note">We keep your email, a scrambled password and, if you add it, your name. Deleting your account removes them.</p>`;
+}
+
+async function submitProfile(form) {
+  const name = $("#profile-name").value.trim();
+  const nickEl = $("#profile-nickname");
+  const nickname = nickEl ? nickEl.value.trim() : null;
+  const err = $("#profile-error");
+  const btn = form.querySelector('button[type="submit"]');
+  const fail = (msg) => { err.textContent = msg; err.hidden = false; btn.disabled = false; };
+  if (nickEl && !nickname) return fail("Add your nickname.");
+  btn.disabled = true;
+  try {
+    state.profile = await account.updateProfile(name, nickname);
+    state.family = account.cachedFamily() || state.family;
+  } catch (e) {
+    return fail(e.message);
+  }
+  updateHeader();
+  toast("Saved", "check");
+  renderProfile();
+}
+
+// The account menu under the account icon: Profile, then Settings. Closes on an outside tap, Escape or a choice.
+function setMenu(open, focusFirst = true) {
+  const btn = $("#account-btn");
+  const menu = $("#account-menu");
+  menu.hidden = !open;
+  btn.setAttribute("aria-expanded", String(open));
+  if (open && focusFirst) menu.querySelector('[role="menuitem"]').focus();
+}
+
+$("#account-btn").addEventListener("click", () => setMenu($("#account-menu").hidden));
+$("#account-btn").addEventListener("keydown", (e) => {
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); setMenu(true); }
+});
+$("#account-menu").addEventListener("keydown", (e) => {
+  const items = [...$("#account-menu").querySelectorAll('[role="menuitem"]')];
+  const i = items.indexOf(document.activeElement);
+  const go = (n) => { e.preventDefault(); items[(n + items.length) % items.length].focus(); };
+  if (e.key === "ArrowDown") go(i + 1);
+  else if (e.key === "ArrowUp") go(i - 1);
+  else if (e.key === "Home") go(0);
+  else if (e.key === "End") go(items.length - 1);
+  else if (e.key === " ") { e.preventDefault(); document.activeElement.click(); }
+  else if (e.key === "Escape") { e.preventDefault(); setMenu(false); $("#account-btn").focus(); }
+  else if (e.key === "Tab") setMenu(false);
+});
+$("#account-menu").addEventListener("click", (e) => {
+  if (e.target.closest('[role="menuitem"]')) setMenu(false);
+});
+document.addEventListener("pointerdown", (e) => {
+  if (!$("#account-menu").hidden && !e.target.closest("#account-wrap")) setMenu(false);
+});
+
 async function signOutNow() {
   await account.signOut().catch(() => {});
   state.user = null;
   state.family = null;
+  state.profile = null;
   account.forgetFamily();
   updateHeader();
   toast("Signed out");
@@ -1519,6 +1609,7 @@ async function deleteAccountNow() {
   }
   state.user = null;
   state.family = null;
+  state.profile = null;
   account.forgetFamily();
   updateHeader();
   toast("Account deleted");
@@ -1646,6 +1737,7 @@ view.addEventListener("change", (e) => {
 view.addEventListener("submit", (e) => {
   if (e.target.id === "auth-form") { e.preventDefault(); submitAuth(e.target); return; }
   if (e.target.id === "family-form") { e.preventDefault(); submitFamily(e.target); return; }
+  if (e.target.id === "profile-form") { e.preventDefault(); submitProfile(e.target); return; }
   if (e.target.id !== "quick-add") return;
   e.preventDefault();
   const name = $("#own-item").value.trim();
@@ -1677,7 +1769,7 @@ function route() {
 const ROUTES = {
   home: renderHome, "this-week": renderThisWeek, watchlist: renderWatchlist, watch: renderDetail,
   list: renderList, savings: renderSavings, alerts: renderAlerts, settings: renderSettings,
-  welcome: renderWelcome, join: renderJoin, family: renderFamily,
+  welcome: renderWelcome, join: renderJoin, family: renderFamily, profile: renderProfile,
 };
 const NEEDS_DATA = new Set(["home", "this-week", "watchlist", "watch", "alerts", "settings"]);
 const LIKES_DATA = new Set(["list", "savings"]);   // use today's prices if they load, but work without them (offline)
@@ -1708,8 +1800,11 @@ async function render() {
   $("#logo").hidden = !!stacked;
   $("#topbar").classList.toggle("sub", !!stacked);
   document.body.classList.toggle("no-tabs", !!(sub && !sub.tabs));
-  $("#bell").hidden = true;                            // the bell lives in Home's greeting row (docs/design/home)
-  $("#gear").hidden = r.name === "settings" || !!sub?.bare;   // the gear (or profile) is on every other screen
+  // Top-right on every tab (and an item's page): the bell, then the account icon in the corner.
+  const onTab = !!TABS[r.name] || r.name === "watch";
+  $("#bell").hidden = !onTab;
+  $("#account-wrap").hidden = !(onTab || r.name === "alerts");
+  setMenu(false, false);
   setTitle(TABS[r.name] || sub?.title || "Family Specials");
   state.refs.clear();
   if (NEEDS_DATA.has(r.name) && !state.watch) {
@@ -1775,16 +1870,18 @@ async function start() {
   if (state.accountsOn) {
     state.user = await account.currentUser();
     state.family = account.cachedFamily();
+    state.profile = account.cachedProfile();
     if (state.user) {
-      refreshFamily().then(() => {
+      Promise.all([refreshFamily(), refreshProfile()]).then(() => {
         updateHeader();
-        if (["home", "settings", "family", "join"].includes(route().name)) render();
+        if (["home", "settings", "family", "join", "profile"].includes(route().name)) render();
       });
     }
     account.onChange((u) => {
       if ((u?.id || null) === (state.user?.id || null)) return;
       state.user = u;
       state.family = null;
+      state.profile = null;
       updateHeader();
       if (!u) location.replace("#/welcome");
     });

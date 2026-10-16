@@ -17,9 +17,14 @@ the Phase 1 report and the decisions log are kept as local notes (not published)
   - Android: open it in Chrome, tap the menu, then "Install app" (or "Add to Home screen").
 - **The screens.** Five tabs along the bottom: **This Week · Watchlist · Home · List · Savings**. The app
   opens on **Home**, in the middle (bolder label, larger filled icon).
+  - **Top-right on every tab:** the **Alerts bell** (with the unread count), then the **account icon** in the
+    corner (your initials; a photo later). Tapping the account icon opens a small menu: **Profile** (your name,
+    nickname in the family, email, family and role, sign out, delete account) and **Settings**. The menu closes
+    on an outside tap, Escape or a choice, and works with screen readers and the keyboard. Your name is optional and
+    only you see it; the family sees your nickname.
   - **Home** (built to `docs/design/home`): the weekly savings radar (potential savings, and how much of it is on
-    your list), new on special this week, recently added to your list, recommended to add, and Shared Pantry (a
-    placeholder until family accounts). The **bell** in Home's greeting row opens **Alerts**, with a count of unread ones.
+    your list), new on special this week, recently added to your list, recommended to add, and Shared Pantry (your
+    family's members, or start or join a family).
   - **This Week:** every watched item on special at the stores you compare, core items first, with its
     signals and "Add to list".
   - **Watchlist:** every watched item. Tap one for its price at each store, a price history chart and its
@@ -31,9 +36,8 @@ the Phase 1 report and the decisions log are kept as local notes (not published)
     quantity). Shows all-time, this week, this month, last shop, average per shop, monthly bars and top items.
     An estimate, saved on this phone until accounts arrive.
   - **Alerts and Settings** open over the tabs (no tab bar), as in the designs. Item detail keeps the tab bar.
-  - **Settings** (the gear, top-right of every screen): notifications, which stores to compare and when
-    each last updated, how our prices work, and clearing this phone's list and savings. It grows into
-    Account and Settings when family accounts arrive.
+  - **Settings** (from the account menu): your family, prices, notifications, which stores to compare and when
+    each last updated, how our prices work, and clearing this phone's list and savings.
 - **Every number comes from real data, or the app says there isn't enough yet.** Savings use each store's
   own was price (or multibuy). "New this week" needs a read of the product the week before. "Usually $X"
   needs that normal price in 2 different weeks. "Lowest in N weeks" needs 4 weeks of history.

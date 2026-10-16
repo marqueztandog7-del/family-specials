@@ -56,6 +56,7 @@ const FRIENDLY = [
   [/already-in-family/, "You're already in a family."],
   [/family-name-length/, "Give the family a name (up to 60 characters)."],
   [/nickname-length/, "Add a nickname (up to 30 characters)."],
+  [/name-length/, "Names can be up to 60 characters."],
   [/not-signed-in|JWT expired|invalid jwt/i, "Please sign in again."],
   [/failed to fetch|networkerror|load failed|network request failed/i, "No connection. Check your signal and try again."],
 ];
@@ -100,6 +101,7 @@ export async function signOut() {
   const sb = await client();
   await sb.auth.signOut({ scope: "local" });
   remember(null);
+  rememberProfile(null);
 }
 
 /** Call `fn(user or null)` whenever someone signs in or out on this phone. */
@@ -124,6 +126,8 @@ export async function deleteAccount() {
   await rpc("delete_my_account");
   const sb = await client();
   await sb.auth.signOut({ scope: "local" });
+  remember(null);
+  rememberProfile(null);
 }
 
 // ------------------------------------------------------------------ families
@@ -154,6 +158,36 @@ export function forgetFamily() {
 
 export async function createFamily(name, nickname) {
   return remember(await rpc("create_family", { p_name: name.trim(), p_nickname: nickname.trim() }));
+}
+
+// ------------------------------------------------------------------ profile (seen only by the person themselves)
+
+const PROFILE_CACHE = "fs.profile.v1";
+
+function rememberProfile(profile) {
+  try {
+    if (profile) localStorage.setItem(PROFILE_CACHE, JSON.stringify(profile));
+    else localStorage.removeItem(PROFILE_CACHE);
+  } catch { /* not saved: fetched again next time */ }
+  return profile;
+}
+
+/** { name } (name may be null). */
+export async function myProfile() {
+  return rememberProfile(await rpc("my_profile"));
+}
+
+export function cachedProfile() {
+  try { return JSON.parse(localStorage.getItem(PROFILE_CACHE) || "null"); } catch { return null; }
+}
+
+/** Save the name (empty clears it) and, when given, the nickname in the family. */
+export async function updateProfile(name, nickname) {
+  const args = { p_name: name.trim() };
+  if (nickname != null) args.p_nickname = nickname.trim();
+  const profile = rememberProfile(await rpc("update_my_profile", args));
+  if (nickname != null && cachedFamily()) await myFamily().catch(() => {});
+  return profile;
 }
 
 /** The invite link: our app's sign-in page with the code after the # (so it's never sent to a server). */
