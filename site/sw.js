@@ -1,9 +1,9 @@
 // Offline support: keeps the app shell, and the last downloaded prices, so the app opens without a signal.
 // Prices are always fetched fresh first (network first); the saved copy is only a fallback.
 // Also shows phone notifications sent from GitHub (Web Push).
-const VERSION = "v5";
+const VERSION = "v6";
 const FONTS = "fonts-v1";   // Google Fonts (text, prices, icons): kept after the first visit
-const SHELL = ["./", "index.html", "styles.css", "js/app.js", "js/data.js", "js/push.js", "js/account.js", "js/vendor/supabase.js", "manifest.webmanifest",
+const SHELL = ["./", "index.html", "styles.css", "js/app.js", "js/data.js", "js/push.js", "js/account.js", "js/sync.js", "js/vendor/supabase.js", "manifest.webmanifest",
   "push.json", "data/watchlist.json", "data/status.json",
   "icons/icon-192.png", "icons/apple-touch-icon.png", "icons/favicon.svg"];
 

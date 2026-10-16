@@ -114,74 +114,346 @@ export function setSettings(patch) {
   return next;
 }
 
-/** The shopping list (saved on this phone; designed to move to a family account later). */
+// ------------------------------------------------------------------ the shopping list, savings and watchlist
+//
+// Two modes, same functions for the screens:
+//   - On your own: kept on this phone, as before.
+//   - In a family: this phone keeps a copy of the family's list, savings and watchlist changes. sync.js sends
+//     each change and brings in everyone else's, live. Changes made offline wait in an outbox. Every change carries
+//     a time per field, and the latest change wins field by field (the same rule the server applies), so changes
+//     from several phones merge and nothing is lost. Removals are kept as "removed" for the same reason.
+
+let family = null;                       // { id, userId } while in a family
+const listeners = new Set();
+let queueHook = null;                    // sync.js: told when there's something to send
+
+export function onDataChange(fn) {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
+
+function changed(what) {
+  for (const fn of listeners) fn(what);
+}
+
+export function setQueueHook(fn) {
+  queueHook = fn;
+}
+
+export function setFamilyMode(f) {
+  const next = f ? { id: f.id, userId: f.userId } : null;
+  if ((next?.id || null) === (family?.id || null) && (next?.userId || null) === (family?.userId || null)) return;
+  family = next;
+  changed("mode");
+}
+
+export function familyMode() {
+  return family;
+}
+
+const nowIso = () => new Date().toISOString();
+const ms = (s) => (s ? Date.parse(s) : 0);
+const famKey = (what) => `fs.fam.${family.id}.${what}`;
+const TABLE_KEY = { list: "item_key", savings: "entry_id", watch: "watch_key" };
+// Field groups and the time each group last changed (mirrors the server's merge functions).
+const GROUPS = {
+  list: [[["qty"], "qty_changed"], [["ticked", "ticked_at"], "ticked_changed"], [["deleted"], "deleted_changed"]],
+  savings: [[["deleted"], "deleted_changed"]],
+  watch: [[["watching"], "watching_changed"]],
+};
+const SNAPSHOT = { list: ["data"], savings: ["data", "saving_cents", "saved_at"], watch: ["data"] };
+const ADDED_BY = { list: "added_by", savings: "recorded_by", watch: "added_by" };
+const REVIVE = { list: ["deleted", true], savings: ["deleted", true], watch: ["watching", false] };   // [field, "removed" value]
+
+function rows(what) {
+  return family ? load(famKey(what), {}) : {};
+}
+
+function saveRows(what, map) {
+  save(famKey(what), map);
+  save(famKey("touched"), nowIso());
+}
+
+/** The outbox: per table, each key waiting to be sent and a change number (so a change made while sending isn't lost). */
+export function pending() {
+  return family ? { list: {}, savings: {}, watch: {}, ...load(famKey("outbox"), {}) } : { list: {}, savings: {}, watch: {} };
+}
+
+function queue(what, key) {
+  const o = pending();
+  o[what][key] = (o[what][key] || 0) + 1;
+  save(famKey("outbox"), o);
+  queueHook?.();
+}
+
+/** sync.js: these were sent (key -> change number). Keys changed again since stay queued. */
+export function markSent(what, sent) {
+  const o = pending();
+  for (const [key, n] of Object.entries(sent)) if (o[what][key] === n) delete o[what][key];
+  save(famKey("outbox"), o);
+}
+
+export function rowFor(what, key) {
+  return rows(what)[key] || null;
+}
+
+/**
+ * Merge a row from the server with this phone's copy: the server's row, except for any field this phone changed
+ * more recently (a change still on its way). Mirrors the server: a removed row comes back if something changed
+ * after the removal.
+ */
+export function mergeRow(what, local, server) {
+  if (!local) return { ...server };
+  const r = { ...server };
+  const [reviveField, removedValue] = REVIVE[what];
+  for (const [fields, at] of GROUPS[what]) {
+    if (ms(local[at]) > ms(server[at])) {
+      for (const f of fields) r[f] = local[f];
+      r[at] = local[at];
+      if (fields.includes(reviveField) && local[reviveField] !== removedValue && server[reviveField] === removedValue) {
+        for (const f of SNAPSHOT[what]) r[f] = local[f];          // added back here: with what was added
+      }
+    }
+  }
+  if (what === "list" && r.deleted && Math.max(ms(r.qty_changed), ms(r.ticked_changed)) > ms(r.deleted_changed)) r.deleted = false;
+  return r;
+}
+
+/** sync.js: rows from the server (a first load, a live update, or the answer to a send). */
+export function applyServerRows(what, list) {
+  if (!family || !list?.length) return;
+  const map = rows(what);
+  const key = TABLE_KEY[what];
+  for (const row of list) {
+    if (row.family_id !== family.id) continue;
+    map[row[key]] = mergeRow(what, map[row[key]], row);
+  }
+  saveRows(what, map);
+  changed(what);
+}
+
+/** Leave family mode for good on this phone (left or removed): forget the family's copy here. */
+export function forgetFamilyData(familyId) {
+  try {
+    for (const what of ["list", "savings", "watch", "outbox", "touched", "adopted"]) localStorage.removeItem(`fs.fam.${familyId}.${what}`);
+  } catch { /* nothing saved */ }
+}
+
+/**
+ * Move what's on this phone (its own list and savings) into the family, once, without duplicates: things the
+ * family already has are skipped. Run after the family's rows have loaded.
+ */
+export function adoptPersonal() {
+  if (!family || load(famKey("adopted"), false)) return 0;
+  const personal = load(KEYS.list, { items: [] }).items;
+  const personalSavings = load(KEYS.savings, { entries: [] }).entries;
+  const list = rows("list");
+  const savings = rows("savings");
+  let moved = 0;
+  const ts = nowIso();
+  for (const x of personal) {
+    if (list[x.id] && !list[x.id].deleted) continue;
+    const { id, qty, ticked, tickedAt, ...rest } = x;
+    list[id] = { family_id: family.id, item_key: id, data: clean(rest), qty: Math.min(99, qty || 1), qty_changed: ts,
+      ticked: !!ticked, ticked_at: tickedAt || null, ticked_changed: ts, deleted: false, deleted_changed: ts,
+      added_by: family.userId };
+    queue("list", id);
+    moved += 1;
+  }
+  for (const e of personalSavings) {
+    if (savings[e.id]) continue;
+    savings[e.id] = savingRow(e, ts);
+    queue("savings", e.id);
+  }
+  saveRows("list", list);
+  saveRows("savings", savings);
+  save(KEYS.list, { items: [], updatedAt: ts });
+  save(KEYS.savings, { entries: [] });
+  save(famKey("adopted"), true);
+  if (moved || personalSavings.length) changed("list");
+  return moved;
+}
+
+function clean(obj) {
+  const out = {};
+  for (const [k, v] of Object.entries(obj)) if (v !== undefined) out[k] = v;
+  return out;
+}
+
+const listKey = (entry) => entry.offerId || entry.watchKey || `own:${entry.name.toLowerCase()}`;
+
+function itemFrom(row) {
+  return { ...row.data, id: row.item_key, qty: row.qty, ticked: row.ticked, tickedAt: row.ticked_at,
+    addedBy: row.added_by || null, addedAt: row.data?.addedAt || row.created_at || null };
+}
+
+/** The shopping list: { items, updatedAt }. In a family, each item also says who added it (addedBy). */
 export function getList() {
-  return load(KEYS.list, { items: [], updatedAt: null });
+  if (!family) return load(KEYS.list, { items: [], updatedAt: null });
+  const items = Object.values(rows("list")).filter((r) => !r.deleted).map(itemFrom)
+    .sort((a, b) => (a.addedAt || "").localeCompare(b.addedAt || ""));
+  return { items, updatedAt: load(famKey("touched"), null) };
+}
+
+/** Is anything waiting to be sent to the family? */
+export function hasUnsent() {
+  const o = pending();
+  return Object.keys(o.list).length + Object.keys(o.savings).length + Object.keys(o.watch).length > 0;
 }
 
 export function addToList(entry) {
-  const list = getList();
-  const id = entry.offerId || entry.watchKey || `own:${entry.name.toLowerCase()}`;
-  const existing = list.items.find((x) => x.id === id);
-  if (existing) existing.qty += 1;
-  else list.items.push({ id, qty: 1, ticked: false, addedAt: new Date().toISOString(), ...entry });
-  list.updatedAt = new Date().toISOString();
-  save(KEYS.list, list);
-  return list;
+  const ts = nowIso();
+  const id = listKey(entry);
+  if (!family) {
+    const list = getList();
+    const existing = list.items.find((x) => x.id === id);
+    if (existing) existing.qty += 1;
+    else list.items.push({ id, qty: 1, ticked: false, addedAt: ts, ...entry });
+    list.updatedAt = ts;
+    save(KEYS.list, list);
+    return list;
+  }
+  const map = rows("list");
+  const ex = map[id];
+  if (ex && !ex.deleted) {
+    ex.qty = Math.min(99, ex.qty + 1);
+    ex.qty_changed = ts;
+  } else {
+    map[id] = { ...(ex || {}), family_id: family.id, item_key: id, data: clean({ ...entry, addedAt: ts }), qty: 1, qty_changed: ts,
+      ticked: false, ticked_at: null, ticked_changed: ts, deleted: false, deleted_changed: ts, added_by: family.userId };
+  }
+  saveRows("list", map);
+  queue("list", id);
+  changed("list");
+  return getList();
+}
+
+function changeListRow(id, fn) {
+  const map = rows("list");
+  if (!map[id]) return null;
+  fn(map[id], nowIso());
+  saveRows("list", map);
+  queue("list", id);
+  changed("list");
+  return itemFrom(map[id]);
 }
 
 export function removeFromList(id) {
-  const list = getList();
-  list.items = list.items.filter((x) => x.id !== id);
-  list.updatedAt = new Date().toISOString();
-  save(KEYS.list, list);
-  return list;
+  if (!family) {
+    const list = getList();
+    list.items = list.items.filter((x) => x.id !== id);
+    list.updatedAt = nowIso();
+    save(KEYS.list, list);
+    return list;
+  }
+  changeListRow(id, (r, ts) => { r.deleted = true; r.deleted_changed = ts; });
+  return getList();
 }
 
 /** Tick an item off (or back on). Returns the item. */
 export function setTicked(id, ticked) {
-  const list = getList();
-  const item = list.items.find((x) => x.id === id);
-  if (!item) return null;
-  item.ticked = ticked;
-  item.tickedAt = ticked ? new Date().toISOString() : null;
-  list.updatedAt = new Date().toISOString();
-  save(KEYS.list, list);
-  return item;
+  if (!family) {
+    const list = getList();
+    const item = list.items.find((x) => x.id === id);
+    if (!item) return null;
+    item.ticked = ticked;
+    item.tickedAt = ticked ? nowIso() : null;
+    list.updatedAt = nowIso();
+    save(KEYS.list, list);
+    return item;
+  }
+  return changeListRow(id, (r, ts) => { r.ticked = ticked; r.ticked_at = ticked ? ts : null; r.ticked_changed = ts; });
 }
 
 export function removeTicked() {
-  const list = getList();
-  list.items = list.items.filter((x) => !x.ticked);
-  list.updatedAt = new Date().toISOString();
-  save(KEYS.list, list);
-  return list;
+  if (!family) {
+    const list = getList();
+    list.items = list.items.filter((x) => !x.ticked);
+    list.updatedAt = nowIso();
+    save(KEYS.list, list);
+    return list;
+  }
+  for (const x of getList().items.filter((i) => i.ticked)) changeListRow(x.id, (r, ts) => { r.deleted = true; r.deleted_changed = ts; });
+  return getList();
 }
 
 export function clearList() {
-  save(KEYS.list, { items: [], updatedAt: new Date().toISOString() });
+  if (!family) {
+    save(KEYS.list, { items: [], updatedAt: nowIso() });
+    return;
+  }
+  for (const x of getList().items) changeListRow(x.id, (r, ts) => { r.deleted = true; r.deleted_changed = ts; });
+}
+
+function savingRow(e, ts) {
+  return { family_id: family.id, entry_id: e.id,
+    data: clean({ watchKey: e.watchKey, name: e.name, product: e.product, chain: e.chain, store: e.store, qty: e.qty }),
+    saving_cents: Math.max(0, Math.round(e.saving_cents)), saved_at: e.at || ts, deleted: false, deleted_changed: ts,
+    recorded_by: family.userId };
 }
 
 /** Savings: one entry per special ticked off as bought (an estimate from shelf prices). */
 export function getSavings() {
-  return { entries: [], ...load(KEYS.savings, {}) };
+  if (!family) return { entries: [], ...load(KEYS.savings, {}) };
+  const entries = Object.values(rows("savings")).filter((r) => !r.deleted)
+    .map((r) => ({ ...r.data, id: r.entry_id, saving_cents: r.saving_cents, at: r.saved_at, recordedBy: r.recorded_by || null }));
+  return { entries };
 }
 
 export function recordSaving(entry) {
-  const s = getSavings();
-  s.entries = s.entries.filter((e) => e.id !== entry.id);
-  s.entries.push(entry);
-  save(KEYS.savings, s);
+  if (!family) {
+    const s = getSavings();
+    s.entries = s.entries.filter((e) => e.id !== entry.id);
+    s.entries.push(entry);
+    save(KEYS.savings, s);
+    return;
+  }
+  const map = rows("savings");
+  map[entry.id] = savingRow(entry, nowIso());
+  saveRows("savings", map);
+  queue("savings", entry.id);
+  changed("savings");
 }
 
 export function removeSaving(id) {
-  const s = getSavings();
-  s.entries = s.entries.filter((e) => e.id !== id);
-  save(KEYS.savings, s);
+  if (!family) {
+    const s = getSavings();
+    s.entries = s.entries.filter((e) => e.id !== id);
+    save(KEYS.savings, s);
+    return;
+  }
+  const map = rows("savings");
+  if (!map[id]) return;
+  map[id].deleted = true;
+  map[id].deleted_changed = nowIso();
+  saveRows("savings", map);
+  queue("savings", id);
+  changed("savings");
 }
 
 export function clearSavings() {
-  save(KEYS.savings, { entries: [] });
+  if (!family) {
+    save(KEYS.savings, { entries: [] });
+    return;
+  }
+  for (const e of getSavings().entries) removeSaving(e.id);
+}
+
+/** The family's watchlist changes: [{ watch_key, watching, data, added_by }]. Empty when not in a family. */
+export function getWatchChanges() {
+  return Object.values(rows("watch"));
+}
+
+/** Start or stop watching something for the whole family (a watchlist item's key, or 'product:<id>'). */
+export function setWatching(key, watching, info = {}) {
+  if (!family) return;
+  const map = rows("watch");
+  const prev = map[key];
+  map[key] = { ...(prev || {}), family_id: family.id, watch_key: key, data: clean(watching ? info : (prev?.data || info)),
+    watching, watching_changed: nowIso(), added_by: watching ? family.userId : (prev?.added_by || null) };
+  saveRows("watch", map);
+  queue("watch", key);
+  changed("watch");
 }
 
 // ------------------------------------------------------------------ alerts (made on this phone for now)
@@ -234,11 +506,4 @@ export function markAlertsRead() {
   if (!a.alerts.some((x) => !x.read)) return;
   a.alerts.forEach((x) => { x.read = true; });
   save(KEYS.alerts, a);
-}
-
-// ------------------------------------------------------------------ household (family accounts later)
-
-/** Who shares this list. Just this phone's user for now; family accounts will fill this in. */
-export function getHousehold() {
-  return { members: [{ id: "me", name: "You", you: true }], canInvite: false };
 }

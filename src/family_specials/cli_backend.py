@@ -3,6 +3,7 @@
   specials backend connect [--project NAME]   connect the project (asks you to paste your access token; it isn't shown)
   specials backend migrate                     apply new database changes in supabase/migrations
   specials backend status                      what's applied, and how many families/accounts (counts only)
+  specials backend test                        the database self-test (pretend people, rolled back: saves nothing)
 """
 
 from __future__ import annotations
@@ -36,6 +37,13 @@ def cmd_backend(args) -> int:
             applied = backend.migrate()
             print(f"Applied: {', '.join(applied)}" if applied else "Nothing new to apply.")
             return 0
+        if args.action == "test":
+            results = backend.selftest()
+            for r in results:
+                print(f"{'PASS' if r['ok'] else 'FAIL'}  {r['name']}" + ("" if r["ok"] else f"  ({r['detail']})"))
+            passed = sum(1 for r in results if r["ok"])
+            print(f"{passed}/{len(results)} passed")
+            return 0 if results and passed == len(results) else 1
         s = backend.status()
         print(f"Accounts: {s.get('accounts')}, families: {s.get('families')}, members: {s.get('members')}")
         print(f"Applied: {s.get('migrations') or 'none'}")
@@ -47,7 +55,7 @@ def cmd_backend(args) -> int:
 
 def register(sub) -> None:
     p = sub.add_parser("backend", help="the family backend (Supabase): connect, migrate, status")
-    p.add_argument("action", choices=["connect", "migrate", "status"])
+    p.add_argument("action", choices=["connect", "migrate", "status", "test"])
     p.add_argument("--project", help="connect: the Supabase project's name or ref (if you have several)")
     p.add_argument("--from-clipboard", action="store_true", help="connect: read the token from the clipboard instead")
     p.set_defaults(func=cmd_backend)

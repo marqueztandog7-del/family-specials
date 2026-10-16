@@ -5,10 +5,11 @@
 import * as data from "./data.js";
 import * as push from "./push.js";
 import * as account from "./account.js";
+import * as sync from "./sync.js";
 
 const $ = (s, el = document) => el.querySelector(s);
 const view = $("#view");
-const APP_VERSION = "v5";
+const APP_VERSION = "v6";
 
 const TABS = { "this-week": "This Week", watchlist: "Watchlist", home: "Home", list: "List", savings: "Savings" };
 // Screens on top of a tab. Alerts and Settings hide the tab bar (as in the designs); item detail keeps it.
@@ -17,19 +18,23 @@ const SUB_SCREENS = {
   alerts: { tab: "home", up: "#/home", title: "Alerts", tabs: false },
   settings: { tab: null, up: "#/home", title: "Settings", tabs: false },
   welcome: { tab: null, up: "#/welcome", title: "Family Specials", tabs: false, bare: true },
-  join: { tab: "home", up: "#/home", title: "Join a family", tabs: false },
+  join: { tab: "home", up: "#/profile", title: "Join a family", tabs: false },
+  invite: { tab: null, up: "#/welcome", title: "Join a family", tabs: false, bare: true },
+  joined: { tab: null, up: "#/home", title: "Welcome", tabs: false, bare: true },
   family: { tab: "home", up: "#/home", title: "Family", tabs: false },
   profile: { tab: null, up: "#/home", title: "Profile", tabs: false },
 };
-const TIER_ORDER = { core: 0, regular: 1, occasional: 2 };
-const TIER_LABEL = { core: "Core", regular: "Regular", occasional: "Occasional" };
+const TIER_ORDER = { core: 0, regular: 1, occasional: 2, added: 3 };
+const TIER_LABEL = { core: "Core", regular: "Regular", occasional: "Occasional", added: "Added" };
 const TIER_SECTION = {
   core: ["Core Essentials", "The things we buy most often", ""],
   regular: ["Regular Pantry & Household", "Things we buy regularly", "sage"],
   occasional: ["Occasional", "Things we buy now and then", "sage"],
+  added: ["Added by the family", "Products someone in the family chose to watch", "sage"],
 };
 // Tiers come from our receipts (core: bought in 4+ of the shops, regular: 3, occasional: 2), so these stay modest.
-const TIER_REASON = { core: "You buy this often", regular: "You buy this regularly", occasional: "You buy this now and then" };
+const TIER_REASON = { core: "You buy this often", regular: "You buy this regularly", occasional: "You buy this now and then",
+  added: "Added to your watchlist" };
 const NOTE_TEXT = { paused: "Paused, so no prices", "not found": "No match yet", "no current price": "Matched, no current price" };
 const BASIS_TEXT = { online: "Online price", "online, incl. delivery": "Online price incl. delivery" };
 const FROM_TEXT = { github: "automatic", mac: "from our Mac", paused: "paused" };
@@ -42,6 +47,7 @@ const state = {
   query: "", searchSeq: 0, productsLoaded: false, filter: "all", dealsOnly: false,
   refs: new Map(), expanded: new Set(), scroll: new Map(), stack: [], pushOn: null,
   accountsOn: false, user: null, family: null, profile: null, authMode: "create",
+  invite: null, newInvite: null, leaving: false, productsById: null,
 };
 
 // ------------------------------------------------------------------ formatting
@@ -147,10 +153,50 @@ function percentOff(o) {
   return null;
 }
 
+/** The family's watchlist changes (empty when not in a family): items it stopped watching, products it added. */
+function watchChanges() {
+  const changes = data.getWatchChanges();
+  return {
+    stopped: new Set(changes.filter((c) => !c.watching && !c.watch_key.startsWith("product:")).map((c) => c.watch_key)),
+    added: changes.filter((c) => c.watching && c.watch_key.startsWith("product:")),
+    stoppedRows: changes.filter((c) => !c.watching),
+  };
+}
+
+let productsLoading = null;
+function ensureProducts() {
+  productsLoading ||= data.getProducts().then((list) => {
+    state.productsById = new Map(list.map((p) => [p.id, p]));
+    scheduleRender();
+  }).catch(() => { productsLoading = null; });
+}
+
+/** A product the family added, shaped like a watch item (today's price once the products have loaded). */
+function productItem(change) {
+  const id = change.watch_key.slice("product:".length);
+  const snap = change.data || {};
+  if (!state.productsById) ensureProducts();
+  const p = state.productsById?.get(id);
+  const offer = p ? { ...p, unit_cents: p.unit?.cents ?? null, multibuy_unit_cents: p.multibuy?.unit?.cents ?? null,
+    signals: [], new_this_cycle: null, usual_cents: null } : null;
+  return { key: change.watch_key, name: snap.name || p?.name || "Product", tier: "added", level: "exact",
+    compare_per: p?.unit?.per || snap.unit_per || "item", target_cents: null,
+    rule: `This product at ${p?.store || snap.store || "its store"}${change.added_by ? `, added by ${memberName(change.added_by)}` : ""}`,
+    on_special: !!offer?.special, offers: offer ? [offer] : [], stores_note: {}, product: true,
+    productChain: p?.chain || snap.chain, history: { weeks: [], series: {}, specials: {} }, addedBy: change.added_by };
+}
+
+/** What this family watches: the standard watchlist minus what it stopped watching, plus the products it added. */
+function watchItems() {
+  if (!state.watch) return [];
+  const ch = watchChanges();
+  return state.watch.items.filter((i) => !ch.stopped.has(i.key)).concat(ch.added.map(productItem));
+}
+
 /** Every watch item with a special at the compared stores; `best` is its lowest unit price special. */
 function specialRows(chains) {
   const rows = [];
-  for (const item of state.watch.items) {
+  for (const item of watchItems()) {
     const offers = offersIn(item, chains);
     const specials = offers.filter((o) => o.special);
     if (specials.length) rows.push({ item, offers, specials, best: specials[0] });
@@ -366,7 +412,8 @@ function renderHome() {
       <div class="list-rows">${recent.map((x) => {
         const total = lineTotal(x);
         const p = linePrice(x);
-        const sub = [x.from ? `Added from ${x.from}` : "", x.store ? (p.special ? `on special at ${x.store}` : x.store) : ""].filter(Boolean).join(" · ");
+        const by = data.familyMode() && x.addedBy ? `Added by ${memberName(x.addedBy)}` : x.from ? `Added from ${x.from}` : "";
+        const sub = [by, x.store ? (p.special ? `on special at ${x.store}` : x.store) : ""].filter(Boolean).join(" · ");
         return `<div class="row"><div class="grow"><div class="row" style="justify-content:flex-start;gap:8px"><span class="qty">${x.qty}x</span>
             <p class="truncate" style="font-weight:500">${esc(x.product || x.name)}</p></div>
             ${sub ? `<p class="body-sm t3 truncate" style="margin-left:34px">${esc(sub.charAt(0).toUpperCase() + sub.slice(1))}</p>` : ""}</div>
@@ -475,7 +522,7 @@ function renderThisWeek() {
           <span class="pill terra caps">${icon("local_fire_department")}Pantry digest</span>
           <h2>${all.length ? `${plural(all.length, "item")} on special${pot.counted ? `, save up to <span class="num-lg">${money(pot.cents)}</span>` : ""}`
             : "Nothing on special this week"}</h2>
-          <p class="body-sm t2">Matched against the ${plural(state.watch.items.length, "thing")} on your watchlist.</p>
+          <p class="body-sm t2">Matched against the ${plural(watchItems().length, "thing")} on your watchlist.</p>
         </div>
         <span class="digest-icon">${icon("savings")}</span>
       </div>
@@ -499,7 +546,8 @@ function renderWatchlist() {
   const rows = specialRows(chains);
   const pot = potential(rows);
   const groups = new Map();
-  for (const item of state.watch.items) {
+  const items = watchItems();
+  for (const item of items) {
     if (state.dealsOnly && !offersIn(item, chains).some((o) => o.special)) continue;
     if (!groups.has(item.tier)) groups.set(item.tier, []);
     groups.get(item.tier).push(item);
@@ -515,7 +563,7 @@ function renderWatchlist() {
   view.innerHTML = `
     <div class="row" style="padding-top:8px">
       <div class="row" style="justify-content:flex-start"><h2 class="headline-lg">Watchlist</h2>
-        <span class="pill muted caps">${plural(state.watch.items.length, "item")}</span></div>
+        <span class="pill muted caps">${plural(items.length, "item")}</span></div>
       <button type="button" class="chip-btn" data-action="deals-only" aria-pressed="${state.dealsOnly}">${icon("local_offer")}Deals only</button>
     </div>
     <form class="search" role="search" id="search-form">${icon("search")}
@@ -530,8 +578,9 @@ function renderWatchlist() {
             ${pot.counted ? `<p class="body-sm">Potential basket saving: <b class="mono">${money(pot.cents)}</b></p>` : ""}</div></div>
         ${icon("notifications_active", "t2")}</a>` : ""}
       ${sections || `<div class="empty">${icon("local_offer")}<b>Nothing on special right now</b>Turn off "Deals only" to see everything.</div>`}
-      <p class="note">New items are added to the watchlist on our Mac for now. Search for a product and tap
-        "Suggest to watch" to send a request.</p>
+      ${stoppedHTML()}
+      <p class="note">${data.familyMode() ? "Your watchlist is shared with the family. Search for a product and tap Watch to add it, or open an item to stop watching it."
+        : "New items are added to the watchlist on our Mac for now. Search for a product and tap \"Suggest to watch\" to send a request."}</p>
     </div>`;
   let timer;
   $("#q").addEventListener("input", (e) => {
@@ -540,6 +589,18 @@ function renderWatchlist() {
   });
   $("#search-form").addEventListener("submit", (e) => { e.preventDefault(); $("#q").blur(); });
   if (state.query.trim()) renderResults();
+}
+
+/** The family's stopped items, so anyone can start watching them again. */
+function stoppedHTML() {
+  if (!data.familyMode()) return "";
+  const rows = watchChanges().stoppedRows;
+  if (!rows.length) return "";
+  const base = new Map(state.watch.items.map((i) => [i.key, i]));
+  return `<details class="stopped"><summary class="body-sm t2">${icon("visibility_off")}Stopped watching (${rows.length})</summary>
+    <div class="stack-sm" style="margin-top:10px">${rows.map((c) => `<div class="watch-row">
+      <div class="grow"><p class="title-sm truncate">${esc(base.get(c.watch_key)?.name || c.data?.name || c.watch_key)}</p></div>
+      <button type="button" class="btn secondary small" data-action="watch-again" data-key="${esc(c.watch_key)}">${icon("bookmark_add")}Watch again</button></div>`).join("")}</div></details>`;
 }
 
 function watchRow(item, chains) {
@@ -581,7 +642,7 @@ async function renderResults() {
 }
 
 function productHTML(p) {
-  const item = state.offerToItem.get(p.id);
+  const item = state.offerToItem.get(p.id) || watchItems().find((i) => i.key === `product:${p.id}`);
   const r = ref(null, p);
   const unit = p.unit ? unitMoney(p.unit.cents, p.unit.per) : "";
   return `<article class="card deal">
@@ -599,6 +660,7 @@ function productHTML(p) {
     <div class="actions">
       <button type="button" class="btn small${onList(p) ? " added" : ""}" data-action="add" data-ref="${r}">${icon(onList(p) ? "check" : "add")}${onList(p) ? "On your list" : "Add to list"}</button>
       ${item ? `<a class="btn outline small" href="${href(item.key)}">${icon("bookmark")}Watched</a>`
+        : data.familyMode() ? `<button type="button" class="btn outline small" data-action="watch-product" data-ref="${r}">${icon("bookmark_add")}Watch</button>`
         : `<button type="button" class="btn outline small" data-action="suggest" data-ref="${r}">${icon("bookmark_add")}Suggest to watch</button>`}
     </div></article>`;
 }
@@ -626,7 +688,7 @@ async function suggest(p) {
 // ------------------------------------------------------------------ one watch item
 
 function renderDetail(key) {
-  const item = state.watch.items.find((i) => i.key === key);
+  const item = watchItems().find((i) => i.key === key) || state.watch.items.find((i) => i.key === key);
   if (!item) {
     view.innerHTML = `<div class="empty">${icon("bookmark")}<b>Not on the watchlist any more</b><a class="link" href="#/watchlist">Back to the watchlist</a></div>`;
     return;
@@ -676,7 +738,8 @@ function renderDetail(key) {
           : `We started recording prices on ${started ? esc(localDate(started, true)) : "5 Oct 2026"}. "Lowest in N weeks" needs ${state.watch.min_history_weeks} weeks of history. We never guess when the next special will be.`}</p></div></section>`;
 
   // Stores, in priority order.
-  const storeRows = state.watch.stores.map(({ chain, name }) => {
+  const storeList = item.product ? state.watch.stores.filter((s) => s.chain === item.productChain) : state.watch.stores;
+  const storeRows = storeList.map(({ chain, name }) => {
     const tile = `<span class="store-tile c-${chain}">${STORE_LETTER[chain] || name[0]}</span>`;
     if (paused.has(chain)) {
       return `<div class="store-row dim"><div class="row" style="justify-content:flex-start;gap:12px">${tile}
@@ -742,7 +805,9 @@ function renderDetail(key) {
     <div class="stack-sm" style="margin-top:10px">${storeRows}</div>
     ${best ? `<button type="button" class="btn block" data-action="add" data-ref="${ref(item, best)}" style="margin-top:20px">
       ${icon(onList(best) ? "check" : "add")}${onList(best) ? "On your shopping list" : "Add to Shopping List"}</button>` : ""}
-    <p class="note">Specials and their dates come from each store. Targets and watch rules are changed on our Mac for now.</p>`;
+    ${data.familyMode() ? `<button type="button" class="btn secondary block" data-action="stop-watching" data-key="${esc(item.key)}" data-name="${esc(item.name)}"
+        style="margin-top:10px">${icon("visibility_off")}Stop watching</button>` : ""}
+    <p class="note">Specials and their dates come from each store.${data.familyMode() ? " Stopping watching changes the watchlist for the whole family." : " Targets and watch rules are changed on our Mac for now."}</p>`;
 }
 
 /** Weekly lowest unit price at each store. Filled (sage) points are weeks it was on special. */
@@ -871,7 +936,8 @@ function renderList() {
           <div class="grow"><p class="name">${esc(x.product || x.name)}</p>
             <div class="sub">${p.price != null ? `<span class="num-sm t2">${x.qty} × ${money(p.price)}${p.per === "kg" ? "/kg" : ""}</span>` : x.qty > 1 ? `<span class="num-sm t2">× ${x.qty}</span>` : ""}
               ${p.special ? `<span class="pill sage" style="padding:1px 6px">On special</span>` : ""}
-              ${x.product && x.watchKey && x.product !== x.name ? `<span class="body-sm t3 truncate">for ${esc(x.name)}</span>` : ""}</div></div>
+              ${x.product && x.watchKey && x.product !== x.name ? `<span class="body-sm t3 truncate">for ${esc(x.name)}</span>` : ""}
+              ${data.familyMode() && x.addedBy ? `<span class="body-sm t3">added by ${esc(memberName(x.addedBy))}</span>` : ""}</div></div>
           ${line != null ? `<span class="line-total">${money(line)}</span>` : ""}
           <button type="button" class="x-btn" data-action="remove" data-id="${esc(x.id)}" aria-label="Remove ${esc(x.product || x.name)}">${icon("close")}</button>
         </div>`;
@@ -879,9 +945,12 @@ function renderList() {
     </section>`;
   }).join("");
 
-  view.innerHTML = head + cart + groupCards + quickAdd +
+  const offline = data.familyMode() && !sync.online()
+    ? `<p class="hint">${icon("cloud_off")} You're offline. Ticks and changes are saved on this phone and sync when you're back online.</p>` : "";
+  view.innerHTML = head + offline + cart + groupCards + quickAdd +
     (ticked ? `<div style="text-align:center"><button type="button" class="link" data-action="remove-ticked">Remove ${plural(ticked, "ticked item")}</button></div>` : "") +
-    `<p class="note">${icon("savings", "t3")} Ticking off a special records its saving in Savings. Your list is saved on this phone for now.</p>`;
+    `<p class="note">${icon("savings", "t3")} Ticking off a special records its saving in Savings. ${data.familyMode()
+      ? `Your list is shared with ${esc(state.family?.name || "your family")}, live on everyone's phone.` : "Your list is saved on this phone."}</p>`;
 }
 
 function tickItem(id, on) {
@@ -1019,7 +1088,7 @@ function renderSavings() {
 /** One alert per watched item and store each time it goes on special (a new special run or a new price). */
 function syncAlerts() {
   const candidates = [];
-  for (const item of state.watch.items) {
+  for (const item of watchItems()) {
     const byChain = new Map();
     for (const o of offersIn(item, comparedChains())) if (o.special && !byChain.has(o.chain)) byChain.set(o.chain, o);
     for (const [chain, o] of byChain) {
@@ -1230,61 +1299,111 @@ async function toggleNotifications(box) {
 // ------------------------------------------------------------------ Accounts and families (through account.js)
 
 const initials = (name) => ((name || "?").trim().split(/\s+/).map((w) => w[0]).join("").slice(0, 2) || "?").toUpperCase();
+const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const appLink = () => `${location.origin}${location.pathname}`;
 
+/** Copy text, also inside in-app browsers (WhatsApp, Messages) where the clipboard API may be missing. */
+async function copyText(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch { /* fall back below */ }
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.setAttribute("readonly", "");
+  ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;font-size:16px";
+  document.body.append(ta);
+  ta.select();
+  ta.setSelectionRange(0, text.length);
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch { ok = false; }
+  ta.remove();
+  return ok;
+}
+
+/** The person's family, fresh from the backend (or as last seen, offline). Keeps family sharing in step. */
 async function refreshFamily() {
-  if (!state.user) { state.family = null; return null; }
+  if (!state.user) { state.family = null; applyFamilyMode(); return null; }
+  const before = state.family;
+  let known = true;
   try {
     state.family = await account.myFamily();
   } catch {
-    state.family = account.cachedFamily();          // offline: what we knew last time
+    state.family = account.cachedFamily() || before;          // offline: what we knew last time
+    known = false;
   }
+  if (known && before && !state.family) {
+    data.forgetFamilyData(before.id);                         // left or removed: the family's copy goes from this phone
+    toast(`You're no longer in ${before.name}`);
+  }
+  applyFamilyMode();
   return state.family;
 }
 
-/** The account icon in the top-right corner: the person's initials (or photo, later). */
-function updateHeader() {
-  $("#account-face").innerHTML = faceHTML();
-  const who = state.profile?.name || state.family?.me?.nickname;
-  $("#account-btn").setAttribute("aria-label", who ? `Account menu for ${who}` : "Account menu");
+/** In a family: this phone shares the family's list, savings and watchlist, live. Otherwise its own. */
+function applyFamilyMode() {
+  const f = state.family;
+  if (f && state.user) {
+    data.setFamilyMode({ id: f.id, userId: state.user.id });
+    sync.start(f.id, () => refreshFamily().then(() => { updateHeader(); scheduleRender(); })).catch(() => {});
+  } else {
+    data.setFamilyMode(null);
+    sync.stop();
+  }
+}
+
+/** A member's nickname from their account id ("you" for yourself). */
+function memberName(userId) {
+  if (!userId || !state.family) return "";
+  const m = state.family.members.find((x) => x.user_id === userId);
+  return m ? (m.is_me ? "you" : m.nickname) : "someone who's left";
+}
+
+function authFormHTML() {
+  const create = state.authMode === "create";
+  return `<section class="card white">
+      <div class="seg" role="tablist" aria-label="Create an account or sign in">
+        <button type="button" role="tab" data-action="auth-mode" data-mode="create" aria-selected="${create}">Create account</button>
+        <button type="button" role="tab" data-action="auth-mode" data-mode="signin" aria-selected="${!create}">I already have an account</button>
+      </div>
+      <form id="auth-form" novalidate>
+        <label class="field">Email<input id="auth-email" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required></label>
+        <label class="field">Password<input id="auth-password" type="password" autocomplete="${create ? "new-password" : "current-password"}" required></label>
+        ${create ? `<label class="field">Confirm password<input id="auth-confirm" type="password" autocomplete="new-password" required></label>
+          <p class="body-sm t3" style="margin-top:6px">At least 8 characters.</p>` : ""}
+        <p class="form-error" id="auth-error" role="alert" hidden></p>
+        <button type="submit" class="btn block" style="margin-top:16px">${create ? "Create account" : "Sign in"}</button>
+      </form>
+    </section>`;
+}
+
+function brandHTML(sub = "Specials on the things your family buys, at every store you use.") {
+  return `<div class="auth-brand"><span class="logo lg">${icon("shopping_basket", "fill")}</span>
+    <h2 class="headline-lg">Family Specials</h2><p class="t2">${esc(sub)}</p></div>`;
 }
 
 function renderWelcome() {
-  const code = account.pendingCode();
-  const mode = state.authMode;
-  view.innerHTML = `
-    <div class="auth">
-      <div class="auth-brand"><span class="logo lg">${icon("shopping_basket", "fill")}</span>
-        <h2 class="headline-lg">Family Specials</h2>
-        <p class="t2">Specials on the things your family buys, at every store you use.</p></div>
-      ${code ? `<div class="invite-banner">${icon("group_add")}<div><p class="title-sm">You've been invited to a family</p>
-        <p class="body-sm t2">Create an account or sign in first. Then you'll join with code <b class="mono">${esc(code)}</b>.</p></div></div>` : ""}
-      <section class="card white">
-        <div class="seg" role="tablist" aria-label="Create an account or sign in">
-          <button type="button" role="tab" data-action="auth-mode" data-mode="create" aria-selected="${mode === "create"}">Create account</button>
-          <button type="button" role="tab" data-action="auth-mode" data-mode="signin" aria-selected="${mode === "signin"}">Sign in</button>
-        </div>
-        <form id="auth-form" novalidate>
-          <label class="field">Email<input id="auth-email" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required></label>
-          <label class="field">Password<input id="auth-password" type="password" autocomplete="${mode === "create" ? "new-password" : "current-password"}" required></label>
-          ${mode === "create" ? `<p class="body-sm t3" style="margin-top:6px">At least 8 characters.</p>` : ""}
-          <p class="form-error" id="auth-error" role="alert" hidden></p>
-          <button type="submit" class="btn block" style="margin-top:16px">${mode === "create" ? "Create account" : "Sign in"}</button>
-        </form>
-      </section>
-      <p class="note">We only keep your email and a scrambled password. Your list and savings on this phone are kept.</p>
-    </div>`;
+  view.innerHTML = `<div class="auth">${brandHTML()}${authFormHTML()}
+    <p class="note">We only keep your email and a scrambled password. Your list and savings on this phone are kept.</p></div>`;
 }
 
 async function submitAuth(form) {
   const email = $("#auth-email").value.trim();
   const password = $("#auth-password").value;
+  const confirmEl = $("#auth-confirm");
   const err = $("#auth-error");
   const btn = form.querySelector('button[type="submit"]');
   const label = btn.textContent;
   const fail = (msg) => { err.textContent = msg; err.hidden = false; btn.disabled = false; btn.textContent = label; };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail("That doesn't look like an email address.");
-  if (state.authMode === "create" && password.length < 8) return fail("Use a password of at least 8 characters.");
   if (!password) return fail("Enter your password.");
+  if (state.authMode === "create") {
+    if (password.length < 8) return fail("Use a password of at least 8 characters.");
+    if (confirmEl && confirmEl.value !== password) return fail("The two passwords don't match.");
+  }
   btn.disabled = true;
   btn.textContent = "One moment…";
   try {
@@ -1295,23 +1414,146 @@ async function submitAuth(form) {
   await Promise.all([refreshFamily(), refreshProfile()]);
   updateHeader();
   toast(state.authMode === "signin" ? "Signed in" : "Account created", "check");
-  const code = account.pendingCode();
-  location.replace(code && !state.family ? `#/join?code=${encodeURIComponent(code)}` : "#/home");
+  if (route().name === "invite") render();                   // straight on to joining
+  else location.replace("#/home");
 }
 
-function renderJoin(_arg, params) {
-  const code = account.cleanCode(params.get("code") || account.pendingCode());
-  if (code) account.setPendingCode(code);
-  if (!state.user) { location.replace("#/welcome"); return; }
-  if (state.family) {
-    account.clearPendingCode();
-    view.innerHTML = `<div class="empty">${icon("group")}<b>You're in ${esc(state.family.name)}</b>
-      One person belongs to one family for now.<br><a class="btn secondary small" href="#/home" style="margin-top:14px">Back to Home</a></div>`;
+/** The invite link's page: who invited you, then an account, then the code and a nickname. */
+async function renderInvite(token) {
+  setTitle("Join a family");
+  if (!token) { location.replace("#/home"); return; }
+  if (state.invite?.token !== token) {
+    view.innerHTML = `<p class="note" style="padding-top:40px">Checking your invite…</p>`;
+    let preview;
+    try {
+      preview = await account.invitePreview(token);
+    } catch (e) {
+      view.innerHTML = errorHTML(e);
+      return;
+    }
+    state.invite = { token, preview };                        // kept in memory only, never on the phone
+    if (route().name !== "invite") return;
+  }
+  const p = state.invite.preview;
+  const goHome = state.user ? `<a class="btn secondary block" href="#/home">Go to Home</a>` : "";
+  if (!p) {
+    view.innerHTML = `<div class="auth">${brandHTML()}<div class="empty">${icon("error")}<b>This invite link isn't valid</b>
+      Ask the person who invited you for a new link and code.</div>${goHome}</div>`;
     return;
   }
-  view.innerHTML = `<div class="empty">${icon("group_add")}<b>Joining a family comes next</b>
-    ${code ? `Your code <b class="mono">${esc(code)}</b> is saved on this phone, ready for the next update.` : "You'll type the 6-character code here in the next update."}
-    <br><a class="btn secondary small" href="#/home" style="margin-top:14px">Back to Home</a></div>`;
+  if (p.status === "expired") {
+    view.innerHTML = `<div class="auth">${brandHTML()}<div class="empty">${icon("schedule")}<b>This invite has expired</b>
+      Ask ${esc(p.inviter || "the person who invited you")} for a new link and code.</div>${goHome}</div>`;
+    return;
+  }
+  const banner = `<div class="invite-banner">${icon("group_add")}<div><p class="title-sm">${esc(p.inviter)} invited you to join ${esc(p.family_name)}</p>
+    <p class="body-sm t2">${state.user ? "Enter the code they sent you in a separate message." : "Create an account or sign in first. Then you'll enter the code they sent you."}</p></div></div>`;
+  if (!state.user) {
+    view.innerHTML = `<div class="auth">${brandHTML("Shop the specials together, with one shared list.")}${banner}${authFormHTML()}</div>`;
+    return;
+  }
+  if (state.family) {
+    view.innerHTML = `<div class="auth">${banner}<div class="empty">${icon("group")}<b>You're already in ${esc(state.family.name)}</b>
+      Leave it in Profile first to join another.</div><a class="btn secondary block" href="#/profile">Open Profile</a></div>`;
+    return;
+  }
+  view.innerHTML = `<div class="auth">${banner}${joinFormHTML(p, true)}</div>`;
+}
+
+function joinFormHTML(p = {}, haveToken = false) {
+  const who = p.inviter ? esc(p.inviter) : "";
+  return `<section class="card white"><form id="join-form" novalidate>
+      ${haveToken ? "" : `<label class="field plain">The invite link you were sent<input id="join-link" type="url" inputmode="url"
+        autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Paste the link here"></label>`}
+      <label class="field plain"${haveToken ? ' style="margin-top:0"' : ""}>${who ? `Enter the 6-character code ${who} sent you` : "Enter the 6-character code you were sent"}
+        <input id="join-code" class="code-input" type="text" inputmode="text" autocomplete="off" autocapitalize="characters"
+          autocorrect="off" spellcheck="false" maxlength="12" placeholder="6 letters and numbers"></label>
+      <label class="field plain">Your nickname in the family<input id="join-nickname" type="text" maxlength="30" autocomplete="nickname"
+        placeholder="e.g. Mum, Dad or your name"></label>
+      <p class="form-error" id="join-error" role="alert" hidden></p>
+      <button type="submit" class="btn block" style="margin-top:16px">${icon("group_add")}Join</button>
+    </form></section>`;
+}
+
+/** Profile > Join a family (paste the link, then the code), and the notice for links from the first version. */
+function renderJoin(_arg, params) {
+  if (params.get("code")) {
+    // The first version put the code in the link. Those links no longer work, and the code is never kept.
+    history.replaceState(null, "", "#/join");
+    view.innerHTML = `<div class="auth">${brandHTML()}<div class="empty">${icon("link_off")}<b>This invite link no longer works</b>
+      It's from an earlier version of the app. Ask the person who invited you for a new link and code.</div>
+      ${state.user ? `<a class="btn secondary block" href="#/home">Go to Home</a>` : `<a class="btn block" href="#/welcome">Create an account or sign in</a>`}</div>`;
+    return;
+  }
+  if (!state.user) { location.replace("#/welcome"); return; }
+  if (state.family) {
+    view.innerHTML = `<div class="empty">${icon("group")}<b>You're already in ${esc(state.family.name)}</b>
+      Leave it in Profile first to join another.<br><a class="btn secondary small" href="#/profile" style="margin-top:14px">Open Profile</a></div>`;
+    return;
+  }
+  state.invite = null;
+  view.innerHTML = `<div style="padding-top:12px"><span class="caps terracotta">Shared Pantry</span>
+      <h2 class="headline-lg" style="margin-top:2px">Join a family</h2>
+      <p class="t2" style="margin-top:4px">Paste the invite link you were sent (or just open it), then type the code they sent separately.</p></div>
+    ${joinFormHTML()}`;
+}
+
+async function submitJoin(form) {
+  const p = state.invite?.preview || {};
+  const token = state.invite?.token || account.tokenFrom($("#join-link")?.value);
+  const code = account.cleanCode($("#join-code").value);
+  const nickname = $("#join-nickname").value.trim();
+  const err = $("#join-error");
+  const btn = form.querySelector('button[type="submit"]');
+  const fail = (msg) => { err.textContent = msg; err.hidden = false; btn.disabled = false; btn.innerHTML = `${icon("group_add")}Join`; };
+  if (!token) return fail("Paste the invite link you were sent.");
+  if (code.length !== 6) return fail("Enter the 6-character code.");
+  if (!nickname) return fail("Add your nickname in the family.");
+  btn.disabled = true;
+  btn.textContent = "Joining…";
+  let res;
+  try {
+    res = await account.joinFamily(token, code, nickname);
+  } catch (e) {
+    return fail(e.message);
+  }
+  if (res.status === "ok") {
+    state.family = res.family;
+    state.invite = null;
+    applyFamilyMode();
+    updateHeader();
+    location.replace("#/joined");
+    return;
+  }
+  fail(joinMessage(res, p.inviter));
+}
+
+/** What to tell someone whose join didn't work (the wording from the family spec). */
+function joinMessage(res, inviter) {
+  const who = res.inviter || inviter || "the person who invited you";
+  switch (res.status) {
+    case "wrong-code": return `That code doesn't match. Check the message from ${who} and try again.`;
+    case "expired": return `This invite has expired. Ask ${who} for a new link and code.`;
+    case "already-in-family": return `You're already in ${res.family_name}. Leave it in Profile first to join another.`;
+    case "too-many": return "Too many attempts, try again in 15 minutes.";
+    case "nickname": return "Add your nickname (up to 30 characters).";
+    default: return "This invite link isn't valid. Ask for a new link and code.";
+  }
+}
+
+function renderJoined() {
+  const f = state.family;
+  if (!f) { location.replace("#/home"); return; }
+  setTitle(`Welcome to ${f.name}`);
+  const tip = isStandalone() ? "" : `<section class="invite-banner">${icon("add_to_home_screen")}<div>
+      <p class="title-sm">For the best experience, open this in ${isIOS() ? "Safari, then tap Share > Add to Home Screen" : "Chrome, then tap ⋮ > Add to Home screen"}</p>
+      <p class="body-sm t2">You'll sign in once more there. Your family is already on your account.</p>
+      <button type="button" class="btn small" data-action="copy-app-link" style="margin-top:10px">${icon("content_copy")}<span>Copy the app link</span></button></div></section>`;
+  view.innerHTML = `<div class="auth">
+      <div class="empty" style="padding-bottom:8px">${icon("celebration")}<b>Welcome to ${esc(f.name)}</b>
+        You're in. The family's watchlist, shopping list and savings are now shared with you.</div>
+      ${tip}
+      <a class="btn block" href="#/home">Go to Home</a></div>`;
 }
 
 function renderFamily(arg) {
@@ -1329,10 +1571,12 @@ function renderFamilyNew() {
       <p class="t2" style="margin-top:4px">You'll be the owner. Next you'll get a link and a code to invite the others.</p></div>
     <section class="card white">
       <form id="family-form" novalidate>
-        <label class="field">Family name<input id="family-name" type="text" maxlength="60" autocomplete="off" placeholder="What your family calls itself" required></label>
-        <label class="field">Your nickname in the family<input id="family-nickname" type="text" maxlength="30" autocomplete="nickname" placeholder="e.g. Mum or Dad" required></label>
+        <label class="field plain" style="margin-top:0">Family name<input id="family-name" type="text" maxlength="60" autocomplete="off" placeholder="What your family calls itself" required></label>
+        <label class="field plain">Your nickname in the family<input id="family-nickname" type="text" maxlength="30" autocomplete="nickname"
+          value="${esc(state.profile?.name || "")}" placeholder="e.g. Mum or Dad" required></label>
+        <p class="body-sm t3" style="margin-top:6px">Shown to the people you invite ("${esc("Mum")} invited you").</p>
         <p class="form-error" id="family-error" role="alert" hidden></p>
-        <button type="submit" class="btn block" style="margin-top:16px">${icon("group_add")}Start family</button>
+        <button type="submit" class="btn block" style="margin-top:16px">${icon("group_add")}Create</button>
       </form>
     </section>
     <p class="note">Only your family can see its name, nicknames, list and savings.</p>`;
@@ -1347,97 +1591,108 @@ async function submitFamily(form) {
   if (!name) return fail("Give the family a name.");
   if (!nickname) return fail("Add your nickname.");
   btn.disabled = true;
+  let res;
   try {
-    state.family = await account.createFamily(name, nickname);
+    res = await account.createFamily(name, nickname);
   } catch (e) {
     return fail(e.message);
   }
+  state.family = res.family;
+  state.newInvite = { ...res.invite, familyId: res.family.id };   // the code lives in memory only
+  applyFamilyMode();
   updateHeader();
   location.replace("#/family/invite");
 }
 
+/** Owner: the invite link and the join code, in two separate boxes. */
 function renderFamilyInvite() {
   const f = state.family;
   if (!f) { location.replace("#/family/new"); return; }
   setTitle("Invite family");
-  if (!f.is_owner || !f.invite) {
-    view.innerHTML = `<div class="empty">${icon("group")}<b>${esc(f.name)}</b>Only the family's owner can invite people. Ask them for the link or code.
+  if (!f.is_owner) {
+    view.innerHTML = `<div class="empty">${icon("group")}<b>${esc(f.name)}</b>Only the family's owner can invite people. Ask them for a link and code.
       <br><a class="btn secondary small" href="#/home" style="margin-top:14px">Back to Home</a></div>`;
     return;
   }
-  const link = account.inviteLink(f.invite.code);
-  const code = f.invite.code;
+  const fresh = state.newInvite?.familyId === f.id ? state.newInvite : null;
+  const token = fresh?.token || f.invite?.token;
+  const expires = fresh?.expires_at || f.invite?.expires_at;
+  const link = token ? account.inviteLink(token) : "";
   view.innerHTML = `
     <div style="padding-top:12px"><span class="caps terracotta">Invite to</span>
-      <h2 class="headline-lg" style="margin-top:2px">${esc(f.name)}</h2>
-      <p class="t2" style="margin-top:4px">Send the link, or read out the code. The app doesn't send anything itself: copy or share them into
-        Messages, WhatsApp or email.</p></div>
-    <section class="card white">
-      <div class="row"><span class="caps t3">Invite link</span>${icon("open_in_new", "t3")}</div>
+      <h2 class="headline-lg" style="margin-top:2px">${esc(f.name)}</h2></div>
+    <p class="hint">${icon("info")} Send the link, then send the code in a separate message. The code expires in 7 days.</p>
+    ${token ? `<section class="card white">
+      <div class="row"><span class="caps t3">1 · Invite link</span>${expires ? `<span class="pill" style="background:var(--panel)">${icon("schedule")}Expires ${esc(day(expires))}</span>` : ""}</div>
       <p class="link-box mono">${esc(link)}</p>
       <div class="actions" style="margin-top:12px">
         <button type="button" class="btn small" data-action="copy" data-what="link">${icon("content_copy")}<span>Copy</span></button>
         <button type="button" class="btn outline small" data-action="share" data-what="link">${icon("ios_share")}<span>Share</span></button></div>
-    </section>
+    </section>` : ""}
     <section class="card white">
-      <div class="row"><span class="caps t3">Join code</span><span class="pill" style="background:var(--panel)">${icon("schedule")}Expires ${esc(day(f.invite.expires_at))}</span></div>
-      <div class="code-boxes" aria-label="Join code ${esc(code.split("").join(" "))}">${code.split("").map((ch) => `<span>${esc(ch)}</span>`).join("")}</div>
-      <div class="actions" style="margin-top:12px">
-        <button type="button" class="btn small" data-action="copy" data-what="code">${icon("content_copy")}<span>Copy</span></button>
-        <button type="button" class="btn outline small" data-action="share" data-what="code">${icon("ios_share")}<span>Share</span></button></div>
+      <div class="row"><span class="caps t3">${token ? "2 · " : ""}Join code</span></div>
+      ${fresh ? `<div class="code-boxes" aria-label="Join code ${esc(fresh.code.split("").join(" "))}">${fresh.code.split("").map((ch) => `<span>${esc(ch)}</span>`).join("")}</div>
+        <div class="actions" style="margin-top:12px"><button type="button" class="btn small" data-action="copy" data-what="code">${icon("content_copy")}<span>Copy</span></button></div>
+        <p class="body-sm t3" style="margin-top:10px">For safety, the code is only shown now. If it gets lost, make a new code.</p>`
+      : `<p class="body-sm t2" style="margin-top:8px">${token ? "For safety, a code is only shown once, when it's made. To send someone a code, make a new one (the current link and code will stop working)."
+          : "There's no live invite. Make a new code to invite someone."}</p>`}
     </section>
-    <a class="btn secondary block" href="#/home">Done</a>
-    <p class="note">Codes are 6 letters and numbers with no look-alikes (no 0/O or 1/I/L), and last 7 days.
-      Whoever joins creates an account or signs in first.</p>`;
+    <button type="button" class="btn secondary block" data-action="new-code">${icon("sync")}Make a new code</button>
+    <a class="btn block" href="#/home" style="margin-top:10px">Done</a>`;
 }
 
-function inviteText(what) {
+async function makeNewCode() {
   const f = state.family;
-  const link = account.inviteLink(f.invite.code);
-  return what === "link" ? { title: `Join ${f.name}`, text: `Join ${f.name} on Family Specials: ${link}` }
-    : { title: "Family join code", text: `Our Family Specials join code is ${f.invite.code}` };
+  if (!f?.is_owner) return;
+  if ((f.invite || state.newInvite) && !confirm("Make a new code? The current link and code stop working straight away.")) return;
+  try {
+    const inv = await account.newInvite();
+    state.newInvite = { ...inv, familyId: f.id };
+    state.family = account.cachedFamily() || f;
+  } catch (e) {
+    toast(e.message);
+    return;
+  }
+  toast("New link and code made", "check");
+  renderFamilyInvite();
 }
 
 async function copyInvite(btn, what) {
-  const value = what === "link" ? account.inviteLink(state.family.invite.code) : state.family.invite.code;
-  try {
-    await navigator.clipboard.writeText(value);
-  } catch {
-    toast("Couldn't copy. Try Share instead.");
-    return;
-  }
+  const f = state.family;
+  const fresh = state.newInvite?.familyId === f.id ? state.newInvite : null;
+  const token = fresh?.token || f.invite?.token;
+  const value = what === "code" ? fresh?.code : account.inviteLink(token);
+  if (!value) return;
+  if (!(await copyText(value))) { toast("Couldn't copy. Press and hold to select it instead."); return; }
   toast("Copied", "check");
   const label = btn.querySelector("span:last-child");
   label.textContent = "Copied";
   setTimeout(() => { label.textContent = "Copy"; }, 1600);
 }
 
-async function shareInvite(what) {
-  const msg = inviteText(what);
+/** Share the link only (never the code) through the phone's share sheet. */
+async function shareInvite() {
+  const f = state.family;
+  const token = (state.newInvite?.familyId === f.id ? state.newInvite.token : null) || f.invite?.token;
+  const text = `Join ${f.name} on Family Specials: ${account.inviteLink(token)}`;
   if (navigator.share) {
     try {
-      await navigator.share(msg);
+      await navigator.share({ title: `Join ${f.name}`, text });
       return;
     } catch (e) {
       if (e.name === "AbortError") return;
     }
   }
-  try {
-    await navigator.clipboard.writeText(msg.text);
-    toast("Copied. Paste it into a message.", "check");
-  } catch {
-    toast("Couldn't share from this browser.");
-  }
+  if (await copyText(text)) toast("Copied. Paste it into a message.", "check");
+  else toast("Couldn't share from this browser.");
 }
 
 /** Home's Shared Pantry: the family's members, or how to start or join one. */
 function pantryHTML() {
   if (!state.accountsOn || !state.user) {
-    const hh = data.getHousehold();
-    const me = hh.members[0];
     return `<section class="card white">
-      <div class="member"><div class="row" style="justify-content:flex-start;gap:12px"><span class="avatar">${esc(me.name[0])}<span class="online"></span></span>
-        <div><p class="title-sm">${esc(me.name)}</p><p class="body-sm t2">On this phone</p></div></div>
+      <div class="member"><div class="row" style="justify-content:flex-start;gap:12px"><span class="avatar">Y<span class="online"></span></span>
+        <div><p class="title-sm">You</p><p class="body-sm t2">On this phone</p></div></div>
         <span class="pill" style="background:var(--panel);color:var(--text-3);font-weight:400;letter-spacing:0">Just you for now</span></div>
       <p class="title-sm">Household Sync</p>
       <p class="body-sm t2" style="margin-top:2px">Share the watchlist, shopping list and savings with your family, with ticks syncing between phones.</p>
@@ -1447,7 +1702,7 @@ function pantryHTML() {
   if (!f) {
     return `<section class="card white">
       <p class="title-sm">Shop together</p>
-      <p class="body-sm t2" style="margin-top:2px">Share one watchlist, shopping list and savings tracker with your family.</p>
+      <p class="body-sm t2" style="margin-top:2px">Share one watchlist, shopping list and savings tracker with your family, live on everyone's phone.</p>
       <div class="stack-sm" style="margin-top:14px">
         <a class="btn block" href="#/family/new">${icon("group_add")}Start a family account</a>
         <a class="btn secondary block" href="#/join">${icon("person_add")}Join with a code</a></div>
@@ -1464,19 +1719,17 @@ function pantryHTML() {
   </section>`;
 }
 
-/** Settings: the family, at the top (the account itself is in Profile, under the account icon). */
+/** Settings: where the family is managed (Profile). */
 function accountSettingsHTML() {
   if (!state.accountsOn || !state.user) return "";
   const f = state.family;
   return `
     <div class="section-head" style="margin-top:8px"><h2 class="headline-sm">Family</h2><span class="caps t3">Shared Pantry</span></div>
-    <section class="card white" style="margin-top:10px">
-      ${f ? `<div class="row"><div><p class="title-md">${esc(f.name)}</p><p class="body-sm t2">You're ${f.is_owner ? "the owner" : "a member"} · ${plural(f.members.length, "member")}</p></div>
-          ${f.is_owner ? `<a class="btn secondary small" href="#/family/invite">${icon("group_add")}Invite</a>` : ""}</div>`
-        : `<p class="body-sm t2">Share one watchlist, shopping list and savings tracker with your family.</p>
-          <div class="actions" style="margin-top:12px"><a class="btn small" href="#/family/new">${icon("group_add")}Start a family</a>
-            <a class="btn secondary small" href="#/join">${icon("person_add")}Join with a code</a></div>`}
-    </section>`;
+    <a class="setting-card tap" href="#/profile" style="margin-top:10px;text-decoration:none">
+      <span class="setting-icon">${icon("group")}</span>
+      <div class="grow"><p class="title-md">${f ? esc(f.name) : "Not in a family yet"}</p>
+        <p class="body-sm t2">${f ? `You're ${f.is_owner ? "the owner" : "a member"} · ${plural(f.members.length, "member")}` : "Start or join one"} · managed in Profile</p></div>
+      ${icon("chevron_right", "t3")}</a>`;
 }
 
 async function refreshProfile() {
@@ -1497,7 +1750,41 @@ function faceHTML() {
   return esc(state.profile?.name || state.family?.me?.nickname ? initials(who) : who[0].toUpperCase());
 }
 
-/** Profile (from the account menu): name, nickname in the family, email, family and role, sign out. */
+/** The family card in Profile: members, and the owner's and members' controls. */
+function familyControlsHTML() {
+  const f = state.family;
+  if (!f) {
+    return `<section class="card white" style="margin-top:10px">
+      <p class="body-sm t2">Not in a family yet. Share one watchlist, shopping list and savings tracker with your family.</p>
+      <div class="actions" style="margin-top:12px"><a class="btn small" href="#/family/new">${icon("group_add")}Start a family account</a>
+        <a class="btn secondary small" href="#/join">${icon("person_add")}Join a family</a></div>
+    </section>`;
+  }
+  const others = f.members.filter((m) => !m.is_me);
+  const leaving = state.leaving && f.is_owner && others.length;
+  return `<section class="card white" style="margin-top:10px">
+    ${f.is_owner ? `<form id="rename-form" class="rename"><label class="field plain" style="margin-top:0;flex:1">Family name
+        <input id="rename-input" type="text" maxlength="60" value="${esc(f.name)}" autocomplete="off"></label>
+        <button type="submit" class="btn secondary small">Rename</button></form>`
+      : `<p class="title-md">${esc(f.name)}</p><p class="body-sm t2">You're a member</p>`}
+    <div class="list-rows" style="margin-top:12px">${f.members.map((m) => `<div class="row"><div class="row" style="justify-content:flex-start;gap:12px;min-width:0">
+        <span class="avatar">${esc(initials(m.nickname))}</span>
+        <div style="min-width:0"><p class="title-sm truncate">${esc(m.nickname)}${m.is_me ? ' <span class="t3" style="font-weight:400">(you)</span>' : ""}</p>
+          <p class="body-sm t2">${m.role === "owner" ? "Owner" : "Member"}</p></div></div>
+        ${f.is_owner && !m.is_me ? `<button type="button" class="btn secondary small" data-action="remove-member" data-id="${esc(m.user_id)}" data-name="${esc(m.nickname)}">Remove</button>`
+          : m.role === "owner" ? `<span class="pill terra caps">Owner</span>` : ""}</div>`).join("")}</div>
+    ${leaving ? `<form id="leave-form" class="leave-box">
+        <label class="field plain" style="margin-top:0">Who should own ${esc(f.name)} after you leave?
+          <select id="new-owner">${others.map((m) => `<option value="${esc(m.user_id)}">${esc(m.nickname)}</option>`).join("")}</select></label>
+        <div class="actions" style="margin-top:12px"><button type="button" class="btn secondary small" data-action="cancel-leave">Cancel</button>
+          <button type="submit" class="btn danger small">Hand over and leave</button></div></form>`
+      : `<div class="actions" style="margin-top:14px">
+        ${f.is_owner ? `<a class="btn small" href="#/family/invite">${icon("group_add")}Invite</a>` : ""}
+        <button type="button" class="btn danger small" data-action="leave-family">${icon("logout")}Leave family</button></div>`}
+  </section>`;
+}
+
+/** Profile (from the account menu): name, nickname in the family, email, the family and its controls, sign out. */
 function renderProfile() {
   if (!state.user) { location.replace("#/welcome"); return; }
   const f = state.family;
@@ -1520,13 +1807,13 @@ function renderProfile() {
         <button type="submit" class="btn block" style="margin-top:16px">${icon("check")}Save</button>
       </form>
     </section>
+    <div class="section-head"><h2 class="headline-sm">Family</h2>${f ? `<span class="caps t3">${f.is_owner ? "Owner" : "Member"}</span>` : ""}</div>
+    ${familyControlsHTML()}
     <div class="section-head"><h2 class="headline-sm">Account</h2></div>
     <section class="card white" style="margin-top:10px">
       <div class="readonly"><span class="t2">Email</span><span class="truncate" style="max-width:65%">${esc(state.user.email)}</span></div>
       <div class="readonly"><span class="t2">Family</span><span class="truncate" style="max-width:65%">${f ? esc(f.name) : "Not in a family yet"}</span></div>
       <div class="readonly"><span class="t2">Role</span>${f ? `<span class="pill ${f.is_owner ? "terra" : "sage"} caps">${f.is_owner ? "Owner" : "Member"}</span>` : `<span class="t3">—</span>`}</div>
-      ${f ? "" : `<div class="actions" style="margin-top:12px"><a class="btn small" href="#/family/new">${icon("group_add")}Start a family</a>
-        <a class="btn secondary small" href="#/join">${icon("person_add")}Join with a code</a></div>`}
     </section>
     <button type="button" class="btn secondary block" data-action="sign-out" style="margin-top:16px">${icon("logout")}Sign out</button>
     <button type="button" class="btn danger block" data-action="delete-account" style="margin-top:10px">${icon("delete_sweep")}Delete account</button>
@@ -1551,6 +1838,57 @@ async function submitProfile(form) {
   updateHeader();
   toast("Saved", "check");
   renderProfile();
+}
+
+async function renameFamilyNow(form) {
+  const name = $("#rename-input").value.trim();
+  if (!name) { toast("Give the family a name."); return; }
+  try {
+    state.family = await account.renameFamily(name);
+  } catch (e) {
+    toast(e.message);
+    return;
+  }
+  toast("Renamed", "check");
+  render();
+}
+
+async function removeMemberNow(userId, nickname) {
+  const f = state.family;
+  if (!confirm(`Remove ${nickname} from ${f.name}? They'll lose access to the family's watchlist, list and savings.`)) return;
+  try {
+    state.family = await account.removeMember(userId);
+  } catch (e) {
+    toast(e.message);
+    return;
+  }
+  toast(`${nickname} removed`);
+  render();
+}
+
+async function leaveFamilyNow(newOwnerId = null) {
+  const f = state.family;
+  if (!f) return;
+  const others = f.members.filter((m) => !m.is_me);
+  if (f.is_owner && others.length && !newOwnerId) { state.leaving = true; render(); return; }
+  const msg = f.is_owner && !others.length
+    ? `You're the only one in ${f.name}. Leaving deletes it, with its list, watchlist and savings.`
+    : f.is_owner ? `Hand ${f.name} to ${others.find((m) => m.user_id === newOwnerId)?.nickname} and leave?`
+    : `Leave ${f.name}? Its list, watchlist and savings stay with the family.`;
+  if (!confirm(msg)) return;
+  try {
+    await account.leaveFamily(newOwnerId);
+  } catch (e) {
+    toast(e.message);
+    return;
+  }
+  state.leaving = false;
+  data.forgetFamilyData(f.id);
+  state.family = null;
+  applyFamilyMode();
+  updateHeader();
+  toast(`You've left ${f.name}`);
+  render();
 }
 
 // The account menu under the account icon: Profile, then Settings. Closes on an outside tap, Escape or a choice.
@@ -1585,11 +1923,22 @@ document.addEventListener("pointerdown", (e) => {
   if (!$("#account-menu").hidden && !e.target.closest("#account-wrap")) setMenu(false);
 });
 
+/** The account icon in the top-right corner: the person's initials (or photo, later). */
+function updateHeader() {
+  $("#account-face").innerHTML = faceHTML();
+  const who = state.profile?.name || state.family?.me?.nickname;
+  $("#account-btn").setAttribute("aria-label", who ? `Account menu for ${who}` : "Account menu");
+}
+
 async function signOutNow() {
+  const fid = state.family?.id;
+  await sync.stop();
   await account.signOut().catch(() => {});
+  if (fid) data.forgetFamilyData(fid);
   state.user = null;
   state.family = null;
   state.profile = null;
+  applyFamilyMode();
   account.forgetFamily();
   updateHeader();
   toast("Signed out");
@@ -1600,16 +1949,19 @@ async function deleteAccountNow() {
   const f = state.family;
   const others = f ? f.members.filter((m) => !m.is_me).length : 0;
   const what = f && f.is_owner ? (others ? ` ${f.name} will be handed to the longest-standing member.` : ` ${f.name} will be deleted too.`) : "";
-  if (!confirm(`Delete your account for good? This removes your email and your place in the family.${what} Your list on this phone stays.`)) return;
+  if (!confirm(`Delete your account for good? This removes your email and your place in the family.${what}`)) return;
   try {
     await account.deleteAccount();
   } catch (e) {
     toast(e.message);
     return;
   }
+  await sync.stop();
+  if (f) data.forgetFamilyData(f.id);
   state.user = null;
   state.family = null;
   state.profile = null;
+  applyFamilyMode();
   account.forgetFamily();
   updateHeader();
   toast("Account deleted");
@@ -1710,16 +2062,42 @@ view.addEventListener("click", (e) => {
     if (action === "share-code" && navigator.share) {
       navigator.share({ title: "Notification code", text: code }).catch(() => {});
     } else {
-      navigator.clipboard.writeText(code).then(() => toast("Code copied", "check"), () => toast("Couldn't copy. Try Share code."));
+      copyText(code).then((ok) => toast(ok ? "Code copied" : "Couldn't copy. Try Share code.", ok ? "check" : ""));
     }
   } else if (action === "auth-mode") {
     state.authMode = b.dataset.mode;
-    renderWelcome();
-    $("#auth-email")?.focus();
+    render().then(() => $("#auth-email")?.focus());
   } else if (action === "copy") {
     copyInvite(b, b.dataset.what);
   } else if (action === "share") {
-    shareInvite(b.dataset.what);
+    shareInvite();
+  } else if (action === "new-code") {
+    makeNewCode();
+  } else if (action === "copy-app-link") {
+    copyText(appLink()).then((ok) => {
+      toast(ok ? "App link copied. Paste it into Safari." : "Couldn't copy. Open Safari and type the address.", ok ? "check" : "");
+      if (ok) { const l = b.querySelector("span:last-child"); if (l) l.textContent = "Copied"; }
+    });
+  } else if (action === "remove-member") {
+    removeMemberNow(b.dataset.id, b.dataset.name);
+  } else if (action === "leave-family") {
+    leaveFamilyNow();
+  } else if (action === "cancel-leave") {
+    state.leaving = false;
+    render();
+  } else if (action === "stop-watching") {
+    if (!confirm(`Stop watching ${b.dataset.name}? It comes off the watchlist for the whole family. You can watch it again from the Watchlist.`)) return;
+    data.setWatching(b.dataset.key, false, { name: b.dataset.name });
+    toast("Stopped watching");
+    location.replace("#/watchlist");
+  } else if (action === "watch-again") {
+    data.setWatching(b.dataset.key, true, data.getWatchChanges().find((c) => c.watch_key === b.dataset.key)?.data || {});
+    toast("Watching again", "check");
+  } else if (action === "watch-product") {
+    const prod = state.refs.get(b.dataset.ref).offer;
+    data.setWatching(`product:${prod.id}`, true, { name: prod.name, store: prod.store, chain: prod.chain, unit_per: prod.unit?.per });
+    toast("Added to the family's watchlist", "check");
+    b.outerHTML = `<a class="btn outline small" href="${href(`product:${prod.id}`)}">${icon("bookmark")}Watched</a>`;
   } else if (action === "sign-out") {
     signOutNow();
   } else if (action === "delete-account") {
@@ -1738,6 +2116,9 @@ view.addEventListener("submit", (e) => {
   if (e.target.id === "auth-form") { e.preventDefault(); submitAuth(e.target); return; }
   if (e.target.id === "family-form") { e.preventDefault(); submitFamily(e.target); return; }
   if (e.target.id === "profile-form") { e.preventDefault(); submitProfile(e.target); return; }
+  if (e.target.id === "join-form") { e.preventDefault(); submitJoin(e.target); return; }
+  if (e.target.id === "rename-form") { e.preventDefault(); renameFamilyNow(e.target); return; }
+  if (e.target.id === "leave-form") { e.preventDefault(); leaveFamilyNow($("#new-owner").value); return; }
   if (e.target.id !== "quick-add") return;
   e.preventDefault();
   const name = $("#own-item").value.trim();
@@ -1770,6 +2151,7 @@ const ROUTES = {
   home: renderHome, "this-week": renderThisWeek, watchlist: renderWatchlist, watch: renderDetail,
   list: renderList, savings: renderSavings, alerts: renderAlerts, settings: renderSettings,
   welcome: renderWelcome, join: renderJoin, family: renderFamily, profile: renderProfile,
+  invite: renderInvite, joined: renderJoined,
 };
 const NEEDS_DATA = new Set(["home", "this-week", "watchlist", "watch", "alerts", "settings"]);
 const LIKES_DATA = new Set(["list", "savings"]);   // use today's prices if they load, but work without them (offline)
@@ -1782,9 +2164,10 @@ function setTitle(text) {
 async function render() {
   const r = route();
   if (!ROUTES[r.name]) { location.replace("#/home"); return; }
-  // With accounts switched on, everyone signs in first (an invite link keeps its code for afterwards).
-  if (state.accountsOn && !state.user && r.name !== "welcome") {
-    if (r.name === "join" && r.params.get("code")) account.setPendingCode(account.cleanCode(r.params.get("code")));
+  // With accounts switched on, everyone signs in first. An invite link's page opens without an account (on any
+  // phone, even one that's never opened the app), and so does the notice for links from the first version.
+  const open = r.name === "welcome" || r.name === "invite" || (r.name === "join" && r.params.get("code"));
+  if (state.accountsOn && !state.user && !open) {
     location.replace("#/welcome");
     return;
   }
@@ -1820,8 +2203,25 @@ async function render() {
     await load().catch(() => {});
     if (route().name !== r.name) return;
   }
-  ROUTES[r.name](r.arg, r.params);
+  await ROUTES[r.name](r.arg, r.params);
 }
+
+let renderTimer = null;
+function scheduleRender() {
+  clearTimeout(renderTimer);
+  renderTimer = setTimeout(() => {
+    const active = document.activeElement;
+    if (active && view.contains(active) && active.matches("input, textarea, select")) return;   // don't disturb typing
+    const y = window.scrollY;
+    render().then(() => window.scrollTo(0, y));
+  }, 150);
+}
+
+const LIVE_SCREENS = new Set(["home", "this-week", "watchlist", "watch", "list", "savings", "alerts"]);
+data.onDataChange(() => {
+  updateBadge();
+  if (LIVE_SCREENS.has(route().name)) scheduleRender();
+});
 
 function goBack() {
   if (state.stack.length > 1) history.back();
@@ -1871,10 +2271,16 @@ async function start() {
     state.user = await account.currentUser();
     state.family = account.cachedFamily();
     state.profile = account.cachedProfile();
+    if (state.user) applyFamilyMode();             // offline-first: the family's copy on this phone, straight away
+    else state.family = null;
+    // Every minute while the app is open, check the family (someone joined, was removed, renamed it).
+    setInterval(() => {
+      if (state.user && document.visibilityState === "visible") refreshFamily().then(updateHeader);
+    }, 60000);
     if (state.user) {
       Promise.all([refreshFamily(), refreshProfile()]).then(() => {
         updateHeader();
-        if (["home", "settings", "family", "join", "profile"].includes(route().name)) render();
+        if (["home", "settings", "family", "join", "profile", "invite", "list", "watchlist"].includes(route().name)) render();
       });
     }
     account.onChange((u) => {
@@ -1882,8 +2288,9 @@ async function start() {
       state.user = u;
       state.family = null;
       state.profile = null;
+      applyFamilyMode();
       updateHeader();
-      if (!u) location.replace("#/welcome");
+      if (!u && route().name !== "invite") location.replace("#/welcome");
     });
   }
   if (!location.hash) history.replaceState(null, "", "#/home");

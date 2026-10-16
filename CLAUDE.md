@@ -91,7 +91,12 @@ Every stage must keep these possible. When a design choice would block one of th
   - `supabase/migrations/NNN_*.sql` are applied by `specials backend migrate`. Every table has row-level security (a family only sees its own rows), and writes go through security-definer functions.
   - Secrets (access token, secret key) are only in `.env` and GitHub secrets.
   - Actions logs are public: never print family data in them.
-  - Spec: `docs/family-accounts-spec.md`. Built so far: (a) sign-in and start a family.
+  - Spec: `docs/family-accounts-spec.md`. Built 17 Oct 2026, end to end (migration 004):
+    - **Invites:** the link carries a random token only. The code is sent separately and stored as a bcrypt hash, shown once.
+    - **Joining:** `join_family(token, code, nickname)` checks everything, with 5 wrong codes per 15 minutes per person.
+    - **Owner and member controls** are in Profile.
+    - **Shared data:** `family_list_items`, `family_savings` and `family_watch_items` merge field by field, latest wins, never deleted, synced live by `site/js/sync.js`.
+  - **Testing:** I can't create accounts on Supabase, so test the database with `specials backend test` (a rolled-back transaction with pretend people), and the user tests sign-in and joining on real phones.
 - **Phone notifications:** free Web Push. `.github/workflows/notify.yml` runs `specials notify run` after every "Collect prices" or "Publish page" run: at most one notification per watch item per specials week (Wednesday to Tuesday), plus a weekly digest. `notifications/sent.csv` (committed) records what was sent, with item keys and dates only. Phones opt in from Settings; their subscriptions live in `data/push/devices.json` and the `PUSH_SUBSCRIPTIONS` secret, never in git. The signing key is in `.env` and the `VAPID_PRIVATE_KEY` secret. `site/js/push.js` is the only file that talks to the push service.
 - **Home numbers:** every number on Home comes from real data or says there isn't enough yet. "New this week" needs a read of the product in the week before. "Usually $X" needs that normal price recorded in 2 different weeks. Recommendations come only from the watchlist (tiers come from receipts: core = bought in 4+ shops). Never publish purchase dates or "due" timing derived from receipts.
 - **Published data:** `history/` and `site/data/` hold only products related to what we buy (seen in a tracked category, or matched to a watch item). No member prices and no raw store data.

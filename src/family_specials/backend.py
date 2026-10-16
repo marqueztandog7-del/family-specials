@@ -149,7 +149,9 @@ def migrate() -> list[str]:
             continue
         body = f.read_text(encoding="utf-8")
         name = f.name.replace("'", "''")
-        sql(f"begin;\n{body}\ninsert into private.app_migrations (name) values ('{name}');\ncommit;")
+        # A lock limit, so a busy table makes the migration fail clearly instead of hanging.
+        sql(f"begin;\nset local lock_timeout = '20s';\n{body}\n"
+            f"insert into private.app_migrations (name) values ('{name}');\ncommit;")
         applied.append(f.name)
     return applied
 
@@ -164,6 +166,19 @@ def write_app_config(path: Path | None = None) -> bool:
     path = path or APP_CONFIG
     path.write_text(json.dumps({"supabaseUrl": url, "supabaseKey": key}) + "\n", encoding="utf-8")
     return True
+
+
+TESTS = config.PROJECT_ROOT / "supabase" / "tests"
+
+
+def selftest() -> list[dict[str, Any]]:
+    """Run supabase/tests/*.sql against the project. Each file runs in a transaction that's rolled back, with
+    pretend people, so nothing is saved. Returns each check's result."""
+    results: list[dict[str, Any]] = []
+    for f in sorted(TESTS.glob("*.sql")):
+        for row in sql(f.read_text(encoding="utf-8")):
+            results.append({"file": f.name, **row})
+    return results
 
 
 def status() -> dict[str, Any]:

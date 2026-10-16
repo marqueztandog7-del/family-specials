@@ -66,10 +66,35 @@ still serves the app, and GitHub Actions still does prices and notifications.
 - **Signing in:** email and password (at least 8 characters), with no confirmation email. Supabase's built-in email
   only reaches the project's own team, so password-reset emails need a free email sender, added later. The first
   time the app opens it shows a sign-in / create-account screen.
-- **Families:** a signed-in person starts a family (name + their nickname) and becomes its owner. The app shows an
-  invite link and a 6-character join code (2–9 and A–Z without O, I or L, valid 7 days), each with Copy and
-  Share. The app never sends them itself. The link opens the sign-in page with the code kept for after sign-in.
-  The code sits after the `#`, so it's never sent to a server.
+- **Starting a family:** a signed-in person starts a family (on Home under Shared Pantry, or in Profile) and becomes
+  its owner. The app makes two separate things:
+  - an **invite link** (Copy, Share), which carries only a random token and never the code;
+  - a **6-character join code** (Copy; 2–9 and A–Z without 0, O, 1, I or L). It's stored only as a bcrypt hash,
+    shown once when it's made, and lasts 7 days.
+
+  The owner sends the link, then the code in a separate message. "Make a new code" (Profile > Family > Invite)
+  makes a new link and code, and the old ones stop working straight away.
+- **Joining:** the link opens "[Inviter] invited you to join [Family]" on any phone (even one that's never opened
+  the app, and in WhatsApp's or Messages' in-app browser). Next comes an account (email, password, confirm password)
+  or signing in, then the code typed by hand and a nickname.
+  - **The rules:** wrong codes are counted (5 per person per 15 minutes, and 20 per invite per hour), and an expired
+    or replaced invite is refused, each with a clear message. The link alone can never join.
+  - **Afterwards:** a welcome screen suggests opening the app in Safari (or Chrome) and adding it to the Home Screen.
+  - **Elsewhere:** Profile > Join a family takes a pasted link and the code.
+  - **Old links:** links from the first version (with the code in them) show "This invite link no longer works".
+- **Sharing:** the family shares one watchlist, one shopping list and one savings tracker, live on every member's
+  phone (Supabase Realtime).
+  - **Who added it:** list items show who added them ("added by Mum").
+  - **Conflicts:** changes merge field by field, and the latest change wins. Removals are kept as "removed", so a
+    later change brings an item back.
+  - **Offline:** ticks and changes wait on the phone and sync when it's back online.
+  - **Joining with things on your phone:** what was already on that phone's list and savings moves into the family
+    once, with no duplicates.
+  - **The watchlist:** in a family, anyone can stop watching an item (Watchlist > item > Stop watching; "Stopped
+    watching" lists them to restore) or add a product from search (Watch).
+- **Owner and members (Profile):** the owner can rename the family, remove members, and make a new code and link.
+  Anyone can change their nickname or leave. An owner leaving with others in the family hands it to one of them
+  first, and the last one out takes the family with them.
 - **Privacy:** every table has row-level security, so people only ever see their own family. Changes go through
   server functions that check who's asking. Supabase keeps the email and a scrambled password; our tables keep
   only the family name and nicknames.
@@ -84,6 +109,7 @@ still serves the app, and GitHub Actions still does prices and notifications.
 uv run specials backend connect     # first time: asks you to paste your Supabase access token (hidden)
 uv run specials backend migrate     # apply new database changes
 uv run specials backend status      # what's applied, and how many accounts and families (counts only)
+uv run specials backend test        # the database self-test: pretend people, rolled back, saves nothing
 ```
 
 `connect` stores the access token, the project details and the secret key in `.env` (readable only by you). It

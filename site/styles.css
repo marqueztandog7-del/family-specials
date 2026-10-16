@@ -503,3 +503,17 @@ body.no-tabs #toast { bottom: calc(var(--safe-bottom) + 24px); }
 .profile-head { display: flex; align-items: center; gap: 14px; }
 .readonly { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; }
 .readonly + .readonly { border-top: 1px solid var(--border-subtle); }
+
+/* ---------------------------------------------------------------- joining, invites and family controls */
+.field.plain { text-transform: none; letter-spacing: 0; font: 600 14px/20px var(--sans); color: var(--text); }
+.field select { display: block; width: 100%; margin-top: 6px; height: 46px; padding: 0 12px; border-radius: 12px; border: 0;
+  background: var(--card); box-shadow: inset 0 0 0 1px var(--border-clay); font: 400 16px/20px var(--sans); color: var(--text); }
+.field input.code-input { text-transform: uppercase; text-align: center; font: 700 24px/1 var(--mono); letter-spacing: .25em; height: 56px; }
+.field input.code-input::placeholder { text-transform: none; letter-spacing: 0; font: 400 15px/20px var(--sans); }
+.rename { display: flex; align-items: flex-end; gap: 10px; }
+.rename .btn { flex: none; }
+.leave-box { margin-top: 14px; padding: 14px; border-radius: 12px; background: var(--panel); }
+details.stopped { margin-top: 8px; }
+details.stopped summary { display: flex; align-items: center; gap: 6px; min-height: 44px; cursor: pointer; list-style: none; }
+details.stopped summary::-webkit-details-marker { display: none; }
+.hint .material-symbols-outlined { font-size: 16px; vertical-align: -3px; color: var(--terracotta); }

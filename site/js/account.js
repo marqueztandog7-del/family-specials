@@ -4,7 +4,8 @@
 // A native (Capacitor) build can keep this file as it is.
 
 const STORAGE_KEY = "fs.auth.v1";
-const PENDING_CODE = "fs.invite.v1";
+// The first version kept an invite code on the phone. Codes are never stored now: clear any old one.
+try { localStorage.removeItem("fs.invite.v1"); } catch { /* nothing saved */ }
 let configPromise = null;
 let clientPromise = null;
 
@@ -32,6 +33,11 @@ function loadSdk() {
   });
 }
 
+/** The backend client, for sync.js (part of the data layer). */
+export function getClient() {
+  return client();
+}
+
 function client() {
   clientPromise ||= (async () => {
     const c = await getConfig();
@@ -54,6 +60,10 @@ const FRIENDLY = [
   [/unable to validate email|invalid format|email address .* is invalid|email_address_invalid/i, "That doesn't look like an email address."],
   [/rate limit|too many requests|over_request_rate_limit/i, "Too many tries. Wait a minute and try again."],
   [/already-in-family/, "You're already in a family."],
+  [/not-owner/, "Only the family's owner can do that."],
+  [/choose-new-owner/, "Choose who'll own the family before you leave."],
+  [/cannot-remove-yourself/, "You can't remove yourself. Leave the family instead."],
+  [/not-in-family/, "You're not in a family."],
   [/family-name-length/, "Give the family a name (up to 60 characters)."],
   [/nickname-length/, "Add a nickname (up to 30 characters)."],
   [/name-length/, "Names can be up to 60 characters."],
@@ -156,8 +166,51 @@ export function forgetFamily() {
   remember(null);
 }
 
+/** Start a family. Returns { family, invite: { token, code, expires_at } }: the code is shown this once only. */
 export async function createFamily(name, nickname) {
-  return remember(await rpc("create_family", { p_name: name.trim(), p_nickname: nickname.trim() }));
+  const res = await rpc("create_family", { p_name: name.trim(), p_nickname: nickname.trim() });
+  const { new_invite: invite, ...family } = res;
+  remember(family);
+  return { family, invite };
+}
+
+/** Owner: a new link and code. The old ones stop working straight away. Returns { token, code, expires_at }. */
+export async function newInvite() {
+  const invite = await rpc("new_invite");
+  await myFamily().catch(() => {});
+  return invite;
+}
+
+/** What an invite link may show, even signed out: { status: 'ok'|'expired', family_name, inviter } or null. */
+export async function invitePreview(token) {
+  const sb = await client();
+  const { data, error } = await sb.rpc("get_invite_preview", { p_token: token });
+  if (error) throw friendly(error);
+  return data;
+}
+
+/**
+ * Join with the link's token, the code sent separately and a nickname. Returns { status, family_name, inviter,
+ * family }: status is ok, wrong-code, expired, already-in-family, too-many, not-found or nickname.
+ */
+export async function joinFamily(token, code, nickname) {
+  const res = await rpc("join_family", { p_token: token, p_code: code, p_nickname: nickname.trim() });
+  if (res?.status === "ok") remember(res.family);
+  return res;
+}
+
+export async function renameFamily(name) {
+  return remember(await rpc("rename_family", { p_name: name.trim() }));
+}
+
+export async function removeMember(userId) {
+  return remember(await rpc("remove_member", { p_user_id: userId }));
+}
+
+/** Leave the family. An owner with others in it names the new owner (their account id). */
+export async function leaveFamily(newOwnerId = null) {
+  await rpc("leave_family", newOwnerId ? { p_new_owner: newOwnerId } : {});
+  remember(null);
 }
 
 // ------------------------------------------------------------------ profile (seen only by the person themselves)
@@ -190,29 +243,24 @@ export async function updateProfile(name, nickname) {
   return profile;
 }
 
-/** The invite link: our app's sign-in page with the code after the # (so it's never sent to a server). */
-export function inviteLink(code) {
-  return `${location.origin}${location.pathname}#/join?code=${encodeURIComponent(code)}`;
+/** The invite link: our app's invite page with the invite's token only. It never contains the code. */
+export function inviteLink(token) {
+  return `${location.origin}${location.pathname}#/invite/${encodeURIComponent(token)}`;
 }
 
-/** A code that arrived in an invite link, kept on this phone until the person has joined. */
-export function setPendingCode(code) {
-  try { localStorage.setItem(PENDING_CODE, code); } catch { /* private mode: the code is still in the link */ }
+/** The token from a pasted invite link (or a bare token). */
+export function tokenFrom(text) {
+  const t = (text || "").trim();
+  const m = t.match(/#\/invite\/([A-Za-z0-9_-]{16,})/);
+  if (m) return m[1];
+  return /^[A-Za-z0-9_-]{16,}$/.test(t) ? t : "";
 }
 
-export function pendingCode() {
-  try { return localStorage.getItem(PENDING_CODE) || ""; } catch { return ""; }
-}
-
-export function clearPendingCode() {
-  try { localStorage.removeItem(PENDING_CODE); } catch { /* nothing saved */ }
-}
-
-/** Join codes are 6 characters from 2-9 and A-Z without O, I and L. Tidies what someone typed. */
+/** Join codes are 6 characters from 2-9 and A-Z without O, I and L. Tidies what someone typed (any case, spaces). */
 export function cleanCode(text) {
-  return (text || "").toUpperCase().replace(/[^0-9A-Z]/g, "").slice(0, 6);
+  return (text || "").toUpperCase().replace(/[^0-9A-Z]/g, "");
 }
 
 export function looksLikeCode(text) {
-  return /^[2-9A-HJKMNP-Z]{6}$/.test(text);
+  return /^[2-9A-HJKMNP-Z]{6}$/.test(cleanCode(text));
 }
