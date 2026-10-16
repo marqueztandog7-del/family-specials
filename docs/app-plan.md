@@ -8,8 +8,8 @@ dropped 16 Oct 2026; Coles paused for good).
 and Home was added in the middle.
 
 ## Bottom tab bar (five tabs)
-**This Week · Watchlist · Home · List · Savings.** Phone-first, large easy-to-tap targets, plain grey, black
-and white.
+**This Week · Watchlist · Home · List · Savings.** Phone-first, large easy-to-tap targets, built to the Pantry Standard
+Stitch designs in `docs/design` (from 16 Oct 2026; they replace the plain grey style).
 1. **This Week:** every watchlist item currently on special, best unit price first, core items first, each with
    its buy-now signal and an "Add to list" button.
 2. **Watchlist:** all watched items. Tapping one opens its detail: current price at each store, a simple price

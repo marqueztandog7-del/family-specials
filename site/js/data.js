@@ -181,6 +181,20 @@ export function unreadAlertCount() {
   return getAlerts().alerts.filter((x) => !x.read).length;
 }
 
+export function markAlertRead(id) {
+  const a = getAlerts();
+  const hit = a.alerts.find((x) => x.id === id && !x.read);
+  if (!hit) return;
+  hit.read = true;
+  save(KEYS.alerts, a);
+}
+
+/** Forget the alerts on this phone (they're kept in `seen`, so the same specials don't alert again). */
+export function clearAlerts() {
+  const a = getAlerts();
+  save(KEYS.alerts, { alerts: [], seen: a.seen });
+}
+
 export function markAlertsRead() {
   const a = getAlerts();
   if (!a.alerts.some((x) => !x.read)) return;

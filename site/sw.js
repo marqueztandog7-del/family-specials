@@ -1,7 +1,8 @@
 // Offline support: keeps the app shell, and the last downloaded prices, so the app opens without a signal.
 // Prices are always fetched fresh first (network first); the saved copy is only a fallback.
 // Also shows phone notifications sent from GitHub (Web Push).
-const VERSION = "v2";
+const VERSION = "v3";
+const FONTS = "fonts-v1";   // Google Fonts (text, prices, icons): kept after the first visit
 const SHELL = ["./", "index.html", "styles.css", "js/app.js", "js/data.js", "js/push.js", "manifest.webmanifest",
   "push.json", "data/watchlist.json", "data/status.json",
   "icons/icon-192.png", "icons/apple-touch-icon.png", "icons/favicon.svg"];
@@ -12,15 +13,25 @@ self.addEventListener("install", (e) => {
 
 self.addEventListener("activate", (e) => {
   e.waitUntil(caches.keys()
-    .then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k))))
+    .then((keys) => Promise.all(keys.filter((k) => k !== VERSION && k !== FONTS).map((k) => caches.delete(k))))
     .then(() => self.clients.claim()));
 });
 
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
-  if (e.request.method !== "GET" || url.origin !== location.origin) return;
+  if (e.request.method !== "GET") return;
+  if (url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com") {
+    e.respondWith(caches.open(FONTS).then((c) => c.match(e.request).then((hit) => hit || fetch(e.request).then((res) => {
+      if (res.ok || res.type === "opaque") c.put(e.request, res.clone());
+      return res;
+    }))));
+    return;
+  }
+  if (url.origin !== location.origin) return;
+  // "no-cache" asks the server whether the file changed (a cheap "not modified" when it hasn't), so a new version
+  // of the app or new prices show up straight away instead of after the browser's cache expires.
   e.respondWith(
-    fetch(e.request)
+    fetch(e.request, { cache: "no-cache" })
       .then((res) => {
         const copy = res.clone();
         caches.open(VERSION).then((c) => c.put(e.request, copy));

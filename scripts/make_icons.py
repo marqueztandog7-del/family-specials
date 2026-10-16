@@ -1,4 +1,4 @@
-"""Draws the app icons (a plain white price tag on black) with no image libraries.
+"""Draws the app icons (a white price tag on Pantry Standard terracotta) with no image libraries.
 
 Run: uv run python scripts/make_icons.py   -> writes site/icons/*.png and favicon.svg
 """
@@ -14,6 +14,7 @@ OUT = Path(__file__).resolve().parents[1] / "site" / "icons"
 TAG = [(0.22, 0.50), (0.40, 0.30), (0.80, 0.30), (0.80, 0.70), (0.40, 0.70)]
 HOLE = (0.42, 0.50, 0.055)
 ANGLE = math.radians(-45)
+BG = (0xC2, 0x5E, 0x3E)   # terracotta, as in docs/design
 
 
 def rotate(x: float, y: float) -> tuple[float, float]:
@@ -67,9 +68,9 @@ def render(size: int, scale: float, rounded: bool) -> bytes:
                     if inside(poly, x, y) and (x - hx) ** 2 + (y - hy) ** 2 > hr ** 2:
                         white += 1
             n = ss * ss
-            value = round(255 * white / n)
             alpha = round(255 * bg / n)
-            row += bytes([value, value, value, alpha])
+            t = white / bg if bg else 0          # share of the visible pixel that is the white tag
+            row += bytes([round(c + (255 - c) * t) for c in BG] + [alpha])
         rows.append(bytes(row))
     return png(size, size, b"".join(rows))
 
@@ -91,9 +92,9 @@ def svg() -> str:
     poly, (hx, hy, hr) = shape(1.0)
     pts = " ".join(f"{x * 100:.1f},{y * 100:.1f}" for x, y in poly)
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
-            f'<rect width="100" height="100" rx="18" fill="#111"/>'
+            f'<rect width="100" height="100" rx="18" fill="#C25E3E"/>'
             f'<polygon points="{pts}" fill="#fff"/>'
-            f'<circle cx="{hx * 100:.1f}" cy="{hy * 100:.1f}" r="{hr * 100:.1f}" fill="#111"/></svg>\n')
+            f'<circle cx="{hx * 100:.1f}" cy="{hy * 100:.1f}" r="{hr * 100:.1f}" fill="#C25E3E"/></svg>\n')
 
 
 if __name__ == "__main__":

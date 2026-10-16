@@ -26,6 +26,7 @@ the Phase 1 report and the decisions log are kept as local notes (not published)
     signals. Search products here, then "Add to list" or "Suggest to watch".
   - **List:** the shopping list, saved on this phone (ticking off, totals and where to shop come next).
   - **Savings:** coming next.
+  - **Alerts and Settings** open over the tabs (no tab bar), as in the designs. Item detail keeps the tab bar.
   - **Settings** (the gear, top-right of every screen): notifications, which stores to compare and when
     each last updated, how our prices work, and clearing this phone's list and savings. It grows into
     Account and Settings when family accounts arrive.
@@ -36,6 +37,9 @@ the Phase 1 report and the decisions log are kept as local notes (not published)
 - **What's on it.** It shows **only products related to what we buy** (the watchlist's store
   categories and matches). It is public to anyone with the link, so it never carries receipt data
   (item names, rules and tiers only), and search engines are asked not to list it.
+- **How it looks.** Built to the Pantry Standard Stitch designs in `docs/design`: warm limestone surfaces,
+  terracotta buttons, sage savings badges, store colour tags, Plus Jakarta Sans for text and JetBrains Mono for every
+  price. The fonts and icons come from Google Fonts and are kept on the phone after the first visit.
 - **How it's built.** It's a static web app in `site/`:
   - `index.html`, `styles.css` and `js/app.js` are the screens.
   - **`js/data.js` is the only file that reads or saves data:** `site/data/watchlist.json` (the watchlist with

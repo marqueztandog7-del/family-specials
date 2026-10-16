@@ -70,7 +70,8 @@ Every stage must keep these possible. When a design choice would block one of th
 ## Stack
 
 - Python 3.12 (via uv), httpx, pydantic, SQLite with FTS5, rapidfuzz, PyYAML.
-- The family page is a static web app in `site/` on GitHub Pages. `site/js/data.js` is the only file that reads data, so a Capacitor (App Store / Google Play) build can wrap `site/` later. Phone-first; greys, black and white, no colour accents; nothing desktop-only.
+- The family page is a static web app in `site/` on GitHub Pages. `site/js/data.js` is the only file that reads or saves data, and `site/js/push.js` the only one that talks to the push service, so a Capacitor (App Store / Google Play) build can wrap `site/` later. Phone-first; nothing desktop-only.
+- **Design:** the Stitch designs in `docs/design` (Pantry Standard: `pantry_standard/DESIGN.md`, one mock-up per screen, and the design brief) are the visual reference for every screen: layout, spacing, type (Plus Jakarta Sans, JetBrains Mono for prices), components and colours (terracotta actions, sage savings, store colour tags). They replace the earlier greys-only rule (16 Oct 2026). Sample numbers in the mock-ups are always replaced by live data, and where a mock-up conflicts with an agreed rule (Coles paused, data rules), the agreed rule wins and is raised.
 - **Updates:**
   - GitHub Actions (`.github/workflows/collect.yml`) runs the stores with `run_on: github`; `scripts/mac-update.sh` runs the ones with `run_on: mac`.
   - Both use `specials update`: load `history/` → collect what's due → append to `history/` → rebuild `site/data/`.
