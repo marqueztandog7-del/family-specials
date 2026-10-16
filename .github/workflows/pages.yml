@@ -26,6 +26,14 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: actions/configure-pages@v6
+      - name: Give the app its backend settings (from GitHub secrets; never committed)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_PUBLISHABLE_KEY" ]; then
+            printf '{"supabaseUrl":"%s","supabaseKey":"%s"}\n' "$SUPABASE_URL" "$SUPABASE_PUBLISHABLE_KEY" > site/app-config.json
+          fi
       - uses: actions/upload-pages-artifact@v5
         with:
           path: site

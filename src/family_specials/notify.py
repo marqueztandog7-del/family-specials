@@ -17,8 +17,6 @@ import base64
 import csv
 import json
 import os
-import shutil
-import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -78,14 +76,7 @@ def load_devices() -> list[dict[str, Any]]:
 def save_devices(devices: list[dict[str, Any]]) -> None:
     DEVICES_FILE.parent.mkdir(parents=True, exist_ok=True)
     DEVICES_FILE.write_text(json.dumps(devices, indent=1), encoding="utf-8")
-    _gh_secret("PUSH_SUBSCRIPTIONS", json.dumps(devices, separators=(",", ":")))
-
-
-def _gh_secret(name: str, value: str) -> None:
-    """Set a GitHub Actions secret for this repo. The value goes in on stdin, so it's never shown or logged."""
-    gh = shutil.which("gh") or str(Path.home() / ".local" / "bin" / "gh")
-    subprocess.run([gh, "secret", "set", name], input=value, text=True, check=True, cwd=config.PROJECT_ROOT,
-                   capture_output=True)
+    config.set_github_secret("PUSH_SUBSCRIPTIONS", json.dumps(devices, separators=(",", ":")))
 
 
 # ------------------------------------------------------------------ keys
@@ -103,12 +94,8 @@ def create_keys(force: bool = False) -> str:
     private = b64urlencode(v.private_key.private_numbers().private_value.to_bytes(32, "big"))
     public = b64urlencode(v.public_key.public_bytes(serialization.Encoding.X962,
                                                     serialization.PublicFormat.UncompressedPoint))
-    env = config.PROJECT_ROOT / ".env"
-    lines = [ln for ln in (env.read_text().splitlines() if env.exists() else []) if not ln.startswith("VAPID_PRIVATE_KEY=")]
-    env.write_text("\n".join(lines + [f"VAPID_PRIVATE_KEY={private}"]) + "\n")
-    env.chmod(0o600)
-    os.environ["VAPID_PRIVATE_KEY"] = private
-    _gh_secret("VAPID_PRIVATE_KEY", private)
+    config.set_env("VAPID_PRIVATE_KEY", private)
+    config.set_github_secret("VAPID_PRIVATE_KEY", private)
     PUBLIC_KEY_FILE.write_text(json.dumps({"vapid_public_key": public}) + "\n")
     return public
 

@@ -209,7 +209,11 @@ def cmd_serve(args) -> int:
     import functools
     import http.server
 
+    from . import backend
+
     handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(config.PROJECT_ROOT / "site"))
+    if backend.write_app_config():
+        print("Accounts: on (site/app-config.json written from .env; it's never committed)")
     print(f"Family page: http://{args.host}:{args.port}/")
     http.server.ThreadingHTTPServer((args.host, args.port), handler).serve_forever()
     return 0
@@ -278,10 +282,11 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--port", type=int, default=8000)
     p.set_defaults(func=cmd_serve)
 
-    from . import cli_notify, cli_watch
+    from . import cli_backend, cli_notify, cli_watch
 
     cli_watch.register(sub)
     cli_notify.register(sub)
+    cli_backend.register(sub)
 
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO,

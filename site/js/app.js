@@ -4,10 +4,11 @@
 // there isn't enough yet, the screen says so.
 import * as data from "./data.js";
 import * as push from "./push.js";
+import * as account from "./account.js";
 
 const $ = (s, el = document) => el.querySelector(s);
 const view = $("#view");
-const APP_VERSION = "v3";
+const APP_VERSION = "v4";
 
 const TABS = { "this-week": "This Week", watchlist: "Watchlist", home: "Home", list: "List", savings: "Savings" };
 // Screens on top of a tab. Alerts and Settings hide the tab bar (as in the designs); item detail keeps it.
@@ -15,6 +16,9 @@ const SUB_SCREENS = {
   watch: { tab: "watchlist", up: "#/watchlist", title: "Item Detail", tabs: true, brand: true },
   alerts: { tab: "home", up: "#/home", title: "Alerts", tabs: false },
   settings: { tab: null, up: "#/home", title: "Settings", tabs: false },
+  welcome: { tab: null, up: "#/welcome", title: "Family Specials", tabs: false, bare: true },
+  join: { tab: "home", up: "#/home", title: "Join a family", tabs: false },
+  family: { tab: "home", up: "#/home", title: "Family", tabs: false },
 };
 const TIER_ORDER = { core: 0, regular: 1, occasional: 2 };
 const TIER_LABEL = { core: "Core", regular: "Regular", occasional: "Occasional" };
@@ -36,6 +40,7 @@ const state = {
   watch: null, status: null, loadedAt: 0, offerToItem: new Map(), offersById: new Map(),
   query: "", searchSeq: 0, productsLoaded: false, filter: "all", dealsOnly: false,
   refs: new Map(), expanded: new Set(), scroll: new Map(), stack: [], pushOn: null,
+  accountsOn: false, user: null, family: null, authMode: "create",
 };
 
 // ------------------------------------------------------------------ formatting
@@ -387,22 +392,11 @@ function renderHome() {
     </div>`;
   }).join("");
 
-  // Shared Pantry (fills in when family accounts arrive).
-  const hh = data.getHousehold();
-  const me = hh.members[0];
-  const pantry = `<section class="card white">
-    <div class="member"><div class="row" style="justify-content:flex-start;gap:12px"><span class="avatar">${esc(me.name[0])}<span class="online"></span></span>
-      <div><p class="title-sm">${esc(me.name)}</p><p class="body-sm t2">On this phone</p></div></div>
-      ${hh.members.length === 1 ? `<span class="pill" style="background:var(--panel);color:var(--text-3);font-weight:400;letter-spacing:0">Just you for now</span>` : ""}</div>
-    <p class="title-sm">Household Sync</p>
-    <p class="body-sm t2" style="margin-top:2px">Share the watchlist, shopping list and savings with your family, with ticks syncing between phones. Coming with family accounts.</p>
-    <div class="row" style="margin-top:12px;gap:12px"><button type="button" class="btn secondary" disabled style="flex:1;min-height:44px">${icon("group_add")}Invite family</button>
-      ${hh.canInvite ? "" : `<span class="pill caps" style="background:var(--panel)">Coming soon</span>`}</div>
-  </section>`;
+  const pantry = pantryHTML();
 
   view.innerHTML = `
     <div class="greet">
-      <div><span class="caps">${dayPart()} pantry run</span><h2 class="headline-lg" style="margin-top:2px">Hi there 🥖</h2>
+      <div><span class="caps">${dayPart()} pantry run</span><h2 class="headline-lg" style="margin-top:2px">Hi ${esc(state.family?.me?.nickname || "there")} 🥖</h2>
         <p class="body-sm t3">${upd ? `Prices updated ${esc(dateTime(upd))}` : "Prices not updated yet"}</p></div>
       <a class="round-btn" href="#/alerts" aria-label="${unread ? `Alerts, ${unread} unread` : "Alerts"}">${icon("notifications")}${unread ? `<b class="badge">${unread > 99 ? "99+" : unread}</b>` : ""}</a>
     </div>
@@ -1129,8 +1123,9 @@ function renderSettings() {
   }).join("");
   const n = data.getList().items.length;
   const alerts = data.getAlerts().alerts.length;
-  view.innerHTML = `
-    <section class="setting-card" style="margin-top:8px">
+  view.innerHTML = accountSettingsHTML() + `
+    <div class="section-head" style="margin-top:${state.user ? 24 : 8}px"><h2 class="headline-sm">Prices</h2><span class="caps t3">Stores</span></div>
+    <section class="setting-card" style="margin-top:10px">
       <span class="setting-icon sage">${icon("sync")}</span>
       <div class="grow"><p class="title-md">Price updates</p><p class="num-sm t2" style="margin-top:2px">${active} of ${stores.length || 5} stores updating</p></div>
       <span class="pill" style="background:var(--panel)">Weekly</span>
@@ -1234,6 +1229,302 @@ async function toggleNotifications(box) {
   renderNotifyCard();
 }
 
+// ------------------------------------------------------------------ Accounts and families (through account.js)
+
+const initials = (name) => ((name || "?").trim().split(/\s+/).map((w) => w[0]).join("").slice(0, 2) || "?").toUpperCase();
+
+async function refreshFamily() {
+  if (!state.user) { state.family = null; return null; }
+  try {
+    state.family = await account.myFamily();
+  } catch {
+    state.family = account.cachedFamily();          // offline: what we knew last time
+  }
+  return state.family;
+}
+
+/** The gear becomes the person's profile (their initial) once they're signed in. */
+function updateHeader() {
+  const gear = $("#gear");
+  if (state.user) {
+    const who = state.family?.me?.nickname || state.user.email || "?";
+    gear.innerHTML = `<span class="avatar sm">${esc(initials(who))}</span>`;
+    gear.setAttribute("aria-label", "Settings and account");
+  } else {
+    gear.innerHTML = icon("settings");
+    gear.setAttribute("aria-label", "Settings");
+  }
+}
+
+function renderWelcome() {
+  const code = account.pendingCode();
+  const mode = state.authMode;
+  view.innerHTML = `
+    <div class="auth">
+      <div class="auth-brand"><span class="logo lg">${icon("shopping_basket", "fill")}</span>
+        <h2 class="headline-lg">Family Specials</h2>
+        <p class="t2">Specials on the things your family buys, at every store you use.</p></div>
+      ${code ? `<div class="invite-banner">${icon("group_add")}<div><p class="title-sm">You've been invited to a family</p>
+        <p class="body-sm t2">Create an account or sign in first. Then you'll join with code <b class="mono">${esc(code)}</b>.</p></div></div>` : ""}
+      <section class="card white">
+        <div class="seg" role="tablist" aria-label="Create an account or sign in">
+          <button type="button" role="tab" data-action="auth-mode" data-mode="create" aria-selected="${mode === "create"}">Create account</button>
+          <button type="button" role="tab" data-action="auth-mode" data-mode="signin" aria-selected="${mode === "signin"}">Sign in</button>
+        </div>
+        <form id="auth-form" novalidate>
+          <label class="field">Email<input id="auth-email" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required></label>
+          <label class="field">Password<input id="auth-password" type="password" autocomplete="${mode === "create" ? "new-password" : "current-password"}" required></label>
+          ${mode === "create" ? `<p class="body-sm t3" style="margin-top:6px">At least 8 characters.</p>` : ""}
+          <p class="form-error" id="auth-error" role="alert" hidden></p>
+          <button type="submit" class="btn block" style="margin-top:16px">${mode === "create" ? "Create account" : "Sign in"}</button>
+        </form>
+      </section>
+      <p class="note">We only keep your email and a scrambled password. Your list and savings on this phone are kept.</p>
+    </div>`;
+}
+
+async function submitAuth(form) {
+  const email = $("#auth-email").value.trim();
+  const password = $("#auth-password").value;
+  const err = $("#auth-error");
+  const btn = form.querySelector('button[type="submit"]');
+  const label = btn.textContent;
+  const fail = (msg) => { err.textContent = msg; err.hidden = false; btn.disabled = false; btn.textContent = label; };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail("That doesn't look like an email address.");
+  if (state.authMode === "create" && password.length < 8) return fail("Use a password of at least 8 characters.");
+  if (!password) return fail("Enter your password.");
+  btn.disabled = true;
+  btn.textContent = "One moment…";
+  try {
+    state.user = state.authMode === "signin" ? await account.signIn(email, password) : await account.signUp(email, password);
+  } catch (e) {
+    return fail(e.message);
+  }
+  await refreshFamily();
+  updateHeader();
+  toast(state.authMode === "signin" ? "Signed in" : "Account created", "check");
+  const code = account.pendingCode();
+  location.replace(code && !state.family ? `#/join?code=${encodeURIComponent(code)}` : "#/home");
+}
+
+function renderJoin(_arg, params) {
+  const code = account.cleanCode(params.get("code") || account.pendingCode());
+  if (code) account.setPendingCode(code);
+  if (!state.user) { location.replace("#/welcome"); return; }
+  if (state.family) {
+    account.clearPendingCode();
+    view.innerHTML = `<div class="empty">${icon("group")}<b>You're in ${esc(state.family.name)}</b>
+      One person belongs to one family for now.<br><a class="btn secondary small" href="#/home" style="margin-top:14px">Back to Home</a></div>`;
+    return;
+  }
+  view.innerHTML = `<div class="empty">${icon("group_add")}<b>Joining a family comes next</b>
+    ${code ? `Your code <b class="mono">${esc(code)}</b> is saved on this phone, ready for the next update.` : "You'll type the 6-character code here in the next update."}
+    <br><a class="btn secondary small" href="#/home" style="margin-top:14px">Back to Home</a></div>`;
+}
+
+function renderFamily(arg) {
+  if (!state.user) { location.replace("#/welcome"); return; }
+  if (arg === "new") return renderFamilyNew();
+  return renderFamilyInvite();
+}
+
+function renderFamilyNew() {
+  if (state.family) { location.replace("#/family/invite"); return; }
+  setTitle("Start a family");
+  view.innerHTML = `
+    <div style="padding-top:12px"><span class="caps terracotta">Shared Pantry</span>
+      <h2 class="headline-lg" style="margin-top:2px">Start a family account</h2>
+      <p class="t2" style="margin-top:4px">You'll be the owner. Next you'll get a link and a code to invite the others.</p></div>
+    <section class="card white">
+      <form id="family-form" novalidate>
+        <label class="field">Family name<input id="family-name" type="text" maxlength="60" autocomplete="off" placeholder="What your family calls itself" required></label>
+        <label class="field">Your nickname in the family<input id="family-nickname" type="text" maxlength="30" autocomplete="nickname" placeholder="e.g. Mum or Dad" required></label>
+        <p class="form-error" id="family-error" role="alert" hidden></p>
+        <button type="submit" class="btn block" style="margin-top:16px">${icon("group_add")}Start family</button>
+      </form>
+    </section>
+    <p class="note">Only your family can see its name, nicknames, list and savings.</p>`;
+}
+
+async function submitFamily(form) {
+  const name = $("#family-name").value.trim();
+  const nickname = $("#family-nickname").value.trim();
+  const err = $("#family-error");
+  const btn = form.querySelector('button[type="submit"]');
+  const fail = (msg) => { err.textContent = msg; err.hidden = false; btn.disabled = false; };
+  if (!name) return fail("Give the family a name.");
+  if (!nickname) return fail("Add your nickname.");
+  btn.disabled = true;
+  try {
+    state.family = await account.createFamily(name, nickname);
+  } catch (e) {
+    return fail(e.message);
+  }
+  updateHeader();
+  location.replace("#/family/invite");
+}
+
+function renderFamilyInvite() {
+  const f = state.family;
+  if (!f) { location.replace("#/family/new"); return; }
+  setTitle("Invite family");
+  if (!f.is_owner || !f.invite) {
+    view.innerHTML = `<div class="empty">${icon("group")}<b>${esc(f.name)}</b>Only the family's owner can invite people. Ask them for the link or code.
+      <br><a class="btn secondary small" href="#/home" style="margin-top:14px">Back to Home</a></div>`;
+    return;
+  }
+  const link = account.inviteLink(f.invite.code);
+  const code = f.invite.code;
+  view.innerHTML = `
+    <div style="padding-top:12px"><span class="caps terracotta">Invite to</span>
+      <h2 class="headline-lg" style="margin-top:2px">${esc(f.name)}</h2>
+      <p class="t2" style="margin-top:4px">Send the link, or read out the code. The app doesn't send anything itself: copy or share them into
+        Messages, WhatsApp or email.</p></div>
+    <section class="card white">
+      <div class="row"><span class="caps t3">Invite link</span>${icon("open_in_new", "t3")}</div>
+      <p class="link-box mono">${esc(link)}</p>
+      <div class="actions" style="margin-top:12px">
+        <button type="button" class="btn small" data-action="copy" data-what="link">${icon("content_copy")}<span>Copy</span></button>
+        <button type="button" class="btn outline small" data-action="share" data-what="link">${icon("ios_share")}<span>Share</span></button></div>
+    </section>
+    <section class="card white">
+      <div class="row"><span class="caps t3">Join code</span><span class="pill" style="background:var(--panel)">${icon("schedule")}Expires ${esc(day(f.invite.expires_at))}</span></div>
+      <div class="code-boxes" aria-label="Join code ${esc(code.split("").join(" "))}">${code.split("").map((ch) => `<span>${esc(ch)}</span>`).join("")}</div>
+      <div class="actions" style="margin-top:12px">
+        <button type="button" class="btn small" data-action="copy" data-what="code">${icon("content_copy")}<span>Copy</span></button>
+        <button type="button" class="btn outline small" data-action="share" data-what="code">${icon("ios_share")}<span>Share</span></button></div>
+    </section>
+    <a class="btn secondary block" href="#/home">Done</a>
+    <p class="note">Codes are 6 letters and numbers with no look-alikes (no 0/O or 1/I/L), and last 7 days.
+      Whoever joins creates an account or signs in first.</p>`;
+}
+
+function inviteText(what) {
+  const f = state.family;
+  const link = account.inviteLink(f.invite.code);
+  return what === "link" ? { title: `Join ${f.name}`, text: `Join ${f.name} on Family Specials: ${link}` }
+    : { title: "Family join code", text: `Our Family Specials join code is ${f.invite.code}` };
+}
+
+async function copyInvite(btn, what) {
+  const value = what === "link" ? account.inviteLink(state.family.invite.code) : state.family.invite.code;
+  try {
+    await navigator.clipboard.writeText(value);
+  } catch {
+    toast("Couldn't copy. Try Share instead.");
+    return;
+  }
+  toast("Copied", "check");
+  const label = btn.querySelector("span:last-child");
+  label.textContent = "Copied";
+  setTimeout(() => { label.textContent = "Copy"; }, 1600);
+}
+
+async function shareInvite(what) {
+  const msg = inviteText(what);
+  if (navigator.share) {
+    try {
+      await navigator.share(msg);
+      return;
+    } catch (e) {
+      if (e.name === "AbortError") return;
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(msg.text);
+    toast("Copied. Paste it into a message.", "check");
+  } catch {
+    toast("Couldn't share from this browser.");
+  }
+}
+
+/** Home's Shared Pantry: the family's members, or how to start or join one. */
+function pantryHTML() {
+  if (!state.accountsOn || !state.user) {
+    const hh = data.getHousehold();
+    const me = hh.members[0];
+    return `<section class="card white">
+      <div class="member"><div class="row" style="justify-content:flex-start;gap:12px"><span class="avatar">${esc(me.name[0])}<span class="online"></span></span>
+        <div><p class="title-sm">${esc(me.name)}</p><p class="body-sm t2">On this phone</p></div></div>
+        <span class="pill" style="background:var(--panel);color:var(--text-3);font-weight:400;letter-spacing:0">Just you for now</span></div>
+      <p class="title-sm">Household Sync</p>
+      <p class="body-sm t2" style="margin-top:2px">Share the watchlist, shopping list and savings with your family, with ticks syncing between phones.</p>
+    </section>`;
+  }
+  const f = state.family;
+  if (!f) {
+    return `<section class="card white">
+      <p class="title-sm">Shop together</p>
+      <p class="body-sm t2" style="margin-top:2px">Share one watchlist, shopping list and savings tracker with your family.</p>
+      <div class="stack-sm" style="margin-top:14px">
+        <a class="btn block" href="#/family/new">${icon("group_add")}Start a family account</a>
+        <a class="btn secondary block" href="#/join">${icon("person_add")}Join with a code</a></div>
+    </section>`;
+  }
+  return `<section class="card white">
+    <div class="row" style="margin-bottom:12px"><p class="title-md">${esc(f.name)}</p><span class="pill caps" style="background:var(--panel)">${plural(f.members.length, "member")}</span></div>
+    <div class="list-rows">${f.members.map((m) => `<div class="row"><div class="row" style="justify-content:flex-start;gap:12px">
+        <span class="avatar">${esc(initials(m.nickname))}${m.is_me ? '<span class="online"></span>' : ""}</span>
+        <div><p class="title-sm">${esc(m.nickname)}${m.is_me ? ' <span class="t3" style="font-weight:400">(you)</span>' : ""}</p>
+          <p class="body-sm t2">${m.role === "owner" ? "Owner" : "Member"}</p></div></div>
+        ${m.role === "owner" ? `<span class="pill terra caps">Owner</span>` : ""}</div>`).join("")}</div>
+    ${f.is_owner ? `<a class="btn secondary block" href="#/family/invite" style="margin-top:14px">${icon("group_add")}Invite family</a>` : ""}
+  </section>`;
+}
+
+/** Settings: the account and the family, at the top. */
+function accountSettingsHTML() {
+  if (!state.accountsOn || !state.user) return "";
+  const f = state.family;
+  const who = f?.me?.nickname || state.user.email;
+  return `
+    <div class="section-head" style="margin-top:8px"><h2 class="headline-sm">Account</h2><span class="caps t3">Profile</span></div>
+    <section class="card white" style="margin-top:10px">
+      <div class="row" style="justify-content:flex-start;gap:12px"><span class="avatar">${esc(initials(who))}</span>
+        <div class="grow"><p class="title-md truncate">${esc(f?.me?.nickname || "Signed in")}</p><p class="body-sm t2 truncate">${esc(state.user.email)}</p></div></div>
+      <div class="actions" style="margin-top:14px">
+        <button type="button" class="btn secondary small" data-action="sign-out">${icon("logout")}Sign out</button>
+        <button type="button" class="btn danger small" data-action="delete-account">${icon("delete_sweep")}Delete account</button></div>
+    </section>
+    <div class="section-head"><h2 class="headline-sm">Family</h2><span class="caps t3">Shared Pantry</span></div>
+    <section class="card white" style="margin-top:10px">
+      ${f ? `<div class="row"><div><p class="title-md">${esc(f.name)}</p><p class="body-sm t2">You're ${f.is_owner ? "the owner" : "a member"} · ${plural(f.members.length, "member")}</p></div>
+          ${f.is_owner ? `<a class="btn secondary small" href="#/family/invite">${icon("group_add")}Invite</a>` : ""}</div>`
+        : `<p class="body-sm t2">Share one watchlist, shopping list and savings tracker with your family.</p>
+          <div class="actions" style="margin-top:12px"><a class="btn small" href="#/family/new">${icon("group_add")}Start a family</a>
+            <a class="btn secondary small" href="#/join">${icon("person_add")}Join with a code</a></div>`}
+    </section>`;
+}
+
+async function signOutNow() {
+  await account.signOut().catch(() => {});
+  state.user = null;
+  state.family = null;
+  account.forgetFamily();
+  updateHeader();
+  toast("Signed out");
+  location.replace("#/welcome");
+}
+
+async function deleteAccountNow() {
+  const f = state.family;
+  const others = f ? f.members.filter((m) => !m.is_me).length : 0;
+  const what = f && f.is_owner ? (others ? ` ${f.name} will be handed to the longest-standing member.` : ` ${f.name} will be deleted too.`) : "";
+  if (!confirm(`Delete your account for good? This removes your email and your place in the family.${what} Your list on this phone stays.`)) return;
+  try {
+    await account.deleteAccount();
+  } catch (e) {
+    toast(e.message);
+    return;
+  }
+  state.user = null;
+  state.family = null;
+  account.forgetFamily();
+  updateHeader();
+  toast("Account deleted");
+  location.replace("#/welcome");
+}
+
 // ------------------------------------------------------------------ actions
 
 let toastTimer;
@@ -1330,6 +1621,18 @@ view.addEventListener("click", (e) => {
     } else {
       navigator.clipboard.writeText(code).then(() => toast("Code copied", "check"), () => toast("Couldn't copy. Try Share code."));
     }
+  } else if (action === "auth-mode") {
+    state.authMode = b.dataset.mode;
+    renderWelcome();
+    $("#auth-email")?.focus();
+  } else if (action === "copy") {
+    copyInvite(b, b.dataset.what);
+  } else if (action === "share") {
+    shareInvite(b.dataset.what);
+  } else if (action === "sign-out") {
+    signOutNow();
+  } else if (action === "delete-account") {
+    deleteAccountNow();
   } else if (action === "retry") {
     load(true).then(render).catch((err) => { view.innerHTML = errorHTML(err); });
   }
@@ -1341,6 +1644,8 @@ view.addEventListener("change", (e) => {
   if (t) tickItem(t.dataset.tick, t.checked);
 });
 view.addEventListener("submit", (e) => {
+  if (e.target.id === "auth-form") { e.preventDefault(); submitAuth(e.target); return; }
+  if (e.target.id === "family-form") { e.preventDefault(); submitFamily(e.target); return; }
   if (e.target.id !== "quick-add") return;
   e.preventDefault();
   const name = $("#own-item").value.trim();
@@ -1364,38 +1669,47 @@ async function load(force = false) {
 }
 
 function route() {
-  const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean).map(decodeURIComponent);
-  return { name: parts[0] || "home", arg: parts[1] };
+  const [path, query = ""] = location.hash.replace(/^#\/?/, "").split("?");
+  const parts = path.split("/").filter(Boolean).map(decodeURIComponent);
+  return { name: parts[0] || "home", arg: parts[1], params: new URLSearchParams(query) };
 }
 
 const ROUTES = {
   home: renderHome, "this-week": renderThisWeek, watchlist: renderWatchlist, watch: renderDetail,
   list: renderList, savings: renderSavings, alerts: renderAlerts, settings: renderSettings,
+  welcome: renderWelcome, join: renderJoin, family: renderFamily,
 };
 const NEEDS_DATA = new Set(["home", "this-week", "watchlist", "watch", "alerts", "settings"]);
 const LIKES_DATA = new Set(["list", "savings"]);   // use today's prices if they load, but work without them (offline)
 
 function setTitle(text) {
   $("#title").textContent = text;
-  document.title = `${text} · Family Specials`;
+  document.title = text === "Family Specials" ? text : `${text} · Family Specials`;
 }
 
 async function render() {
   const r = route();
   if (!ROUTES[r.name]) { location.replace("#/home"); return; }
+  // With accounts switched on, everyone signs in first (an invite link keeps its code for afterwards).
+  if (state.accountsOn && !state.user && r.name !== "welcome") {
+    if (r.name === "join" && r.params.get("code")) account.setPendingCode(account.cleanCode(r.params.get("code")));
+    location.replace("#/welcome");
+    return;
+  }
+  if (r.name === "welcome" && (!state.accountsOn || state.user)) { location.replace("#/home"); return; }
   const sub = SUB_SCREENS[r.name];
   const tab = sub ? sub.tab : r.name;
   document.querySelectorAll(".tabbar a").forEach((a) => {
     if (a.dataset.tab === tab) a.setAttribute("aria-current", "page");
     else a.removeAttribute("aria-current");
   });
-  const stacked = sub && !sub.brand;                    // Alerts and Settings: back arrow, no logo, no tab bar
+  const stacked = sub && !sub.brand && !sub.bare;      // Alerts and Settings: back arrow, no logo, no tab bar
   $("#back").hidden = !stacked;
   $("#logo").hidden = !!stacked;
   $("#topbar").classList.toggle("sub", !!stacked);
   document.body.classList.toggle("no-tabs", !!(sub && !sub.tabs));
   $("#bell").hidden = true;                            // the bell lives in Home's greeting row (docs/design/home)
-  $("#gear").hidden = r.name === "settings";           // the gear is on every other screen
+  $("#gear").hidden = r.name === "settings" || !!sub?.bare;   // the gear (or profile) is on every other screen
   setTitle(TABS[r.name] || sub?.title || "Family Specials");
   state.refs.clear();
   if (NEEDS_DATA.has(r.name) && !state.watch) {
@@ -1411,7 +1725,7 @@ async function render() {
     await load().catch(() => {});
     if (route().name !== r.name) return;
   }
-  ROUTES[r.name](r.arg);
+  ROUTES[r.name](r.arg, r.params);
 }
 
 function goBack() {
@@ -1456,7 +1770,30 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
   });
 }
 
-if (!location.hash) history.replaceState(null, "", "#/home");
-state.stack.push(location.hash);
-updateBadge();
-render();
+async function start() {
+  state.accountsOn = await account.available();
+  if (state.accountsOn) {
+    state.user = await account.currentUser();
+    state.family = account.cachedFamily();
+    if (state.user) {
+      refreshFamily().then(() => {
+        updateHeader();
+        if (["home", "settings", "family", "join"].includes(route().name)) render();
+      });
+    }
+    account.onChange((u) => {
+      if ((u?.id || null) === (state.user?.id || null)) return;
+      state.user = u;
+      state.family = null;
+      updateHeader();
+      if (!u) location.replace("#/welcome");
+    });
+  }
+  if (!location.hash) history.replaceState(null, "", "#/home");
+  state.stack.push(location.hash);
+  updateBadge();
+  updateHeader();
+  render();
+}
+
+start();

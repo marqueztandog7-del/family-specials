@@ -29,3 +29,6 @@ docs/decisions.md
 # Stitch design files: private, used from the Mac only (the app rebuilds the look; no sample text copied)
 /docs/design/
 .DS_Store
+
+# The app's backend settings, written at publish time from GitHub secrets (and locally from .env)
+/site/app-config.json

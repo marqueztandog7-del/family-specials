@@ -54,6 +54,38 @@ the Phase 1 report and the decisions log are kept as local notes (not published)
   - `sw.js` keeps the app and the last prices available offline and shows notifications.
     `manifest.webmanifest` and `icons/` make it installable (`scripts/make_icons.py` redraws the icons).
 
+## Accounts and families (Supabase)
+
+The app's sign-in and family sharing run on **Supabase** (free plan, Sydney region, OK'd 16 Oct 2026). GitHub Pages
+still serves the app, and GitHub Actions still does prices and notifications.
+
+- **Signing in:** email and password (at least 8 characters), with no confirmation email. Supabase's built-in email
+  only reaches the project's own team, so password-reset emails need a free email sender, added later. The first
+  time the app opens it shows a sign-in / create-account screen.
+- **Families:** a signed-in person starts a family (name + their nickname) and becomes its owner. The app shows an
+  invite link and a 6-character join code (2–9 and A–Z without O, I or L, valid 7 days), each with Copy and
+  Share. The app never sends them itself. The link opens the sign-in page with the code kept for after sign-in.
+  The code sits after the `#`, so it's never sent to a server.
+- **Privacy:** every table has row-level security, so people only ever see their own family. Changes go through
+  server functions that check who's asking. Supabase keeps the email and a scrambled password; our tables keep
+  only the family name and nicknames.
+- **How the app finds the backend:** `site/app-config.json` (the project address and its public key, which is
+  designed to be visible and protected by row-level security). The publish workflows write it from GitHub secrets,
+  and `specials serve` writes it locally from `.env`. It's never committed. Without it, the app runs as before,
+  with everything on the phone.
+- **Code:** `site/js/account.js` is the only file that talks to Supabase. `supabase/migrations/` holds the
+  database changes, applied once each, in order.
+
+```bash
+uv run specials backend connect     # first time: reads your Supabase access token from the clipboard
+uv run specials backend migrate     # apply new database changes
+uv run specials backend status      # what's applied, and how many accounts and families (counts only)
+```
+
+`connect` stores the access token, the project details and the secret key in `.env` (readable only by you). It
+also sets the `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` and `SUPABASE_SECRET_KEY` GitHub secrets, sets up sign-in
+and applies the migrations. Nothing secret is printed.
+
 ## Phone notifications
 
 **Free.** Standard Web Push: phones get notifications through Apple's and Google's own push services

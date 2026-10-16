@@ -86,6 +86,12 @@ Every stage must keep these possible. When a design choice would block one of th
   - `watchlist/decisions.csv` holds confirm/reject decisions; a rejection is permanent.
   - Matching (`matching.py`) runs after every update.
   - The accuracy report is private (`data/reports/`), because it uses receipt names.
+- **Accounts and families:** Supabase (free plan, Sydney), OK'd 16 Oct 2026.
+  - `site/js/account.js` is the only file that talks to it. The app finds it through `site/app-config.json` (address + public key), which is written at publish time from GitHub secrets and never committed.
+  - `supabase/migrations/NNN_*.sql` are applied by `specials backend migrate`. Every table has row-level security (a family only sees its own rows), and writes go through security-definer functions.
+  - Secrets (access token, secret key) are only in `.env` and GitHub secrets.
+  - Actions logs are public: never print family data in them.
+  - Spec: `docs/family-accounts-spec.md`. Built so far: (a) sign-in and start a family.
 - **Phone notifications:** free Web Push. `.github/workflows/notify.yml` runs `specials notify run` after every "Collect prices" or "Publish page" run: at most one notification per watch item per specials week (Wednesday to Tuesday), plus a weekly digest. `notifications/sent.csv` (committed) records what was sent, with item keys and dates only. Phones opt in from Settings; their subscriptions live in `data/push/devices.json` and the `PUSH_SUBSCRIPTIONS` secret, never in git. The signing key is in `.env` and the `VAPID_PRIVATE_KEY` secret. `site/js/push.js` is the only file that talks to the push service.
 - **Home numbers:** every number on Home comes from real data or says there isn't enough yet. "New this week" needs a read of the product in the week before. "Usually $X" needs that normal price recorded in 2 different weeks. Recommendations come only from the watchlist (tiers come from receipts: core = bought in 4+ shops). Never publish purchase dates or "due" timing derived from receipts.
 - **Published data:** `history/` and `site/data/` hold only products related to what we buy (seen in a tracked category, or matched to a watch item). No member prices and no raw store data.

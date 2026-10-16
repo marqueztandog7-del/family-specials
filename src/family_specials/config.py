@@ -27,6 +27,26 @@ def load_dotenv(path: Path | None = None) -> None:
             os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
 
 
+def set_env(name: str, value: str, path: Path | None = None) -> None:
+    """Set KEY=value in .env (replacing any old value), readable only by you. Never printed."""
+    path = path or PROJECT_ROOT / ".env"
+    lines = [ln for ln in (path.read_text(encoding="utf-8").splitlines() if path.exists() else [])
+             if not ln.startswith(f"{name}=")]
+    path.write_text("\n".join(lines + [f"{name}={value}"]) + "\n", encoding="utf-8")
+    path.chmod(0o600)
+    os.environ[name] = value
+
+
+def set_github_secret(name: str, value: str) -> None:
+    """Set a GitHub Actions secret for this repo. The value goes in on stdin, so it's never shown or logged."""
+    import shutil
+    import subprocess
+
+    gh = shutil.which("gh") or str(Path.home() / ".local" / "bin" / "gh")
+    subprocess.run([gh, "secret", "set", name], input=value, text=True, check=True, cwd=PROJECT_ROOT,
+                   capture_output=True)
+
+
 def secret(name: str) -> str:
     load_dotenv()
     value = os.environ.get(name)
