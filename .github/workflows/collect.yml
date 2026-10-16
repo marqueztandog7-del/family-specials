@@ -41,6 +41,17 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # Free Supabase projects pause after about a week without database use. This daily check-in keeps the
+      # family backend awake. It sends no family data and prints nothing about it.
+      - name: Check in with the family backend
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ]; then echo "No family backend yet."; exit 0; fi
+          curl -fsS -o /dev/null -X POST "$SUPABASE_URL/rest/v1/rpc/ping" -H "apikey: $SUPABASE_PUBLISHABLE_KEY" \
+            -H "Content-Type: application/json" -d '{}' && echo "Family backend: ok" || echo "::warning::The family backend didn't answer the check-in."
+
       - uses: astral-sh/setup-uv@v10.3.0
 
       - name: Install

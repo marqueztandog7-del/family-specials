@@ -107,8 +107,14 @@ def connect(access_token: str, wanted: str | None = None) -> dict[str, Any]:
     for name, value in (("SUPABASE_ACCESS_TOKEN", access_token), ("SUPABASE_PROJECT_REF", ref),
                         ("SUPABASE_URL", url), ("SUPABASE_PUBLISHABLE_KEY", public), ("SUPABASE_SECRET_KEY", secret)):
         config.set_env(name, value)
-    for name, value in (("SUPABASE_URL", url), ("SUPABASE_PUBLISHABLE_KEY", public), ("SUPABASE_SECRET_KEY", secret)):
-        config.set_github_secret(name, value)
+    import subprocess
+
+    try:
+        for name, value in (("SUPABASE_URL", url), ("SUPABASE_PUBLISHABLE_KEY", public), ("SUPABASE_SECRET_KEY", secret)):
+            config.set_github_secret(name, value)
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        raise BackendError("Saved to .env, but couldn't save the GitHub secrets. Check `gh auth status`, "
+                           "then run this again.") from e
     configure_auth()
     applied = migrate()
     write_app_config()
@@ -148,13 +154,14 @@ def migrate() -> list[str]:
     return applied
 
 
-def write_app_config(path: Path = APP_CONFIG) -> bool:
+def write_app_config(path: Path | None = None) -> bool:
     """site/app-config.json for the app: the project address and its public key (designed to be public; the
     database's row-level security is what protects the data). Never committed."""
     config.load_dotenv()
     url, key = os.environ.get("SUPABASE_URL"), os.environ.get("SUPABASE_PUBLISHABLE_KEY")
     if not (url and key):
         return False
+    path = path or APP_CONFIG
     path.write_text(json.dumps({"supabaseUrl": url, "supabaseKey": key}) + "\n", encoding="utf-8")
     return True
 

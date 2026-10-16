@@ -1,22 +1,32 @@
 """Family backend (Supabase) commands, on the Mac.
 
-  specials backend connect [--project NAME]   connect the project (reads your access token from the clipboard)
+  specials backend connect [--project NAME]   connect the project (asks you to paste your access token; it isn't shown)
   specials backend migrate                     apply new database changes in supabase/migrations
   specials backend status                      what's applied, and how many families/accounts (counts only)
 """
 
 from __future__ import annotations
 
+import getpass
 import subprocess
+import sys
 
 from . import backend
+
+
+def read_token(from_clipboard: bool) -> str:
+    """The access token, pasted at a hidden prompt (nothing shows as you paste), or from the clipboard if asked."""
+    if from_clipboard:
+        return subprocess.run(["pbpaste"], capture_output=True, text=True).stdout
+    if sys.stdin.isatty():
+        return getpass.getpass("Paste your Supabase access token (it won't show as you paste), then press Return: ")
+    return sys.stdin.readline()
 
 
 def cmd_backend(args) -> int:
     try:
         if args.action == "connect":
-            token = subprocess.run(["pbpaste"], capture_output=True, text=True).stdout
-            out = backend.connect(token, args.project)
+            out = backend.connect(read_token(args.from_clipboard), args.project)
             region = "Sydney" if out["region"] == backend.REGION else f"{out['region']} (not Sydney!)"
             print(f"Connected '{out['name']}' in {region}. Keys saved in .env and GitHub secrets (not shown).")
             print(f"Database changes applied: {', '.join(out['applied']) or 'none new'}")
@@ -39,4 +49,5 @@ def register(sub) -> None:
     p = sub.add_parser("backend", help="the family backend (Supabase): connect, migrate, status")
     p.add_argument("action", choices=["connect", "migrate", "status"])
     p.add_argument("--project", help="connect: the Supabase project's name or ref (if you have several)")
+    p.add_argument("--from-clipboard", action="store_true", help="connect: read the token from the clipboard instead")
     p.set_defaults(func=cmd_backend)

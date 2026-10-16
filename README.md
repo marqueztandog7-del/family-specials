@@ -77,7 +77,7 @@ still serves the app, and GitHub Actions still does prices and notifications.
   database changes, applied once each, in order.
 
 ```bash
-uv run specials backend connect     # first time: reads your Supabase access token from the clipboard
+uv run specials backend connect     # first time: asks you to paste your Supabase access token (hidden)
 uv run specials backend migrate     # apply new database changes
 uv run specials backend status      # what's applied, and how many accounts and families (counts only)
 ```
