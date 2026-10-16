@@ -1,0 +1,56 @@
+name: Notify phones
+
+# Runs after every data update (GitHub's collection, or the page being republished after the Mac's Woolworths
+# update) and sends what's due: a notification when a watched item goes on special (at most one per item per
+# specials week) and the weekly digest. What was sent is kept in notifications/sent.csv so nothing repeats.
+# Free: Apple's and Google's push services cost nothing. See README "Phone notifications".
+on:
+  workflow_run:
+    workflows: ["Collect prices", "Publish page"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "run: send what's due. test: send a test notification to every phone."
+        type: choice
+        options: [run, test]
+        default: run
+
+permissions:
+  contents: write
+
+concurrency:
+  group: notify
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    # A collection that ended with a blocked store can still have saved new prices, so run unless cancelled.
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: astral-sh/setup-uv@v10.3.0
+
+      - name: Send notifications
+        env:
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          PUSH_SUBSCRIPTIONS: ${{ secrets.PUSH_SUBSCRIPTIONS }}
+        run: uv run specials notify ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'run' }}
+
+      - name: Record what was sent
+        run: |
+          git add notifications
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "Notifications sent: $(date -u +%Y-%m-%d)"
+          for attempt in 1 2 3; do
+            git pull -q --rebase && git push -q && exit 0
+            sleep 10
+          done
+          exit 1

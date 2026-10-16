@@ -46,7 +46,7 @@ def normalised_unit_price(price_cents: int | None, price_per: str, attrs: sqlite
     return None
 
 
-def build_products(conn: sqlite3.Connection) -> list[dict[str, Any]]:
+def build_products(conn: sqlite3.Connection, keep_internal_id: bool = False) -> list[dict[str, Any]]:
     scope = scope_product_ids(conn)
     if not scope:
         return []
@@ -86,6 +86,7 @@ def build_products(conn: sqlite3.Connection) -> list[dict[str, Any]]:
             multi = {"qty": r["multibuy_qty"], "cents": r["multibuy_cents"], "each_cents": round(each, 2),
                      "unit": normalised_unit_price(round(each), r["price_per"], a)}
         out.append({
+            **({"_pid": r["retailer_product_id"]} if keep_internal_id else {}),
             "id": f"{r['chain']}:{r['store_product_id']}",
             "chain": r["chain"],
             "store": STORE_NAMES.get(r["chain"], r["chain"]),
@@ -151,6 +152,9 @@ def export_site(conn: sqlite3.Connection, out_dir: Path = SITE_DATA) -> dict[str
     out_dir.mkdir(parents=True, exist_ok=True)
     _write_json(out_dir / "products.json", {"generated_at": iso(now_utc()), "products": products})
     _write_json(out_dir / "status.json", build_status(conn, counts))
+    from .watch_export import build_watchlist
+
+    _write_json(out_dir / "watchlist.json", build_watchlist(conn))
     return counts
 
 

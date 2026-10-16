@@ -15,16 +15,67 @@ the Phase 1 report and the decisions log are kept as local notes (not published)
 - **Install it on a phone.**
   - iPhone: open the link in Safari, tap Share, then "Add to Home Screen".
   - Android: open it in Chrome, tap the menu, then "Install app" (or "Add to Home screen").
-- **What's on it.** It shows **only products related to what we buy** (our tracked categories now,
-  watch-item matches later). It is public to anyone with the link, so it never carries receipt
-  data, and search engines are asked not to list it.
+- **The screens.** Five tabs along the bottom: **This Week · Watchlist · Home · List · Savings**. The app
+  opens on **Home**, in the middle (bolder label, larger filled icon).
+  - **Home:** potential savings this week, new on special this week, recently added to the list,
+    recommended to add, and Family (a placeholder until family accounts). The **bell** in Home's top-right
+    opens **Alerts**, with a count of unread ones.
+  - **This Week:** every watched item on special at the stores you compare, core items first, with its
+    signals and "Add to list".
+  - **Watchlist:** every watched item. Tap one for its price at each store, a price history chart and its
+    signals. Search products here, then "Add to list" or "Suggest to watch".
+  - **List:** the shopping list, saved on this phone (ticking off, totals and where to shop come next).
+  - **Savings:** coming next.
+  - **Settings** (the gear, top-right of every screen): notifications, which stores to compare and when
+    each last updated, how our prices work, and clearing this phone's list and savings. It grows into
+    Account and Settings when family accounts arrive.
+- **Every number comes from real data, or the app says there isn't enough yet.** Savings use each store's
+  own was price (or multibuy). "New this week" needs a read of the product the week before. "Usually $X"
+  needs that normal price in 2 different weeks. "Lowest in N weeks" needs 4 weeks of history.
+  Recommendations only come from the watchlist (built from our receipts).
+- **What's on it.** It shows **only products related to what we buy** (the watchlist's store
+  categories and matches). It is public to anyone with the link, so it never carries receipt data
+  (item names, rules and tiers only), and search engines are asked not to list it.
 - **How it's built.** It's a static web app in `site/`:
   - `index.html`, `styles.css` and `js/app.js` are the screens.
-  - **`js/data.js` is the only file that reads data** (`site/data/products.json` and `status.json`).
-    A future App Store / Google Play build (Capacitor) can wrap `site/` as it is and only needs
-    to change `data.js` if the data moves.
-  - `sw.js` keeps the app and the last prices available offline. `manifest.webmanifest` and
-    `icons/` make it installable (`scripts/make_icons.py` redraws the icons).
+  - **`js/data.js` is the only file that reads or saves data:** `site/data/watchlist.json` (the watchlist with
+    offers, history and signals), `status.json`, `products.json` (only loaded to search), and the list,
+    settings and alerts kept on this phone. **`js/push.js`** is the only file that talks to the phone's
+    push service. A future App Store / Google Play build (Capacitor) can wrap `site/` as it is and only
+    swap those two files.
+  - `sw.js` keeps the app and the last prices available offline and shows notifications.
+    `manifest.webmanifest` and `icons/` make it installable (`scripts/make_icons.py` redraws the icons).
+
+## Phone notifications
+
+**Free.** Standard Web Push: phones get notifications through Apple's and Google's own push services
+(free), sent by a GitHub Actions workflow (free on a public repo). No other service, account or app.
+
+- **What arrives:** a notification when a watched item goes on special, **at most one per item per
+  specials week** (Wednesday to Tuesday). Four or more at once come as one notification. Plus a **weekly
+  digest** once Woolworths has the week's prices (by Thursday 6pm at the latest). A special that carries
+  on into the next week isn't announced again.
+- **Each phone opts in for itself:** Settings → Allow notifications. iPhone needs iOS 16.4 or later and
+  the app opened from its Home Screen icon. Then tap "Copy code" and add the phone on the Mac:
+
+```bash
+uv run specials notify add            # reads the copied code from the clipboard (or paste it after "add")
+uv run specials notify test           # a test notification to every phone
+uv run specials notify devices        # phones that get notifications
+uv run specials notify remove 2       # stop sending to phone 2
+uv run specials notify run --dry-run  # what would be sent right now
+```
+
+- **How it runs:** `.github/workflows/notify.yml` runs after every "Collect prices" or "Publish page" run,
+  and by hand from the Actions tab ("Notify phones" → Run workflow → `run` or `test`). It records what it
+  sent in `notifications/sent.csv` (item keys and dates only), so nothing repeats.
+- **Where things are kept:** the private key in `.env` and the `VAPID_PRIVATE_KEY` secret; the phone list in
+  `data/push/devices.json` (never in git) and the `PUSH_SUBSCRIPTIONS` secret; the public key in
+  `site/push.json`. `specials notify keys` made them on 16 Oct 2026. Making new keys means every phone has
+  to turn notifications on again.
+- **Limits:** notifications cover every store we have prices for. The store switches only change what
+  that phone's app shows. A phone that turns the switch off cancels its subscription. The workflow then
+  reports it, and `notify remove` takes it off the list.
 
 ## Quick start (on the Mac)
 
@@ -242,8 +293,14 @@ One SQLite file: `data/specials.db`. The main tables:
 
 ## Secrets
 
-`.env` (never committed; see `.env.example`) holds Chemist Warehouse's public search key, which
-its website uses. On GitHub it's the repository secret `CW_ALGOLIA_SEARCH_KEY`.
+`.env` (never committed, readable only by you; see `.env.example`) holds:
+
+- Chemist Warehouse's public search key, which its website uses. On GitHub it's the repository secret
+  `CW_ALGOLIA_SEARCH_KEY`.
+- `VAPID_PRIVATE_KEY`, the key that signs phone notifications. On GitHub it's the secret of the same name.
+
+The list of phones that get notifications is the `PUSH_SUBSCRIPTIONS` secret (copied from
+`data/push/devices.json` by `specials notify add` and `remove`).
 
 ## Development
 

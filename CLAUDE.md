@@ -13,7 +13,7 @@ Stores, in priority order: Woolworths, Coles, Chemist Warehouse, Costco, ALDI. (
 
 Watch levels: 1 exact (one product at one store), 2 same product at any store (barcode, else brand + normalised name + size, with a confidence score), 3 similar (a rule such as "beef mince, any brand, 500 g to 2 kg", including store-brand equivalents).
 
-Every stage must keep these possible. When a design choice would block one of them, stop and raise it. The product brief is docs/weekly-routine.md: every feature should make that routine faster or cheaper. The app plan is docs/app-plan.md (not started until the Part 5 accuracy report is approved). The previous stage is docs/next-stage-spec.md. Decisions so far: docs/decisions.md.
+Every stage must keep these possible. When a design choice would block one of them, stop and raise it. The product brief is docs/weekly-routine.md: every feature should make that routine faster or cheaper. The app plan is docs/app-plan.md (in progress since 16 Oct 2026: five tabs This Week · Watchlist · Home · List · Savings, opening on Home). The previous stage is docs/next-stage-spec.md. Decisions so far: docs/decisions.md.
 
 ## Pricing rules (apply everywhere)
 
@@ -82,4 +82,6 @@ Every stage must keep these possible. When a design choice would block one of th
   - `watchlist/decisions.csv` holds confirm/reject decisions; a rejection is permanent.
   - Matching (`matching.py`) runs after every update.
   - The accuracy report is private (`data/reports/`), because it uses receipt names.
+- **Phone notifications:** free Web Push. `.github/workflows/notify.yml` runs `specials notify run` after every "Collect prices" or "Publish page" run: at most one notification per watch item per specials week (Wednesday to Tuesday), plus a weekly digest. `notifications/sent.csv` (committed) records what was sent, with item keys and dates only. Phones opt in from Settings; their subscriptions live in `data/push/devices.json` and the `PUSH_SUBSCRIPTIONS` secret, never in git. The signing key is in `.env` and the `VAPID_PRIVATE_KEY` secret. `site/js/push.js` is the only file that talks to the push service.
+- **Home numbers:** every number on Home comes from real data or says there isn't enough yet. "New this week" needs a read of the product in the week before. "Usually $X" needs that normal price recorded in 2 different weeks. Recommendations come only from the watchlist (tiers come from receipts: core = bought in 4+ shops). Never publish purchase dates or "due" timing derived from receipts.
 - **Published data:** `history/` and `site/data/` hold only products related to what we buy (seen in a tracked category, or matched to a watch item). No member prices and no raw store data.

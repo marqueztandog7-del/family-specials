@@ -278,9 +278,10 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--port", type=int, default=8000)
     p.set_defaults(func=cmd_serve)
 
-    from .cli_watch import register
+    from . import cli_notify, cli_watch
 
-    register(sub)
+    cli_watch.register(sub)
+    cli_notify.register(sub)
 
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO,
