@@ -25,3 +25,7 @@ RECON.md
 PLAN.md
 PHASE1_REPORT.md
 docs/decisions.md
+
+# Stitch design files: private, used from the Mac only (the app rebuilds the look; no sample text copied)
+/docs/design/
+.DS_Store

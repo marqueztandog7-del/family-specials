@@ -5,18 +5,18 @@
   run_on: mac, and only when their new specials are due (Woolworths and Coles' small read from
   Wednesday). Then the weekly backup to iCloud Drive, straight after the Wednesday update.
   If the Mac is asleep at 7:30, launchd runs the job when it wakes.
-  Install: see README.md ("The Mac schedule").
+  Install: see README.md ("The Mac schedule"). __PROJECT_DIR__ is replaced by the project folder when installing.
 -->
 <plist version="1.0">
 <dict>
   <key>Label</key>
   <string>au.family-specials.collect</string>
   <key>WorkingDirectory</key>
-  <string>/Users/marqueztandog/Claude/family-specials</string>
+  <string>__PROJECT_DIR__</string>
   <key>ProgramArguments</key>
   <array>
     <string>/bin/bash</string>
-    <string>/Users/marqueztandog/Claude/family-specials/scripts/mac-update.sh</string>
+    <string>__PROJECT_DIR__/scripts/mac-update.sh</string>
   </array>
   <key>StartCalendarInterval</key>
   <array>
@@ -24,9 +24,9 @@
     <dict><key>Hour</key><integer>18</integer><key>Minute</key><integer>30</integer></dict>
   </array>
   <key>StandardOutPath</key>
-  <string>/Users/marqueztandog/Claude/family-specials/data/logs/collect.log</string>
+  <string>__PROJECT_DIR__/data/logs/collect.log</string>
   <key>StandardErrorPath</key>
-  <string>/Users/marqueztandog/Claude/family-specials/data/logs/collect.log</string>
+  <string>__PROJECT_DIR__/data/logs/collect.log</string>
   <key>LowPriorityIO</key>
   <true/>
 </dict>

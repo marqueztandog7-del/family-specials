@@ -1,5 +1,7 @@
 # Next stage: GitHub, a family app link, automatic updates, and the watchlist
 
+> **Public copy:** receipt details were removed on 16 Oct 2026 (the full original is private, on the Mac).
+>
 > **Update 16 Oct 2026:** Tong Li has been dropped (store priority is now Woolworths, Coles, Chemist Warehouse, Costco, ALDI), and Coles is paused for good. The app's next steps are in [app-plan.md](app-plan.md) and [weekly-routine.md](weekly-routine.md). The "greys, black and white" rule below was replaced on 16 Oct 2026 by the Pantry Standard designs in `docs/design`.
 
 Phase 1 is done. Read CLAUDE.md, the README, the Phase 1 report and store-recon.md first, then save this spec to docs/next-stage-spec.md.
@@ -41,10 +43,10 @@ Stop here. Give me the Pages link, the repo link, and which stores update from G
 - Compare on a normalised unit price: per kg, per L, per 100 g or per each, or a count such as per sheet, per bag, per can or per tea bag where a rule says so. Weighed items, like chicken thigh trays, compare per kg.
 
 ## Our data (in data/private, never pushed)
-From 10 of our Woolworths receipts (6 May to 27 Sep 2026):
-- family_regular_items.csv: 65 items we bought in 2 or more shops, with a tier (core, regular, occasional), a suggested watch level and a rule. We've filled in keep_on_watchlist, brand_matters and family_notes. Seed the watchlist with the rows marked keep, and follow brand_matters where it disagrees with the suggested level. If those columns are empty, ask me before seeding.
-- woolworths_receipt_items.csv: every receipt line hand-matched to a product and watch item, at shelf price. In-store and online receipts name the same product differently (e.g. "WW RSPCA Chicken Thigh Fillets Bulk" and "Woolworths rspca approved chicken thigh fillets skinless tray 1.3kg - 1.7kg"). Treat this mapping as ground truth for tests.
-- woolworths_receipt_summary.csv: item totals per receipt at shelf price.
+Our receipt-derived files live in data/private and never go to GitHub (details are in the private copy of this
+spec, data/private/next-stage-spec-original.md). One file lists the items we buy regularly, with a tier, a
+suggested watch level and a rule. The others map receipt lines to products, and are the ground truth for the
+receipt-name tests.
 
 The published page may show watchlist item names and rules only. No receipt details, dates, prices we paid or spend go on GitHub or the page.
 
@@ -86,4 +88,4 @@ Receipt scanning, purchase history import, accounts, editing the watchlist from 
 - Keep the README, CLAUDE.md and a decisions log in docs up to date.
 - Never fake matches or prices. If something can't be collected or matched reliably, say so.
 
-Our shopping items are in data/private: family_regular_items.csv, woolworths_receipt_items.csv and woolworths_receipt_summary.csv. Use family_regular_items.csv for the test. I haven't filled in the keep and brand_matters columns yet, so for now use every row tiered Core or Regular (36 items) and follow the suggested watch level. Keep data/private out of git.
+Our shopping items are in data/private. Seed the watchlist from the Core and Regular rows at their suggested watch level. Keep data/private out of git.

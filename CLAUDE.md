@@ -51,6 +51,9 @@ Every stage must keep these possible. When a design choice would block one of th
 
 ## Private data and the public repo
 
+- **The rule (16 Oct 2026):** never push anything with names, emails, receipts, what our family buys or spends, passwords, keys, invite codes or the database. Keys and secrets go in GitHub secrets only. **Before every push, check the file list (and the diff) against this rule and tell the user if anything looks personal.**
+- `docs/design` (the Stitch designs and brief) is private (`.gitignore`) and used from the Mac only. The app rebuilds the look (layout, colours, fonts, components); never copy the designs' sample text, names, prices or savings into code.
+
 - The GitHub repo is public. Never commit: the database, raw collector responses, anything in `data/private/` (receipt files), `.env` or secrets. Test fixtures are a small, deliberate set of saved store responses.
 - `data/private/` holds our receipt-derived files. The published page and repo may show watchlist item names and rules only: no receipt lines, dates, prices we paid or spend.
 - Online receipts don't mark specials (in-store receipts mark them with ^), so a price from an online order is never treated as the normal price.

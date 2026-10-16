@@ -13,7 +13,7 @@ My designs for all screens are in docs/design, exported from Stitch using my Pan
 - Add Account to Settings (the settings icon becomes their profile): name, email, sign out, delete account.
 
 ## 3. Family accounts and invites
-- From Home or Settings, a signed-in person can create a family (they name it, e.g. "Tandog Family") and becomes its owner.
+- From Home or Settings, a signed-in person can create a family (they give it a name) and becomes its owner.
 - The owner invites others two ways: a share link (sent by text or any app) and a short join code (e.g. 6 characters) that can be typed in.
 - Someone with a link or code must create an account or sign in first, then joins the family.
 - The owner can see members, remove members, and make a new code or link (old ones stop working). Codes and links should expire after a sensible time.

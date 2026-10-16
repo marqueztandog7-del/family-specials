@@ -208,8 +208,10 @@ uv run specials categories --chain aldi --refresh    # re-read the store's categ
 
 ## The Mac schedule
 
-Installed on 16 Oct 2026 as `~/Library/LaunchAgents/au.family-specials.collect.plist` (a copy of
-`scheduling/au.family-specials.collect.plist`). It runs `scripts/mac-update.sh` at **7:30am and 6:30pm**,
+Installed on 16 Oct 2026 as `~/Library/LaunchAgents/au.family-specials.collect.plist`, a copy of
+`scheduling/au.family-specials.collect.plist` with `__PROJECT_DIR__` replaced by the project folder (so the public file
+doesn't carry the Mac's user name). To install it again, run this from the project folder:
+`sed "s|__PROJECT_DIR__|$PWD|g" scheduling/au.family-specials.collect.plist > ~/Library/LaunchAgents/au.family-specials.collect.plist`. It runs `scripts/mac-update.sh` at **7:30am and 6:30pm**,
 and launchd catches up after the Mac wakes. Most runs are just **checks**:
 
 - A store is only collected when its new specials are due this cycle: **Woolworths** (and Coles'

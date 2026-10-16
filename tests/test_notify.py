@@ -87,14 +87,14 @@ def test_paused_stores_never_notify():
     assert "Nothing on your watchlist" in messages[0]["body"] and not [r for r in rows if r["item_key"]]
 
 
-def _code(endpoint, name="Marquez iPhone"):
+def _code(endpoint, name="Test iPhone"):
     raw = json.dumps({"e": endpoint, "k": {"p256dh": "BPk", "auth": "x1"}, "n": name}).encode()
     return base64.urlsafe_b64encode(raw).decode().rstrip("=")
 
 
 def test_phone_codes_must_point_at_a_real_push_service():
     d = decode_code(_code("https://web.push.apple.com/QGx2"))
-    assert d["name"] == "Marquez iPhone" and d["keys"] == {"p256dh": "BPk", "auth": "x1"}
+    assert d["name"] == "Test iPhone" and d["keys"] == {"p256dh": "BPk", "auth": "x1"}
     assert decode_code(_code("https://fcm.googleapis.com/fcm/send/abc"))["endpoint"].startswith("https://fcm")
     for bad in ("https://evil.example.com/x", "http://web.push.apple.com/x", "https://web.push.apple.com.evil.io/x"):
         with pytest.raises(ValueError):
