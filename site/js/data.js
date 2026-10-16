@@ -121,7 +121,7 @@ export function getList() {
 
 export function addToList(entry) {
   const list = getList();
-  const id = entry.offerId || entry.watchKey || entry.name;
+  const id = entry.offerId || entry.watchKey || `own:${entry.name.toLowerCase()}`;
   const existing = list.items.find((x) => x.id === id);
   if (existing) existing.qty += 1;
   else list.items.push({ id, qty: 1, ticked: false, addedAt: new Date().toISOString(), ...entry });
@@ -138,12 +138,46 @@ export function removeFromList(id) {
   return list;
 }
 
+/** Tick an item off (or back on). Returns the item. */
+export function setTicked(id, ticked) {
+  const list = getList();
+  const item = list.items.find((x) => x.id === id);
+  if (!item) return null;
+  item.ticked = ticked;
+  item.tickedAt = ticked ? new Date().toISOString() : null;
+  list.updatedAt = new Date().toISOString();
+  save(KEYS.list, list);
+  return item;
+}
+
+export function removeTicked() {
+  const list = getList();
+  list.items = list.items.filter((x) => !x.ticked);
+  list.updatedAt = new Date().toISOString();
+  save(KEYS.list, list);
+  return list;
+}
+
 export function clearList() {
   save(KEYS.list, { items: [], updatedAt: new Date().toISOString() });
 }
 
+/** Savings: one entry per special ticked off as bought (an estimate from shelf prices). */
 export function getSavings() {
-  return load(KEYS.savings, { entries: [] });
+  return { entries: [], ...load(KEYS.savings, {}) };
+}
+
+export function recordSaving(entry) {
+  const s = getSavings();
+  s.entries = s.entries.filter((e) => e.id !== entry.id);
+  s.entries.push(entry);
+  save(KEYS.savings, s);
+}
+
+export function removeSaving(id) {
+  const s = getSavings();
+  s.entries = s.entries.filter((e) => e.id !== id);
+  save(KEYS.savings, s);
 }
 
 export function clearSavings() {

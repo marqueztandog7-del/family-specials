@@ -17,15 +17,19 @@ the Phase 1 report and the decisions log are kept as local notes (not published)
   - Android: open it in Chrome, tap the menu, then "Install app" (or "Add to Home screen").
 - **The screens.** Five tabs along the bottom: **This Week · Watchlist · Home · List · Savings**. The app
   opens on **Home**, in the middle (bolder label, larger filled icon).
-  - **Home:** potential savings this week, new on special this week, recently added to the list,
-    recommended to add, and Family (a placeholder until family accounts). The **bell** in Home's top-right
-    opens **Alerts**, with a count of unread ones.
+  - **Home** (built to `docs/design/home`): the weekly savings radar (potential savings, and how much of it is on
+    your list), new on special this week, recently added to your list, recommended to add, and Shared Pantry (a
+    placeholder until family accounts). The **bell** in Home's greeting row opens **Alerts**, with a count of unread ones.
   - **This Week:** every watched item on special at the stores you compare, core items first, with its
     signals and "Add to list".
   - **Watchlist:** every watched item. Tap one for its price at each store, a price history chart and its
     signals. Search products here, then "Add to list" or "Suggest to watch".
-  - **List:** the shopping list, saved on this phone (ticking off, totals and where to shop come next).
-  - **Savings:** coming next.
+  - **List:** grouped by store with store totals, tick items off as you shop, add your own items, share the
+    list as a message. "You save on specials" comes from each store's was price. Comparing the whole list at each
+    store (where to shop) comes next.
+  - **Savings:** ticking off a special records its saving (the store's was price minus the special price, times the
+    quantity). Shows all-time, this week, this month, last shop, average per shop, monthly bars and top items.
+    An estimate, saved on this phone until accounts arrive.
   - **Alerts and Settings** open over the tabs (no tab bar), as in the designs. Item detail keeps the tab bar.
   - **Settings** (the gear, top-right of every screen): notifications, which stores to compare and when
     each last updated, how our prices work, and clearing this phone's list and savings. It grows into

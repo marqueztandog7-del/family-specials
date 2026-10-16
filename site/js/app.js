@@ -109,7 +109,8 @@ function comparedChains() {
   return new Set(state.watch.stores.map((s) => s.chain).filter((c) => !off.has(c) && !paused.has(c)));
 }
 
-const storeName = (chain) => state.watch.stores.find((s) => s.chain === chain)?.name || chain;
+const STORE_NAMES = { woolworths: "Woolworths", coles: "Coles", chemistwarehouse: "Chemist Warehouse", costco: "Costco", aldi: "ALDI" };
+const storeName = (chain) => state.watch?.stores.find((s) => s.chain === chain)?.name || STORE_NAMES[chain] || chain;
 
 function offersIn(item, chains) {
   return item.offers.filter((o) => chains.has(o.chain)).sort(byBestUnit);
@@ -253,37 +254,59 @@ function errorHTML(e) {
     <button type="button" class="btn secondary small" data-action="retry">${icon("sync")}Try again</button></div>`;
 }
 
-/** The list total at today's prices where we have them (else the price when added). Per-kg items can't be totalled. */
+// ------------------------------------------------------------------ list prices (today's where we have them)
+
+const sydDate = (iso) => new Date(iso).toLocaleDateString("en-CA", SYD);           // YYYY-MM-DD in Sydney
+
+/** A list item's price now: from today's data when we have it, else as it was when added (a special that has
+ *  ended no longer counts as one). */
+function linePrice(x) {
+  const o = state.offersById.get(x.offerId);
+  if (o) return { price: o.price_cents, per: o.price_per, mb: o.multibuy, special: o.special, was: o.was_cents };
+  const ended = x.valid_to && new Date(x.valid_to) < new Date();
+  return { price: x.price_cents ?? null, per: x.price_per, mb: ended ? null : x.multibuy, special: !!x.special && !ended,
+    was: ended ? null : x.was_cents };
+}
+
+/** Price for the quantity (multibuys applied). Null for per-kg items and items without a price. */
+function lineTotal(x) {
+  const p = linePrice(x);
+  if (p.price == null || p.per === "kg") return null;
+  return p.mb && x.qty >= p.mb.qty ? Math.floor(x.qty / p.mb.qty) * p.mb.cents + (x.qty % p.mb.qty) * p.price : x.qty * p.price;
+}
+
+/** The saving on a list item from the store's own prices: was price minus price, or the multibuy saving. */
+function lineSaving(x) {
+  const p = linePrice(x);
+  if (!p.special || p.price == null || p.per === "kg") return 0;
+  if (p.was && p.was > p.price) return (p.was - p.price) * x.qty;
+  if (p.mb && x.qty >= p.mb.qty) return Math.floor(x.qty / p.mb.qty) * (p.mb.qty * p.price - p.mb.cents);
+  return 0;
+}
+
 function listTotal(items) {
   let cents = 0, perKg = 0, unpriced = 0;
   for (const x of items) {
-    const now = state.offersById.get(x.offerId);
-    const price = now ? now.price_cents : x.price_cents;
-    const mb = now ? now.multibuy : x.multibuy;
-    if (price == null) { unpriced += 1; continue; }
-    if ((now ? now.price_per : x.price_per) === "kg") { perKg += 1; continue; }
-    cents += mb && x.qty >= mb.qty ? Math.floor(x.qty / mb.qty) * mb.cents + (x.qty % mb.qty) * price : x.qty * price;
+    const t = lineTotal(x);
+    if (t != null) cents += t;
+    else if (linePrice(x).per === "kg") perKg += 1;
+    else unpriced += 1;
   }
   return { cents, perKg, unpriced };
 }
 
-/** Savings on the list as it stands: each listed product that's on special now, at its quantity. */
-function listSaving(items) {
-  let cents = 0;
-  for (const x of items) {
-    const o = state.offersById.get(x.offerId);
-    if (!o || !o.special || o.price_cents == null || o.price_per === "kg") continue;
-    if (o.was_cents && o.was_cents > o.price_cents) cents += (o.was_cents - o.price_cents) * x.qty;
-    else if (o.multibuy && x.qty >= o.multibuy.qty) cents += Math.floor(x.qty / o.multibuy.qty) * (o.multibuy.qty * o.price_cents - o.multibuy.cents);
-  }
-  return cents;
+// ------------------------------------------------------------------ Home (docs/design/home)
+
+function dayPart() {
+  const h = Number(new Date().toLocaleString("en-AU", { hour: "numeric", hour12: false, ...SYD }));
+  return h < 12 ? "Morning" : h < 17 ? "Afternoon" : "Evening";
 }
 
-// ------------------------------------------------------------------ Home
-
-function greeting() {
-  const h = Number(new Date().toLocaleString("en-AU", { hour: "numeric", hour12: false, ...SYD }));
-  return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+function savingPill(o) {
+  const pct = o.was_cents ? percentOff(o) : null;
+  if (pct) return `<span class="pill terra caps">Save ${pct}%</span>`;
+  const save = savingText(o);
+  return save ? `<span class="pill sage">${esc(save)}</span>` : `<span class="pill sage">${esc(o.promo || "On special")}</span>`;
 }
 
 function renderHome() {
@@ -291,117 +314,112 @@ function renderHome() {
   const rows = specialRows(chains);
   const list = data.getList();
   const onListItems = new Set(list.items.map((x) => x.watchKey).filter(Boolean));
+  const unread = data.unreadAlertCount();
   const upd = updatedAt(chains);
 
-  // 1. Potential savings, and how much of it is already on the list.
+  // Weekly savings radar: the potential this week, and how much of it is on the list already.
   const pot = potential(rows);
-  const listed = { cents: listSaving(list.items) };
-  const share = pot.cents ? Math.min(100, Math.round((listed.cents / pot.cents) * 100)) : 0;
-  const savings = rows.length ? `<a class="digest tap" href="#/this-week">
-      <div class="row" style="align-items:flex-start">
-        <div class="grow">
-          <span class="pill terra caps">${icon("local_fire_department")}Potential savings</span>
-          <h2>${pot.counted ? `Save up to <span class="num-lg">${money(pot.cents)}</span> this week`
-            : `${plural(rows.length, "watched item")} on special this week`}</h2>
-          <p class="body-sm t2">${plural(rows.length, "item")} from your watchlist ${rows.length === 1 ? "is" : "are"} on special${pot.counted && pot.uncounted ? ` (${pot.uncounted} with no was price, not counted)` : ""}.</p>
-        </div>
-        <span class="digest-icon">${icon("savings")}</span>
-      </div>
-      ${pot.counted ? `<div class="progress" aria-hidden="true"><span style="width:${share}%"></span></div>
-        <div class="row" style="margin-top:6px"><span class="body-sm t2">${listed.cents ? `<b class="mono" style="color:var(--text)">${money(listed.cents)}</b> in savings on your list` : "Add specials to your list to lock them in"}</span>
-          <span class="num-sm t3">${share}%</span></div>` : ""}
-      <p class="body-sm t3" style="margin-top:10px">Estimate from each store's was price, buying one of each (or the multibuy number).</p>
-    </a>` : `<a class="digest tap" href="#/watchlist">
-      <span class="pill terra caps">${icon("local_fire_department")}Potential savings</span>
-      <h2>Nothing on your watchlist is on special</h2>
-      <p class="body-sm t2">at the stores you compare right now. Specials refresh each Wednesday.</p></a>`;
+  const listed = list.items.reduce((a, x) => a + lineSaving(x), 0);
+  const share = pot.cents ? Math.min(100, Math.round((listed / pot.cents) * 100)) : 0;
+  const weekEnd = state.watch.cycle_started ? (() => { const d = new Date(state.watch.cycle_started + "T12:00:00"); d.setDate(d.getDate() + 6); return d.toISOString(); })() : null;
+  const radar = `<a class="radar tap" href="#/this-week">
+      <div class="row"><span class="pill white caps"><span class="dot sm"></span>Weekly savings radar</span>
+        ${weekEnd ? `<span class="pill caps" style="background:var(--panel)">Week ends ${esc(weekday(weekEnd))}</span>` : ""}</div>
+      ${rows.length && pot.counted ? `<h3>Save up to <span class="num-lg">${money(pot.cents)}</span> this week</h3>`
+        : `<h3>${rows.length ? `${plural(rows.length, "watched item")} on special` : "Nothing on special this week"}</h3>`}
+      <p class="body-sm t2" style="margin-top:2px">${rows.length ? `${plural(rows.length, "item")} from your watchlist ${rows.length === 1 ? "is" : "are"} on special`
+        : "None of your watched items are on special at the stores you compare."}</p>
+      ${pot.counted ? `<div class="unlock">
+        <div class="row"><span class="body-sm t2" style="font-weight:500">Savings on your list</span>
+          <span class="num-sm terracotta" style="font-weight:700">${share}% of maximum</span></div>
+        <div class="progress"><span style="width:${share}%"></span></div>
+        <p class="body-sm t3" style="margin-top:6px">${listed ? `<span class="mono">${money(listed)}</span> of <span class="mono">${money(pot.cents)}</span>` : "Add specials to your list to lock them in"} ·
+          estimate from each store's was price${pot.uncounted ? `; ${pot.uncounted} with no was price not counted` : ""}</p>
+      </div>` : ""}
+    </a>`;
 
-  // 2. New on special this week: only specials we can confirm are new (we read the product the week before).
+  // New on special this week: only specials we can confirm are new (we read the product the week before).
   const fresh = rows.map((r) => {
     const offer = r.specials.find((o) => o.new_this_cycle === true);
     return offer ? { ...r, offer } : null;
   }).filter(Boolean).sort((a, b) => (savingCents(b.offer) ?? 0) - (savingCents(a.offer) ?? 0)).slice(0, 5);
   const unsure = rows.filter((r) => !r.specials.some((o) => o.new_this_cycle === true)
     && r.specials.some((o) => o.new_this_cycle == null)).length;
-  const freshCard = `<section class="card rows">
-    ${fresh.map(({ item, offer, best }) => {
-      const better = bestUnit(best) != null && bestUnit(offer) != null && bestUnit(best) < bestUnit(offer);
-      return `<div class="mini">${thumb(offer, "sm", href(item.key))}
-        <div class="grow">
-          <a class="deal-name truncate" href="${href(item.key)}">${esc(item.name)}</a>
-          <div class="tagline">${storeTag(offer.chain, offer.store)}
-            <span class="num-md" style="color:var(--terracotta)">${money(offer.price_cents)}</span>
-            ${offer.was_cents ? `<span class="was">${money(offer.was_cents)}</span>` : ""}</div>
-          ${savingText(offer) ? `<div class="pills" style="margin-top:6px"><span class="pill sage"><span class="dot"></span>${esc(savingText(offer))}</span></div>` : ""}
-          ${better ? `<p class="body-sm t3" style="margin-top:4px">Better value on another special: <span class="mono">${unitMoney(bestUnit(best), item.compare_per)}</span></p>` : ""}
-        </div>${addRound(item, offer, "sm")}</div>`;
-    }).join("") || `<div class="mini"><p class="body-sm t2">Nothing we can confirm is new this week yet.</p></div>`}
-    ${unsure ? `<div class="mini"><p class="body-sm t3">${icon("history", "t3")} ${plural(unsure, "more item")} on special we can't call new yet:
-      it's the first week we've read ${unsure === 1 ? "it" : "them"}. This fills in after next Wednesday's update.</p></div>` : ""}
-  </section>`;
+  const freshCards = fresh.map(({ item, offer }) => `<div class="item-card">
+      <div class="row" style="justify-content:flex-start;gap:12px;min-width:0;flex:1">${thumb(offer, "", href(item.key))}
+        <div class="grow"><div class="tagline" style="margin:0 0 4px">${storeTag(offer.chain, offer.store)}${savingPill(offer)}</div>
+          <a class="title-sm truncate" style="display:block;text-decoration:none" href="${href(item.key)}">${esc(item.name)}</a>
+          <div class="priceline" style="margin-top:2px;gap:6px"><span class="num-md terracotta">${money(offer.price_cents)}</span>
+            ${offer.was_cents ? `<span class="was">${money(offer.was_cents)}</span>` : ""}</div></div></div>
+      ${addRound(item, offer, "sm")}</div>`).join("");
 
-  // 3. Recently added to the list.
+  // Recently added to the list.
   const recent = [...list.items].sort((a, b) => (b.addedAt || "").localeCompare(a.addedAt || "")).slice(0, 5);
   const t = listTotal(list.items);
-  const listCard = list.items.length ? `<a class="card tap rows" href="#/list">
-      ${recent.map((x) => `<div class="mini">
-        <div class="grow"><p class="title-sm truncate">${esc(x.name)}</p>
-          <div class="tagline">${x.chain ? storeTag(x.chain, x.store) : ""}${x.qty > 1 ? `<span class="pill muted mono">× ${x.qty}</span>` : ""}</div></div>
-        <span class="num-md">${money(x.price_cents)}${x.price_per === "kg" ? '<small class="per">/kg</small>' : ""}</span></div>`).join("")}
-      <div class="mini"><div class="grow"><p class="title-sm">List total</p>
-          <p class="body-sm t3">${plural(list.items.length, "item")}${t.perKg ? `, plus ${t.perKg} priced per kg` : ""}${t.unpriced ? `, ${t.unpriced} with no price` : ""} · estimate at today's prices</p></div>
-        <span class="price">${money(t.cents)}</span></div>
-    </a>` : `<section class="card"><div class="row"><div class="grow"><p class="title-sm">Nothing on your list yet</p>
+  const recentCard = list.items.length ? `<section class="card white">
+      <div class="list-rows">${recent.map((x) => {
+        const total = lineTotal(x);
+        const p = linePrice(x);
+        const sub = [x.from ? `Added from ${x.from}` : "", x.store ? (p.special ? `on special at ${x.store}` : x.store) : ""].filter(Boolean).join(" · ");
+        return `<div class="row"><div class="grow"><div class="row" style="justify-content:flex-start;gap:8px"><span class="qty">${x.qty}x</span>
+            <p class="truncate" style="font-weight:500">${esc(x.product || x.name)}</p></div>
+            ${sub ? `<p class="body-sm t3 truncate" style="margin-left:34px">${esc(sub.charAt(0).toUpperCase() + sub.slice(1))}</p>` : ""}</div>
+          <span class="num-md" style="flex:none">${total != null ? money(total) : p.price != null ? `${money(p.price)}<small class="per">/kg</small>` : ""}</span></div>`;
+      }).join("")}</div>
+      <a class="btn secondary block" href="#/list" style="margin-top:12px">Review entire list${icon("chevron_right")}</a>
+    </section>` : `<section class="card white"><div class="row"><div><p class="title-sm">Nothing on your list yet</p>
       <p class="body-sm t2" style="margin-top:2px">Tap ${icon("add", "terracotta")} on a special to start it.</p></div>
-      <span class="digest-icon" style="width:40px;height:40px">${icon("checklist")}</span></div></section>`;
+      <a class="round-btn" href="#/list" aria-label="Open the list">${icon("checklist")}</a></div></section>`;
 
-  // 4. Recommended: watched items (from our receipts) on special now, not on the list, not already shown above.
+  // Recommended: watched items (from our receipts) on special now, not on the list, not already shown above.
   const shown = new Set(fresh.map((r) => r.item.key));
   const recs = rows.filter((r) => !shown.has(r.item.key) && !onListItems.has(r.item.key)).slice(0, 5);
-  const recCard = `<section class="card rows">
-    ${recs.map(({ item, best }) => {
-      const kg = best.price_per === "kg" ? "/kg" : "";
-      const why = best.usual_cents && best.usual_cents > best.price_cents ? `On special, usually ${money(best.usual_cents)}${kg}`
-        : best.was_cents ? `On special, was ${money(best.was_cents)}${kg}`
-        : best.multibuy ? `Multibuy: ${best.multibuy.qty} for ${money(best.multibuy.cents)}` : "On special";
-      return `<div class="mini">${thumb(best, "sm", href(item.key))}
-        <div class="grow">
-          <a class="deal-name truncate" href="${href(item.key)}">${esc(item.name)}</a>
-          <p class="body-sm t2" style="margin-top:2px">${esc(TIER_REASON[item.tier] || "On your watchlist")} · ${esc(why)}</p>
-          <div class="tagline">${storeTag(best.chain, best.store)}<span class="num-md" style="color:var(--terracotta)">${money(best.price_cents)}${kg ? '<small class="per">/kg</small>' : ""}</span></div>
-        </div>${addRound(item, best, "sm")}</div>`;
-    }).join("") || `<div class="mini"><p class="body-sm t2">Nothing else to suggest right now.</p></div>`}
-    <div class="mini"><p class="body-sm t3">Suggestions only come from your watchlist, which was built from your receipts. Items
-      you're due to buy again will show here once the List records what you buy.</p></div>
-  </section>`;
+  const recCards = recs.map(({ item, best }) => {
+    const kg = best.price_per === "kg" ? "/kg" : "";
+    const usual = best.usual_cents && best.usual_cents > best.price_cents;
+    const unit = best.unit_cents != null ? unitMoney(best.unit_cents, item.compare_per) : "";
+    return `<div class="rec-card">
+      <span class="tag-sq ${usual ? "terra" : "sage"}">${usual ? `<span class="dot sm"></span>On special, usually ${money(best.usual_cents)}${kg}` : esc(TIER_REASON[item.tier] || "On your watchlist")}</span>
+      <a class="title-sm" style="text-decoration:none" href="${href(item.key)}">${esc(item.name)}</a>
+      <div class="priceline" style="margin-top:2px;gap:6px"><span class="num-md terracotta">${money(best.price_cents)}${kg ? '<small class="per">/kg</small>' : ""}</span>
+        ${best.was_cents ? `<span class="was">${money(best.was_cents)}</span>` : ""}</div>
+      <div class="rec-foot"><span class="num-sm t2">${esc(best.store)}${unit ? ` · ${esc(unit)}` : ""}</span>${addRound(item, best, "sm")}</div>
+    </div>`;
+  }).join("");
 
-  // 5. Family (fills in when family accounts arrive).
+  // Shared Pantry (fills in when family accounts arrive).
   const hh = data.getHousehold();
-  const familyCard = `<section class="card">
-    <div class="row" style="justify-content:flex-start;gap:12px">
-      ${hh.members.map((m) => `<span class="digest-icon" style="width:40px;height:40px;border-radius:50%;background:var(--terracotta);color:#fff;font-weight:700">${esc(m.name[0])}</span>`).join("")}
-      <div class="grow"><p class="title-sm">${hh.members.length === 1 ? "Just you for now" : esc(listWords(hh.members.map((m) => m.name)))}</p>
-        <p class="body-sm t2">Share one list with the family when accounts arrive.</p></div></div>
-    <div class="row" style="margin-top:14px">
-      <button type="button" class="btn outline small" disabled>${icon("person_add")}Invite family</button>
-      ${hh.canInvite ? "" : `<span class="pill muted caps">Coming soon</span>`}</div>
+  const me = hh.members[0];
+  const pantry = `<section class="card white">
+    <div class="member"><div class="row" style="justify-content:flex-start;gap:12px"><span class="avatar">${esc(me.name[0])}<span class="online"></span></span>
+      <div><p class="title-sm">${esc(me.name)}</p><p class="body-sm t2">On this phone</p></div></div>
+      ${hh.members.length === 1 ? `<span class="pill" style="background:var(--panel);color:var(--text-3);font-weight:400;letter-spacing:0">Just you for now</span>` : ""}</div>
+    <p class="title-sm">Household Sync</p>
+    <p class="body-sm t2" style="margin-top:2px">Share the watchlist, shopping list and savings with your family, with ticks syncing between phones. Coming with family accounts.</p>
+    <div class="row" style="margin-top:12px;gap:12px"><button type="button" class="btn secondary" disabled style="flex:1;min-height:44px">${icon("group_add")}Invite family</button>
+      ${hh.canInvite ? "" : `<span class="pill caps" style="background:var(--panel)">Coming soon</span>`}</div>
   </section>`;
 
   view.innerHTML = `
-    <div class="context">
-      <div><div class="live caps"><span class="dot"></span>Week of ${esc(cycleText())}</div>
-        <h2 class="headline-lg" style="margin-top:4px">${greeting()}</h2>
-        <p class="body-sm t2">${upd ? `Prices updated ${esc(dateTime(upd))}` : "Prices not updated yet"}</p></div>
+    <div class="greet">
+      <div><span class="caps">${dayPart()} pantry run</span><h2 class="headline-lg" style="margin-top:2px">Hi there 🥖</h2>
+        <p class="body-sm t3">${upd ? `Prices updated ${esc(dateTime(upd))}` : "Prices not updated yet"}</p></div>
+      <a class="round-btn" href="#/alerts" aria-label="${unread ? `Alerts, ${unread} unread` : "Alerts"}">${icon("notifications")}${unread ? `<b class="badge">${unread > 99 ? "99+" : unread}</b>` : ""}</a>
     </div>
-    ${savings}
-    <div class="section-head"><h2 class="headline-sm">New on special this week</h2><a href="#/this-week">See all</a></div>
-    ${freshCard}
-    <div class="section-head"><h2 class="headline-sm">Recently added to the list</h2>${list.items.length ? `<a href="#/list">Open list</a>` : ""}</div>
-    ${listCard}
-    <div class="section-head"><h2 class="headline-sm">Recommended to add</h2></div>
-    ${recCard}
-    <div class="section-head"><h2 class="headline-sm">Family</h2></div>
-    ${familyCard}`;
+    ${radar}
+    <div class="section-head"><div class="title"><h2 class="title-md">New on special</h2><span class="pill terra caps">This week</span></div><a href="#/this-week">See all →</a></div>
+    <div class="stack-sm" style="margin-top:12px">${freshCards || `<div class="item-card"><p class="body-sm t2">Nothing we can confirm is new this week yet.</p></div>`}
+      ${unsure ? `<p class="body-sm t3" style="padding:0 4px">${plural(unsure, "more item")} on special that we can't call new yet: it's the first week we've
+        read ${unsure === 1 ? "it" : "them"}. This fills in after next Wednesday's update. <a class="link" href="#/this-week">See them</a></p>` : ""}</div>
+    <div class="section-head"><h2 class="title-md">Recently added to your list</h2>
+      ${list.items.length ? `<span class="pill mono" style="background:var(--panel);letter-spacing:0">${plural(list.items.length, "item")} · ${money(t.cents)}</span>` : ""}</div>
+    <div style="margin-top:12px">${recentCard}</div>
+    <div class="section-head"><div class="title"><h2 class="title-md">Recommended to add</h2><span class="pill caps" style="background:var(--panel)">From your watchlist</span></div></div>
+    <div class="stack-sm" style="margin-top:12px">${recCards || `<div class="rec-card"><p class="body-sm t2">Nothing else to suggest right now.</p></div>`}
+      <p class="body-sm t3" style="padding:0 4px">Suggestions only come from your watchlist, which was built from your receipts. Items you're due to buy
+        again will show here once the List has a few weeks of ticks.</p></div>
+    <div class="section-head"><div class="title"><h2 class="title-md">Shared Pantry</h2><span class="pill caps" style="background:var(--panel)">Household</span></div></div>
+    <div style="margin-top:12px">${pantry}</div>`;
 }
 
 // ------------------------------------------------------------------ This Week
@@ -796,33 +814,210 @@ function chartHTML(item, chains) {
       ${grid}${lines}${xLabels}</svg>${legend}${foot}`;
 }
 
-// ------------------------------------------------------------------ List and Savings (built next, to their designs)
+// ------------------------------------------------------------------ List (docs/design/shopping_list)
+
+function listGroups(items) {
+  const order = state.watch ? state.watch.stores.map((s) => s.chain) : [];
+  const groups = new Map();
+  for (const x of items) {
+    const k = x.chain || "own";
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(x);
+  }
+  return [...groups].sort(([a], [b]) => (a === "own") - (b === "own") || order.indexOf(a) - order.indexOf(b));
+}
 
 function renderList() {
   const list = data.getList();
-  if (!list.items.length) {
-    view.innerHTML = `<div class="empty">${icon("checklist")}<b>Your list is empty</b>Add specials from
-      <a class="link" href="#/this-week">This Week</a> or the <a class="link" href="#/watchlist">Watchlist</a>.</div>`;
+  const items = list.items;
+  const ticked = items.filter((x) => x.ticked).length;
+  const t = listTotal(items);
+  const saving = items.reduce((a, x) => a + lineSaving(x), 0);
+  const groups = listGroups(items);
+  const stores = groups.filter(([k]) => k !== "own");
+  const quickAdd = `<form class="quick-add" id="quick-add">${icon("add_circle")}
+      <input id="own-item" type="text" placeholder="Add another item or staple…" autocomplete="off" enterkeyhint="done" aria-label="Add your own item">
+      <button type="submit" class="btn">Add</button></form>`;
+
+  const head = `<div class="list-head">
+      <div><h2 class="headline-lg">Shopping List</h2><p class="t2" style="margin-top:2px">${plural(items.length, "item")} · ${ticked} ticked off</p></div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+        ${items.length ? `<button type="button" class="btn secondary small" data-action="share-list" style="border-radius:999px">${icon("ios_share")}Share</button>` : ""}
+        ${list.updatedAt && items.length ? `<span class="pill sage">Updated ${esc(ago(list.updatedAt))}</span>` : ""}</div>
+    </div>`;
+  if (!items.length) {
+    view.innerHTML = head + `<div class="empty">${icon("checklist")}<b>Your list is empty</b>Add specials from
+      <a class="link" href="#/this-week">This Week</a> or the <a class="link" href="#/watchlist">Watchlist</a>, or type your own below.</div>` + quickAdd;
     return;
   }
-  const t = listTotal(list.items);
-  view.innerHTML = `
-    <div class="row" style="padding-top:8px"><h2 class="headline-lg">Shopping List</h2>
-      <span class="pill muted caps">${plural(list.items.length, "item")}</span></div>
-    <div class="stack-sm">${list.items.map((x) => `<article class="watch-row">
-      <div class="grow"><p class="title-sm">${esc(x.name)}</p>
-        ${x.product && x.product !== x.name ? `<p class="body-sm t2 truncate">${esc(x.product)}</p>` : ""}
-        <div class="tagline">${x.chain ? storeTag(x.chain, x.store) : ""}${x.special ? `<span class="pill sage"><span class="dot"></span>On special when added</span>` : ""}</div></div>
-      <div style="text-align:right;flex:none"><span class="num-md">${x.qty > 1 ? `${x.qty} × ` : ""}${money(x.price_cents)}${x.price_per === "kg" ? '<small class="per">/kg</small>' : ""}</span><br>
-        <button type="button" class="link" data-action="remove" data-id="${esc(x.id)}">Remove</button></div></article>`).join("")}</div>
-    <section class="card row"><div><p class="title-sm">Estimated total</p><p class="body-sm t3">At today's prices${t.perKg ? `, plus ${t.perKg} priced per kg` : ""}</p></div>
-      <span class="price">${money(t.cents)}</span></section>
-    <p class="note">Coming next: ticking items off in the shop, totals for each store, where to shop, and sharing the list.</p>`;
+
+  const cart = stores.length ? `<section class="cart">
+      <div class="row" style="align-items:flex-start"><div><span class="caps t3">Your cart</span>
+        <p class="title-md" style="font-size:19px;line-height:26px;margin-top:4px">${stores.length === 1 ? `Everything at ${esc(storeName(stores[0][0]))}` : `Split across ${stores.length} stores`}</p></div>
+        <span class="price" style="font-size:26px;line-height:30px">${money(t.cents)}</span></div>
+      ${saving ? `<span class="pill sage" style="margin-top:10px"><span class="dot"></span>You save on specials <span class="mono">${money(saving)}</span></span>` : ""}
+      ${t.perKg || t.unpriced ? `<p class="body-sm t3" style="margin-top:8px">${[t.perKg ? `plus ${plural(t.perKg, "item")} priced per kg` : "", t.unpriced ? `${t.unpriced} without a price` : ""].filter(Boolean).join(", ")}, not in the total</p>` : ""}
+      <div class="cart-note">${icon("storefront")}<span>Comparing your whole list at each store, to find the cheapest way to shop, comes in the next List update.
+        Totals use today's shelf prices.</span></div>
+    </section>` : "";
+
+  const groupCards = groups.map(([chain, rows]) => {
+    const own = chain === "own";
+    const total = rows.reduce((a, x) => a + (lineTotal(x) ?? 0), 0);
+    return `<section class="store-group">
+      <div class="head"><div class="row" style="justify-content:flex-start;gap:10px">
+          ${own ? `<span class="store-tile" style="background:var(--panel)">${icon("shopping_basket")}</span><span class="title-md">Your own items</span>`
+            : `<span class="store-tile c-${chain}">${STORE_LETTER[chain] || storeName(chain)[0]}</span><span class="title-md">${esc(storeName(chain))}</span>`}</div>
+        ${own ? "" : `<span class="num-md" style="font-size:16px">${money(total)}</span>`}</div>
+      ${rows.map((x) => {
+        const p = linePrice(x);
+        const line = lineTotal(x);
+        return `<div class="tick-row${x.ticked ? " done" : ""}">
+          <label class="tick"><input type="checkbox" data-tick="${esc(x.id)}" ${x.ticked ? "checked" : ""} aria-label="Ticked off ${esc(x.product || x.name)}"><span>${icon("check")}</span></label>
+          <div class="grow"><p class="name">${esc(x.product || x.name)}</p>
+            <div class="sub">${p.price != null ? `<span class="num-sm t2">${x.qty} × ${money(p.price)}${p.per === "kg" ? "/kg" : ""}</span>` : x.qty > 1 ? `<span class="num-sm t2">× ${x.qty}</span>` : ""}
+              ${p.special ? `<span class="pill sage" style="padding:1px 6px">On special</span>` : ""}
+              ${x.product && x.watchKey && x.product !== x.name ? `<span class="body-sm t3 truncate">for ${esc(x.name)}</span>` : ""}</div></div>
+          ${line != null ? `<span class="line-total">${money(line)}</span>` : ""}
+          <button type="button" class="x-btn" data-action="remove" data-id="${esc(x.id)}" aria-label="Remove ${esc(x.product || x.name)}">${icon("close")}</button>
+        </div>`;
+      }).join("")}
+    </section>`;
+  }).join("");
+
+  view.innerHTML = head + cart + groupCards + quickAdd +
+    (ticked ? `<div style="text-align:center"><button type="button" class="link" data-action="remove-ticked">Remove ${plural(ticked, "ticked item")}</button></div>` : "") +
+    `<p class="note">${icon("savings", "t3")} Ticking off a special records its saving in Savings. Your list is saved on this phone for now.</p>`;
 }
 
+function tickItem(id, on) {
+  const item = data.setTicked(id, on);
+  if (!item) return;
+  const sid = `${item.id}|${item.addedAt}`;
+  if (on) {
+    const s = lineSaving(item);
+    if (s > 0) {
+      data.recordSaving({ id: sid, watchKey: item.watchKey, name: item.name, product: item.product, chain: item.chain,
+        store: item.store, qty: item.qty, saving_cents: s, at: item.tickedAt });
+      toast(`Saved ${money(s)} on special`, "savings");
+    }
+  } else {
+    data.removeSaving(sid);
+  }
+  const y = window.scrollY;
+  render().then(() => window.scrollTo(0, y));
+}
+
+function listText() {
+  const items = data.getList().items;
+  const lines = ["Shopping list"];
+  for (const [chain, rows] of listGroups(items)) {
+    lines.push("", chain === "own" ? "Our own items" : storeName(chain));
+    for (const x of rows) {
+      const line = lineTotal(x);
+      lines.push(`${x.ticked ? "☑" : "☐"} ${x.product || x.name}${x.qty > 1 ? ` × ${x.qty}` : ""}${line != null ? ` — ${money(line)}` : ""}${linePrice(x).special ? " (special)" : ""}`);
+    }
+  }
+  const t = listTotal(items);
+  lines.push("", `Total ${money(t.cents)}${t.perKg ? ` plus ${t.perKg} priced per kg` : ""} (shelf prices today)`);
+  return lines.join("\n");
+}
+
+async function shareList() {
+  const text = listText();
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: "Shopping list", text });
+      return;
+    } catch (e) {
+      if (e.name === "AbortError") return;
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("List copied. Paste it into a message.", "check");
+  } catch {
+    toast("Couldn't share from this browser.");
+  }
+}
+
+// ------------------------------------------------------------------ Savings (docs/design/savings)
+
 function renderSavings() {
-  view.innerHTML = `<div class="empty">${icon("savings")}<b>Savings are coming soon</b>
-    When you tick off a special you bought, we'll estimate what you saved: the normal shelf price minus the special price.</div>`;
+  const { entries } = data.getSavings();
+  const head = `<div style="padding-top:12px"><h2 class="headline-lg">Savings</h2><p class="t2">Estimated from shelf prices</p></div>`;
+  if (!entries.length) {
+    view.innerHTML = head + `<section class="saved-card">
+        <div class="row" style="align-items:flex-start"><span class="pill sage"><span class="dot"></span>All-time tracked</span><span class="digest-icon">${icon("savings")}</span></div>
+        <p class="big">${money(0)}</p><p class="t2">No savings tracked yet.</p>
+        <div class="cart-note" style="background:var(--panel)">${icon("verified")}<span>Tick off specials on your List as you buy them, and we'll estimate
+          what you saved: the store's was price minus the special price.</span></div>
+        <a class="btn block" href="#/list" style="margin-top:14px">${icon("checklist")}Open your list</a>
+      </section>`;
+    return;
+  }
+  const total = entries.reduce((a, e) => a + e.saving_cents, 0);
+  const byDay = new Map();
+  for (const e of entries) byDay.set(sydDate(e.at), (byDay.get(sydDate(e.at)) || 0) + e.saving_cents);
+  const days = [...byDay.keys()].sort();
+  const lastDay = days[days.length - 1];
+  const today = sydDate(new Date().toISOString());
+  const weekStart = state.watch?.cycle_started || today;
+  const thisWeek = entries.filter((e) => sydDate(e.at) >= weekStart).reduce((a, e) => a + e.saving_cents, 0);
+  const thisMonth = entries.filter((e) => sydDate(e.at).slice(0, 7) === today.slice(0, 7)).reduce((a, e) => a + e.saving_cents, 0);
+
+  // Monthly bars: from the first month we tracked to this month (at most the last 6).
+  const months = [];
+  const first = new Date(days[0].slice(0, 7) + "-15T12:00:00");
+  for (const d = new Date(first); sydDate(d.toISOString()).slice(0, 7) <= today.slice(0, 7); d.setMonth(d.getMonth() + 1)) {
+    months.push(sydDate(d.toISOString()).slice(0, 7));
+  }
+  const shown = months.slice(-6);
+  const byMonth = new Map(shown.map((m) => [m, 0]));
+  for (const e of entries) { const m = sydDate(e.at).slice(0, 7); if (byMonth.has(m)) byMonth.set(m, byMonth.get(m) + e.saving_cents); }
+  const max = Math.max(...byMonth.values(), 1);
+  const top = [...byMonth].reduce((a, b) => (b[1] > a[1] ? b : a))[0];
+  const bars = shown.map((m) => {
+    const v = byMonth.get(m);
+    const label = new Date(m + "-15T12:00:00").toLocaleDateString("en-AU", { month: "short" });
+    return `<div class="bar${m === top && v ? " top" : ""}">${m === top && v && shown.length > 1 ? `<span class="pill terra mono" style="font-size:10px">Top month</span>` : ""}
+      <span class="amt">${money(v)}</span><span class="fill" style="height:${Math.max(3, Math.round((v / max) * 100))}px"></span><span class="mon">${label}</span></div>`;
+  }).join("");
+
+  // Top items saved on.
+  const byItem = new Map();
+  for (const e of entries) {
+    const k = e.watchKey || e.name;
+    const cur = byItem.get(k) || { name: e.name, chain: e.chain, store: e.store, cents: 0, times: 0 };
+    cur.cents += e.saving_cents;
+    cur.times += 1;
+    byItem.set(k, cur);
+  }
+  const topItems = [...byItem.values()].sort((a, b) => b.cents - a.cents).slice(0, 5);
+
+  view.innerHTML = head + `
+    <section class="saved-card">
+      <div class="row" style="align-items:flex-start"><span class="pill sage"><span class="dot"></span>All-time tracked</span><span class="digest-icon">${icon("savings")}</span></div>
+      <p class="big">${money(total)}</p>
+      <p class="t2">saved since we started, across ${plural(days.length, "shop")}</p>
+    </section>
+    <div class="kpis">
+      <div class="kpi"><div class="row"><span class="caps t3">This week</span>${icon("calendar_today")}</div><p class="val">${money(thisWeek)}</p><p class="body-sm t2">since Wed ${esc(localDate(weekStart))}</p></div>
+      <div class="kpi"><div class="row"><span class="caps t3">This month</span>${icon("bar_chart")}</div><p class="val">${money(thisMonth)}</p><p class="body-sm t2">${esc(new Date().toLocaleDateString("en-AU", { month: "long", ...SYD }))}</p></div>
+      <div class="kpi"><div class="row"><span class="caps t3">Last shop</span>${icon("receipt")}</div><p class="val">${money(byDay.get(lastDay))}</p><p class="body-sm t2">${esc(localDate(lastDay))}</p></div>
+      <div class="kpi"><div class="row"><span class="caps t3">Average / shop</span>${icon("insights")}</div><p class="val">${money(Math.round(total / days.length))}</p><p class="body-sm t2">${plural(days.length, "shop")}</p></div>
+    </div>
+    <section class="card white"><div class="row"><div class="row" style="justify-content:flex-start;gap:8px">${icon("bar_chart", "terracotta")}<h3 class="title-md">Monthly savings</h3></div>
+      <span class="pill mono" style="background:var(--panel)">${esc(today.slice(0, 4))}</span></div>
+      <div class="bars">${bars}</div></section>
+    <div class="row" style="padding:0 4px;margin-top:8px"><div class="row" style="gap:8px">${icon("workspace_premium", "sage")}<h3 class="title-md">Top items saved on</h3></div>
+      <span class="body-sm t3">${plural(byItem.size, "product")}</span></div>
+    <div class="stack-sm" style="margin-top:10px">${topItems.map((x, i) => `<div class="watch-row">
+      <span class="rank${i === 0 ? " first" : ""}">${i + 1}</span>
+      <div class="grow"><p class="title-md truncate">${esc(x.name)}</p><div class="tagline">${x.chain ? storeTag(x.chain, x.store) : ""}<span class="body-sm t2">${plural(x.times, "time")}</span></div></div>
+      <div style="text-align:right;flex:none"><span class="plus">+${money(x.cents)}</span><br><span class="body-sm t3">saved</span></div></div>`).join("")}</div>
+    <p class="note">An estimate: the store's was price minus the special price, for specials you ticked off. Shelf prices only, so member
+      discounts and rewards aren't included. Saved on this phone for now.</p>`;
 }
 
 // ------------------------------------------------------------------ Alerts (behind the bell on Home)
@@ -1057,9 +1252,11 @@ function updateBadge() {
   b.textContent = n > 99 ? "99+" : String(n);
 }
 
-function listEntry(item, o) {
+const FROM_NAME = { home: "Home", "this-week": "This Week", watchlist: "Watchlist", watch: "the item page", alerts: "Alerts" };
+
+function listEntry(item, o, from) {
   return {
-    offerId: o.id, watchKey: item?.key ?? null, name: item ? item.name : o.name, product: o.name,
+    offerId: o.id, from, watchKey: item?.key ?? null, name: item ? item.name : o.name, product: o.name,
     chain: o.chain, store: o.store, url: o.url, image: o.image, price_cents: o.price_cents, price_per: o.price_per,
     was_cents: o.was_cents, special: o.special, multibuy: o.multibuy, valid_to: o.valid_to,
     unit_cents: item ? o.unit_cents : o.unit?.cents ?? null, unit_per: item ? item.compare_per : o.unit?.per ?? null,
@@ -1072,7 +1269,7 @@ view.addEventListener("click", (e) => {
   const action = b.dataset.action;
   if (action === "add") {
     const { item, offer } = state.refs.get(b.dataset.ref);
-    const list = data.addToList(listEntry(item, offer));
+    const list = data.addToList(listEntry(item, offer, FROM_NAME[route().name]));
     const qty = list.items.find((x) => x.id === offer.id)?.qty || 1;
     updateBadge();
     // Flip every add button for this product to the "added" state, as in the designs.
@@ -1103,7 +1300,14 @@ view.addEventListener("click", (e) => {
   } else if (action === "remove") {
     data.removeFromList(b.dataset.id);
     updateBadge();
+    const y = window.scrollY;
+    render().then(() => window.scrollTo(0, y));
+  } else if (action === "remove-ticked") {
+    data.removeTicked();
+    updateBadge();
     render();
+  } else if (action === "share-list") {
+    shareList();
   } else if (action === "mark-read") {
     data.markAlertsRead();
     updateBell();
@@ -1131,6 +1335,21 @@ view.addEventListener("click", (e) => {
   }
 });
 
+// Ticking items off, and adding your own items to the list.
+view.addEventListener("change", (e) => {
+  const t = e.target.closest("input[data-tick]");
+  if (t) tickItem(t.dataset.tick, t.checked);
+});
+view.addEventListener("submit", (e) => {
+  if (e.target.id !== "quick-add") return;
+  e.preventDefault();
+  const name = $("#own-item").value.trim();
+  if (!name) return;
+  data.addToList({ name, from: "List" });
+  updateBadge();
+  render().then(() => $("#own-item")?.focus());
+});
+
 // ------------------------------------------------------------------ loading and routing
 
 async function load(force = false) {
@@ -1154,6 +1373,7 @@ const ROUTES = {
   list: renderList, savings: renderSavings, alerts: renderAlerts, settings: renderSettings,
 };
 const NEEDS_DATA = new Set(["home", "this-week", "watchlist", "watch", "alerts", "settings"]);
+const LIKES_DATA = new Set(["list", "savings"]);   // use today's prices if they load, but work without them (offline)
 
 function setTitle(text) {
   $("#title").textContent = text;
@@ -1174,7 +1394,7 @@ async function render() {
   $("#logo").hidden = !!stacked;
   $("#topbar").classList.toggle("sub", !!stacked);
   document.body.classList.toggle("no-tabs", !!(sub && !sub.tabs));
-  $("#bell").hidden = r.name !== "home";               // the bell lives on Home only
+  $("#bell").hidden = true;                            // the bell lives in Home's greeting row (docs/design/home)
   $("#gear").hidden = r.name === "settings";           // the gear is on every other screen
   setTitle(TABS[r.name] || sub?.title || "Family Specials");
   state.refs.clear();
@@ -1187,6 +1407,9 @@ async function render() {
       return;
     }
     if (route().name !== r.name) return;   // moved on while loading
+  } else if (LIKES_DATA.has(r.name) && !state.watch) {
+    await load().catch(() => {});
+    if (route().name !== r.name) return;
   }
   ROUTES[r.name](r.arg);
 }
