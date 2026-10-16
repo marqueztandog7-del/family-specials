@@ -44,6 +44,7 @@ jobs:
 
       - name: Record what was sent
         run: |
+          [ -d notifications ] || exit 0          # nothing sent yet (no phones have opted in)
           git add notifications
           if git diff --cached --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
