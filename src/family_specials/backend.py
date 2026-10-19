@@ -168,6 +168,153 @@ def write_app_config(path: Path | None = None) -> bool:
     return True
 
 
+# --------------------------------------------------------------------------- data the Mac sends each week
+
+
+def _rest(method: str, path: str, **kw: Any) -> httpx.Response:
+    """The project's data API with the secret key (Mac only; bypasses row-level security, so only store data and
+    our own family's watchlist are ever sent with it). New-style keys go in the apikey header only."""
+    config.load_dotenv()
+    url, key = os.environ.get("SUPABASE_URL"), os.environ.get("SUPABASE_SECRET_KEY")
+    if not (url and key):
+        raise BackendError("Not connected yet: uv run specials backend connect")
+    headers = {"apikey": key, "Content-Type": "application/json", **kw.pop("headers", {})}
+    if not key.startswith("sb_"):
+        headers["Authorization"] = f"Bearer {key}"     # legacy service_role key (a JWT)
+    try:
+        r = httpx.request(method, f"{url}/rest/v1/{path}", headers=headers, timeout=120, **kw)
+    except httpx.HTTPError as e:
+        raise BackendError(f"Couldn't reach Supabase: {e.__class__.__name__}") from e
+    if r.status_code >= 400:
+        raise BackendError(f"Supabase said {r.status_code}: {r.text[:300]}")
+    return r
+
+
+PRODUCT_COLUMNS = ("chain", "product_id", "name", "brand", "size_text", "category", "url", "image", "price_cents",
+                   "price_per", "unit_cents", "unit_per", "store_unit_text", "was_cents", "rrp_cents", "special",
+                   "special_type", "promo", "multibuy", "valid_from", "valid_to", "valid_to_assumed", "basis",
+                   "in_stock", "seen_at")
+
+
+def product_row(p: dict[str, Any]) -> dict[str, Any]:
+    """One product from export.build_products, as a store_products row."""
+    unit = p.get("unit") or {}
+    row = {
+        "chain": p["chain"], "product_id": p["id"].split(":", 1)[1], "name": p["name"], "brand": p.get("brand"),
+        "size_text": p.get("size"), "category": p.get("category"), "url": p.get("url"), "image": p.get("image"),
+        "price_cents": p.get("price_cents"), "price_per": p.get("price_per") or "each",
+        "unit_cents": unit.get("cents"), "unit_per": unit.get("per"), "store_unit_text": p.get("store_unit_text"),
+        "was_cents": p.get("was_cents"), "rrp_cents": p.get("rrp_cents"), "special": bool(p.get("special")),
+        "special_type": p.get("special_type"), "promo": p.get("promo"), "multibuy": p.get("multibuy"),
+        "valid_from": p.get("valid_from"), "valid_to": p.get("valid_to"),
+        "valid_to_assumed": bool(p.get("valid_to_assumed")), "basis": p.get("basis"), "in_stock": p.get("in_stock"),
+        "seen_at": p["seen_at"],
+    }
+    return {k: row[k] for k in PRODUCT_COLUMNS}
+
+
+def upload_products(products: list[dict[str, Any]], fresh_days: dict[str, int], batch: int = 1000) -> int:
+    """Send every store's current range to store_products (once a week, after the refresh), then remove products
+    that are no longer current (not seen within the store's fresh window, unless a special with a store end date
+    that hasn't passed). Returns how many were sent."""
+    from datetime import timedelta
+
+    from .timeutil import iso, now_utc
+
+    rows = [product_row(p) for p in products]
+    for i in range(0, len(rows), batch):
+        _rest("POST", "store_products?on_conflict=chain,product_id", json=rows[i:i + batch],
+              headers={"Prefer": "resolution=merge-duplicates,return=minimal"})
+    now = now_utc()
+    for chain, days in fresh_days.items():
+        cutoff = iso(now - timedelta(days=days))
+        _rest("DELETE", f"store_products?chain=eq.{chain}&seen_at=lt.{cutoff}"
+                        f"&or=(special.eq.false,valid_to.is.null,valid_to.lt.{iso(now)})")
+    return len(rows)
+
+
+def home_family_id() -> str:
+    """Our family in Supabase (the one the private watchlist on this Mac belongs to). Found once and kept in .env.
+    Never printed."""
+    config.load_dotenv()
+    fid = os.environ.get("SUPABASE_FAMILY_ID")
+    if fid:
+        return fid
+    rows = sql("select id from public.families order by created_at", read_only=True)
+    if len(rows) != 1:
+        raise BackendError("There isn't exactly one family yet, so I can't tell which one the watchlist belongs to. "
+                           "Start the family in the app first (or set SUPABASE_FAMILY_ID in .env).")
+    config.set_env("SUPABASE_FAMILY_ID", rows[0]["id"])
+    return rows[0]["id"]
+
+
+def upload_watchlist(data: dict[str, Any]) -> None:
+    """The family's watchlist (with its Core / Regulars groups) to its private row: only its members can read it."""
+    _rest("POST", "family_watchlist?on_conflict=family_id",
+          json={"family_id": home_family_id(), "data": data, "generated_at": data["generated_at"]},
+          headers={"Prefer": "resolution=merge-duplicates,return=minimal"})
+
+
+# --------------------------------------------------------------------------- password reset emails
+
+RESET_SUBJECT = "Reset your Family Specials password"
+# {{ .RedirectTo }} is the app's own address (checked against the allowed list; otherwise the Pages address). The
+# link carries a one-time token that only the app uses, so it works in any browser, including mail apps' own.
+RESET_TEMPLATE = """<div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.5;color:#2b2622;max-width:480px">
+<h2 style="font-size:20px;margin:0 0 12px">Reset your password</h2>
+<p style="margin:0 0 16px">Someone asked to reset the password for your Family Specials account. Tap the button to choose a new one.</p>
+<p style="margin:0 0 20px"><a href="{{ .RedirectTo }}#/reset?token_hash={{ .TokenHash }}&type=recovery" style="display:inline-block;background:#b5532f;color:#ffffff;text-decoration:none;font-weight:600;padding:12px 20px;border-radius:10px">Set a new password</a></p>
+<p style="margin:0 0 8px;color:#6b625b;font-size:14px">The link works once and expires in an hour. If you didn't ask for this, you can ignore this email: your password stays the same.</p>
+<p style="margin:16px 0 0;color:#6b625b;font-size:14px">Family Specials</p>
+</div>"""
+
+
+def configure_email(sender: str, app_password: str) -> None:
+    """Send sign-in emails (password resets) through a Gmail account made for the app, with its app password.
+    The password is set in Supabase (which sends the emails) and kept in .env and the GitHub secret SMTP_PASSWORD;
+    it's never printed or committed."""
+    sender = sender.strip()
+    app_password = app_password.replace(" ", "").strip()
+    if not sender.lower().endswith("@gmail.com") or "@" not in sender:
+        raise BackendError("That doesn't look like a Gmail address.")
+    if len(app_password) != 16 or not app_password.isalpha():
+        raise BackendError("A Google app password is 16 letters (it's shown in groups of four). Copy it again.")
+    _api("PATCH", f"/v1/projects/{project_ref()}/config/auth", token(), json={
+        "external_email_enabled": True,
+        "smtp_admin_email": sender, "smtp_sender_name": "Family Specials",
+        "smtp_host": "smtp.gmail.com", "smtp_port": "465", "smtp_user": sender, "smtp_pass": app_password,
+        "rate_limit_email_sent": 30,
+    })
+    # The free plan only allows our own email wording once a custom sender is set, so this comes second.
+    configure_reset_template()
+    config.set_env("SMTP_SENDER", sender)
+    config.set_env("SMTP_PASSWORD", app_password)
+    try:
+        config.set_github_secret("SMTP_PASSWORD", app_password)
+    except Exception as e:  # noqa: BLE001 - Supabase is set up; only the backup copy failed
+        raise BackendError("Emails are set up, but the GitHub secret couldn't be saved. Check `gh auth status`, "
+                           "then run this again.") from e
+
+
+def configure_reset_template() -> None:
+    """The reset email's wording and link. Needs the custom sender first (the free plan doesn't allow changing
+    the built-in sender's emails); until then Supabase's standard reset email is sent, and the app handles its
+    link too."""
+    _api("PATCH", f"/v1/projects/{project_ref()}/config/auth", token(), json={
+        "mailer_otp_exp": 3600, "mailer_subjects_recovery": RESET_SUBJECT,
+        "mailer_templates_recovery_content": RESET_TEMPLATE,
+    })
+
+
+def email_settings() -> dict[str, Any]:
+    """What's set for emails, without the password."""
+    cfg = _api("GET", f"/v1/projects/{project_ref()}/config/auth", token())
+    return {"custom_sender": bool(cfg.get("smtp_host")), "sender": cfg.get("smtp_admin_email"),
+            "per_hour": cfg.get("rate_limit_email_sent"), "site_url": cfg.get("site_url"),
+            "allowed": cfg.get("uri_allow_list"), "subject": cfg.get("mailer_subjects_recovery"),
+            "expires_seconds": cfg.get("mailer_otp_exp")}
+
+
 TESTS = config.PROJECT_ROOT / "supabase" / "tests"
 
 

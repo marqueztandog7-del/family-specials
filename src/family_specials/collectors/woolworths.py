@@ -119,6 +119,26 @@ class WoolworthsCollector(Collector):
         self._warm_up()
         yield from self._read_listing("category", category["id"], category["url"], category.get("name", ""), {})
 
+    def fetch_range(self) -> Iterator[RawItem]:
+        """Every aisle (the second level of the category tree) of every real department. Department pages
+        themselves aren't read (a department-level read was refused on 19 Oct 2026, while aisles have always
+        worked), and themed collections that only repeat other departments' products are skipped."""
+        skip = set(self.cfg.get("range", {}).get("skip_departments") or [])
+        seen: set[Any] = set()
+        for top in self._category_tree():
+            if top["NodeId"] in SKIP_TREE_ROOTS or top["Description"] in skip:
+                continue
+            for aisle in top.get("Children") or []:
+                if aisle["NodeId"].endswith("_SPECIALS"):
+                    continue
+                url = f"/shop/browse/{top['UrlFriendlyName']}/{aisle['UrlFriendlyName']}"
+                ctx = {"range_path": f"{top['Description']} > {aisle['Description']}"}
+                for raw in self._read_listing("range", aisle["NodeId"], url, aisle["Description"], ctx):
+                    code = raw.data.get("Stockcode")
+                    if code not in seen:          # the same product can sit in two aisles
+                        seen.add(code)
+                        yield raw
+
     def discover_categories(self) -> list[CategoryInfo]:
         out: list[CategoryInfo] = []
 

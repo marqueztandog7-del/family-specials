@@ -1,6 +1,6 @@
 """Matching watch items to store products. Rules and fuzzy text only: free to run, no AI.
 
-Levels (see config/watchlist.yaml):
+Levels (see data/private/watchlist.yaml):
   exact         the anchor product only
   same_product  the anchor at its store (by name and size), then the same product elsewhere:
                 same barcode first, otherwise same brand + same size + a close name
@@ -8,7 +8,7 @@ Levels (see config/watchlist.yaml):
 
 Every match stores a reason ("same barcode", "same brand and size", "similar: ...") and a
 confidence. Below AUTO it goes to the review list; below REVIEW it's dropped. A rejected
-match (watchlist/decisions.csv) never comes back; a confirmed one is always kept.
+match (data/private/watch-decisions.csv) never comes back; a confirmed one is always kept.
 """
 
 from __future__ import annotations
@@ -63,7 +63,7 @@ def normalise(text: str | None) -> str:
 
 
 def has_term(text_norm: str, term: str) -> bool:
-    """Whole-word (or phrase) match; the last word matches singular or plural ('tomato' ~ 'tomatoes')."""
+    """Whole-word (or phrase) match; the last word matches singular or plural ('apple' ~ 'apples')."""
     term = normalise(term)
     if not term:
         return True
@@ -249,7 +249,7 @@ def similar_matches(item: WatchItem, products: list[Product]) -> list[Match]:
     for p in products:
         allowed = {str(c) for c in item.categories.get(p.chain, [])}
         if allowed and p.categories and not (p.categories & allowed):
-            continue   # seen only in other categories (e.g. "ricotta" chips in the snacks aisle)
+            continue   # seen only in other categories (e.g. "lime" chips in the snacks aisle)
         if not all(has_term(p.norm, w) for w in must):
             continue
         if any_ and not any(has_term(p.norm, w) for w in any_):

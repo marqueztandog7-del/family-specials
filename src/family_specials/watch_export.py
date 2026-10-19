@@ -1,4 +1,5 @@
-"""site/data/watchlist.json: what the This Week and Watchlist tabs show.
+"""The family watchlist the app shows (This Week's Core Essentials and Regulars, the Watchlist tab, Home).
+Private since 19 Oct 2026: sent to the family's row in Supabase, never published.
 
 For every watch item: its current offers (matched products at each store), a unit price in the
 item's own unit (per kg, per L, per can, per tea bag...), weekly price history for the chart, and
@@ -114,10 +115,16 @@ def usual_price(rows: list[tuple]) -> tuple[int | None, int]:
     return price, len({week_start(r[0]) for r in normal if r[1] == price})
 
 
-def build_watchlist(conn: sqlite3.Connection, items: list[WatchItem] | None = None) -> dict[str, Any]:
+def build_watchlist(conn: sqlite3.Connection, items: list[WatchItem] | None = None,
+                    products: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """The family's watchlist as the app shows it. Private: it goes only to the family's row in Supabase (and a copy
+    on the Mac for notifications), never into the public data."""
     items = items or watchlist.load()
     now = now_utc()
-    offers_by_pid = {p["_pid"]: p for p in build_products(conn, keep_internal_id=True)}
+    if products is None:
+        matched = {r[0] for r in conn.execute("SELECT retailer_product_id FROM watch_matches WHERE status IN ('auto', 'confirmed')")}
+        products = build_products(conn, keep_internal_id=True, only=matched)
+    offers_by_pid = {p["_pid"]: p for p in products}
     attrs = {r["retailer_product_id"]: r for r in conn.execute("SELECT * FROM product_attributes")}
     chains = list(config.settings()["chains"])
     first_obs = conn.execute("SELECT MIN(observed_at) FROM price_observations").fetchone()[0]

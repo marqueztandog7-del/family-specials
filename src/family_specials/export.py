@@ -1,6 +1,8 @@
-"""Builds the data files the family page reads: site/data/products.json and site/data/status.json.
+"""Builds the public data files the family page reads: site/data/specials.json (every store's current specials,
+whatever we watch) and site/data/status.json. Nothing about our family goes in them: the watchlist and its Core /
+Regulars groups go only to the family's private row in Supabase, and every store's full range goes to Supabase for
+search (backend.upload_products).
 
-Only products related to what we buy are published (see history.scope_product_ids).
 Prices follow the pricing rules in CLAUDE.md: shelf prices and specials only (no member prices),
 multibuys shown as an effective price per item and per unit, and a normalised unit price
 (per kg, per L or per item) worked out from the parsed pack size.
@@ -15,10 +17,9 @@ from pathlib import Path
 from typing import Any
 
 from . import config
-from .history import scope_product_ids
-from .runner import is_paused_for_good
+from .runner import blocked_since_resume, is_paused_for_good
 from .search import FRESH_DAYS
-from .timeutil import iso, now_utc
+from .timeutil import iso, now_utc, weekly_cycle
 
 SITE_DATA = config.PROJECT_ROOT / "site" / "data"
 STORE_NAMES = {"woolworths": "Woolworths", "coles": "Coles", "aldi": "ALDI", "costco": "Costco",
@@ -46,12 +47,22 @@ def normalised_unit_price(price_cents: int | None, price_per: str, attrs: sqlite
     return None
 
 
-def build_products(conn: sqlite3.Connection, keep_internal_id: bool = False) -> list[dict[str, Any]]:
-    scope = scope_product_ids(conn)
-    if not scope:
-        return []
+def build_products(conn: sqlite3.Connection, keep_internal_id: bool = False,
+                   only: set[int] | None = None) -> list[dict[str, Any]]:
+    """Every product with a current price, at every store (or just the products in `only`).
+
+    Current means seen in the store's last read (within FRESH_DAYS), or a special with an end date from the store or
+    its catalogue that hasn't passed yet: a special stays for as long as the store says it's on. A full-range read
+    only records a price when it changes, so "seen" comes from the product's last_seen_at.
+    """
     now = now_utc()
     fresh = {c: iso(now - timedelta(days=d)) for c, d in FRESH_DAYS.items()}
+    where = f"AND o.retailer_product_id IN ({','.join('?' * len(only))})" if only is not None else ""
+    if only is not None and not only:
+        return []
+    # Stores that are paused for good (Coles) or switched off are never shown, whatever data we still have.
+    live = [c for c, cfg in config.settings()["chains"].items()
+            if cfg.get("enabled", True) and not is_paused_for_good(conn, c)]
     rows = conn.execute(
         f"""
         WITH l AS (
@@ -59,26 +70,33 @@ def build_products(conn: sqlite3.Connection, keep_internal_id: bool = False) -> 
             -- One row per product: its latest price. (Woolworths' anonymous default store changes
             -- from week to week, so an older store's price must not show as a second listing.)
             PARTITION BY o.retailer_product_id
-            -- Latest run first; within a run, Woolworths' in-store price before its online one.
-            ORDER BY r.started_at DESC, o.is_special DESC,
-                     CASE o.price_basis WHEN 'in_store' THEN 0 ELSE 1 END, o.observed_at DESC, o.id DESC
+            -- A catalogue special that's still on comes first (Costco's booklet is the warehouse price, not the
+            -- online one); then the latest run; within a run, Woolworths' in-store price before its online one.
+            ORDER BY CASE WHEN o.is_special = 1 AND o.valid_to_source = 'catalogue' THEN 1 ELSE 0 END DESC, r.started_at DESC,
+                     o.is_special DESC, CASE o.price_basis WHEN 'in_store' THEN 0 ELSE 1 END, o.observed_at DESC,
+                     o.id DESC
           ) AS rn
           FROM price_observations o JOIN collection_runs r ON r.id = o.run_id
-          WHERE o.retailer_product_id IN ({','.join('?' * len(scope))})
+          -- A special that has ended is never the current price.
+          WHERE NOT (o.is_special = 1 AND o.valid_to IS NOT NULL AND o.valid_to < '{iso(now)}') {where}
         )
         SELECT l.*, p.chain, p.retailer_product_id AS store_product_id, p.name, p.display_name, p.brand,
-               p.size_text, p.url, p.image_url, p.category_path, s.store_ref, s.name AS store_name
+               p.size_text, p.url, p.image_url, p.category_path, p.last_seen_at, s.store_ref, s.name AS store_name
         FROM l JOIN retailer_products p ON p.id = l.retailer_product_id JOIN stores s ON s.id = l.store_id
         WHERE l.rn = 1
-        """, list(scope)).fetchall()
+        """, list(only or ())).fetchall()
     attrs = {r["retailer_product_id"]: r for r in conn.execute("SELECT * FROM product_attributes")}
     out = []
     for r in rows:
-        if r["observed_at"] < fresh.get(r["chain"], iso(now - timedelta(days=8))):
-            continue  # not seen recently: don't present an old price as current
+        if r["chain"] not in live or r["price_cents"] == 0:
+            continue   # a $0 price is never a real shelf price (prescription-only items, samples)
         special = bool(r["is_special"])
         if special and r["valid_to"] and r["valid_to"] < iso(now):
             continue  # the special has ended and we don't know today's price yet: show nothing, not a guess
+        seen = max(r["observed_at"], r["last_seen_at"] or "")
+        dated = special and r["valid_to"] and r["valid_to_source"] in ("store", "catalogue")
+        if seen < fresh.get(r["chain"], iso(now - timedelta(days=8))) and not dated:
+            continue  # not seen recently: don't present an old price as current
         a = attrs.get(r["retailer_product_id"])
         multi = None
         if r["multibuy_qty"] and r["multibuy_cents"]:
@@ -112,13 +130,39 @@ def build_products(conn: sqlite3.Connection, keep_internal_id: bool = False) -> 
             "valid_to": r["valid_to"] if special else None,
             "valid_to_assumed": r["valid_to_source"] == "weekly_cycle_assumed",
             "in_stock": None if r["in_stock"] is None else bool(r["in_stock"]),
-            "seen_at": r["observed_at"],
+            "seen_at": seen,
         })
     out.sort(key=lambda x: (x["chain"], x["name"].lower()))
     return out
 
 
-def build_status(conn: sqlite3.Connection, product_counts: dict[str, int]) -> dict[str, Any]:
+def saving_cents(p: dict[str, Any]) -> float | None:
+    """The saving on one item from the store's own prices (was price, or the multibuy price per item)."""
+    if p["price_cents"] is None:
+        return None
+    if p["was_cents"] and p["was_cents"] > p["price_cents"]:
+        return p["was_cents"] - p["price_cents"]
+    if p["multibuy"] and p["price_cents"] > p["multibuy"]["each_cents"]:
+        return round(p["price_cents"] - p["multibuy"]["each_cents"], 2)
+    return None
+
+
+def specials_only(products: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Every current special, biggest saving first. Sponsored items never get this far (collectors drop them)."""
+    # Kept small for phones: no empty fields, and nothing the app doesn't show.
+    drop = {"category", "seen_at", "store_ref"}
+    out = []
+    for p in products:
+        if p["special"]:
+            row = {k: v for k, v in p.items() if not k.startswith("_") and k not in drop and v is not None}
+            row["saving_cents"] = saving_cents(p)
+            out.append(row)
+    out.sort(key=lambda p: (-(p.get("saving_cents") or 0), p["name"].lower()))
+    return out
+
+
+def build_status(conn: sqlite3.Connection, product_counts: dict[str, int],
+                 special_counts: dict[str, int] | None = None) -> dict[str, Any]:
     chains = config.settings()["chains"]
     stores = []
     for chain, cfg in chains.items():
@@ -137,26 +181,45 @@ def build_status(conn: sqlite3.Connection, product_counts: dict[str, int]) -> di
             "store": latest_store["name"] if latest_store else cfg["store"]["name"],
             "updates_from": ("paused" if not cfg.get("enabled", True) or is_paused_for_good(conn, chain)
                              else cfg.get("run_on", "github")),
+            # Stopped after the store refused us: its last prices still show until they run out.
+            "stopped_after_block": bool(blocked_since_resume(conn, chain)),
             "last_updated": last_ok,
-            "last_attempt": dict(last) if last else None,
+            "last_attempt": {k: last[k] for k in ("status", "started_at", "run_where")} if last else None,
             "products": product_counts.get(chain, 0),
+            "specials": (special_counts or {}).get(chain, 0),
         })
     return {"generated_at": iso(now_utc()), "stores": stores}
 
 
-def export_site(conn: sqlite3.Connection, out_dir: Path = SITE_DATA) -> dict[str, int]:
-    products = build_products(conn)
+def export_site(conn: sqlite3.Connection, out_dir: Path = SITE_DATA,
+                products: list[dict[str, Any]] | None = None) -> dict[str, dict[str, int]]:
+    """Write the public files. Returns per-store counts of products and specials."""
+    products = build_products(conn) if products is None else products
+    specials = specials_only(products)
     counts: dict[str, int] = {}
+    special_counts: dict[str, int] = {}
     for p in products:
         counts[p["chain"]] = counts.get(p["chain"], 0) + 1
+    for p in specials:
+        special_counts[p["chain"]] = special_counts.get(p["chain"], 0) + 1
     out_dir.mkdir(parents=True, exist_ok=True)
-    _write_json(out_dir / "products.json", {"generated_at": iso(now_utc()), "products": products})
-    _write_json(out_dir / "status.json", build_status(conn, counts))
-    from .watch_export import build_watchlist
-
-    _write_json(out_dir / "watchlist.json", build_watchlist(conn))
-    return counts
+    _write_json(out_dir / "specials.json", {
+        "generated_at": iso(now_utc()), "cycle_started": weekly_cycle(2, now_utc())[0].date().isoformat(),
+        "stores": [{"chain": c, "name": STORE_NAMES.get(c, c)} for c in config.settings()["chains"]],
+        "specials": specials})
+    _write_json(out_dir / "status.json", build_status(conn, counts, special_counts))
+    # Earlier versions published products.json and watchlist.json here: never again (watchlist is private).
+    for old in ("products.json", "watchlist.json"):
+        (out_dir / old).unlink(missing_ok=True)
+    return {"products": counts, "specials": special_counts}
 
 
 def _write_json(path: Path, data: Any) -> None:
+    """Write the file only if something besides its date changed, so a check with nothing new commits nothing."""
+    try:
+        old = json.loads(path.read_text(encoding="utf-8"))
+        if {k: v for k, v in old.items() if k != "generated_at"} == {k: v for k, v in data.items() if k != "generated_at"}:
+            return
+    except (OSError, ValueError, AttributeError):
+        pass
     path.write_text(json.dumps(data, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")

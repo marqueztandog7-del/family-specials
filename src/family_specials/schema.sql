@@ -166,7 +166,7 @@ CREATE INDEX IF NOT EXISTS idx_obs_run ON price_observations(run_id);
 CREATE INDEX IF NOT EXISTS idx_obs_special ON price_observations(is_special, observed_at);
 
 -- Which store category each product was seen in (during category reads), so rules can insist
--- that, say, "ricotta" comes from the ricotta category and not the chips aisle.
+-- that, say, "lime" comes from the fruit category and not the chips aisle.
 CREATE TABLE IF NOT EXISTS product_categories (
   retailer_product_id INTEGER NOT NULL REFERENCES retailer_products(id),
   category_ref TEXT NOT NULL,
@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS users (
   created_at TEXT NOT NULL
 );
 
--- The watchlist, rebuilt from config/watchlist.yaml on every run.
+-- The watchlist, rebuilt from data/private/watchlist.yaml on every run.
 CREATE TABLE IF NOT EXISTS watch_items (
   id INTEGER PRIMARY KEY,
   household_id INTEGER NOT NULL REFERENCES households(id),
@@ -216,7 +216,7 @@ CREATE TABLE IF NOT EXISTS watch_matches (
 );
 CREATE INDEX IF NOT EXISTS idx_watch_matches_product ON watch_matches(retailer_product_id);
 
--- Your confirm / reject decisions, loaded from watchlist/decisions.csv. A rejection is permanent.
+-- Your confirm / reject decisions, loaded from data/private/watch-decisions.csv. A rejection is permanent.
 CREATE TABLE IF NOT EXISTS match_decisions (
   watch_item_id INTEGER NOT NULL REFERENCES watch_items(id),
   chain TEXT NOT NULL,

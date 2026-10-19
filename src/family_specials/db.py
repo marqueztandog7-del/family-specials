@@ -14,7 +14,7 @@ from typing import Any
 from . import config
 from .models import NormalisedItem, Observation
 from .parsing import PARSER_VERSION, is_own_brand, normalise_gtin, parse_size
-from .timeutil import now_iso
+from .timeutil import now_iso, parse_iso
 
 SCHEMA_VERSION = 5
 
@@ -87,6 +87,10 @@ def ensure_store(conn: sqlite3.Connection, chain: str, store_ref: str) -> int:
     if str(cfg.get("ref")) == store_ref:
         name, suburb, postcode = cfg.get("name"), cfg.get("suburb"), cfg.get("postcode")
         scope, notes = cfg.get("price_scope", "store"), cfg.get("notes")
+    elif str(((config.chain_config(chain).get("catalogue") or {}).get("warehouse") or {}).get("ref")) == store_ref:
+        # Costco's booklet: warehouse shelf prices, the same in every Australian warehouse.
+        w = config.chain_config(chain)["catalogue"]["warehouse"]
+        name, suburb, postcode, scope, notes = w["name"], None, None, "national_in_store", "In-Warehouse Savings booklet"
     elif cfg.get("price_scope") == "default_online_store":
         # Woolworths picks a default store for anonymous visitors, and it changes over time.
         name, suburb, postcode = f"Woolworths default online store (#{store_ref})", None, None
@@ -157,10 +161,40 @@ def link_category(conn: sqlite3.Connection, product_id: int, category_ref: str, 
         (product_id, str(category_ref), ts, ts))
 
 
+SAME_PRICE_FIELDS = ("price_basis", "price_per", "price_cents", "was_cents", "rrp_cents", "is_special", "special_type",
+                     "promo_text", "multibuy_qty", "multibuy_cents", "unit_price", "unit_measure", "valid_from",
+                     "valid_to", "in_stock")
+UNCHANGED_FOR_DAYS = 28   # a full-range read re-records an unchanged price at least this often
+
+
+def mark_seen(conn: sqlite3.Connection, chain: str, store_product_id: str) -> None:
+    conn.execute("UPDATE retailer_products SET last_seen_at = ? WHERE chain = ? AND retailer_product_id = ?",
+                 (now_iso(), chain, store_product_id))
+
+
+def _unchanged(conn: sqlite3.Connection, product_id: int, store_id: int, o: Observation, ts: str) -> bool:
+    """True when this product's latest price at this store is the same in every field, and recent."""
+    last = conn.execute(
+        f"""SELECT observed_at, {', '.join(SAME_PRICE_FIELDS)} FROM price_observations
+            WHERE retailer_product_id = ? AND store_id = ? ORDER BY id DESC LIMIT 1""", (product_id, store_id)).fetchone()
+    if last is None:
+        return False
+    if (parse_iso(ts) - parse_iso(last["observed_at"])).days >= UNCHANGED_FOR_DAYS:
+        return False
+    new = {"price_basis": o.price_basis, "price_per": o.price_per, "price_cents": o.price_cents,
+           "was_cents": o.was_cents, "rrp_cents": o.rrp_cents, "is_special": int(o.is_special),
+           "special_type": o.special_type, "promo_text": o.promo_text, "multibuy_qty": o.multibuy_qty,
+           "multibuy_cents": o.multibuy_cents, "unit_price": o.unit_price, "unit_measure": o.unit_measure,
+           "valid_from": o.valid_from, "valid_to": o.valid_to,
+           "in_stock": None if o.in_stock is None else int(o.in_stock)}
+    return all(last[k] == new[k] for k in SAME_PRICE_FIELDS)
+
+
 def save_item(conn: sqlite3.Connection, run_id: int, item: NormalisedItem, source: str,
-              category_ref: str | None = None) -> int:
+              category_ref: str | None = None, only_changes: bool = False, keep: set[int] | None = None) -> int:
     """Upsert the product, its barcodes, raw snapshot and attributes; append observations.
-    Returns the number of observations added."""
+    only_changes (full-range reads): skip an observation that's the same as the product's latest one at that store
+    (it's still marked as seen), unless the product is in `keep`. Returns the number of observations added."""
     ts = now_iso()
     p = item.product
     row = conn.execute(
@@ -205,11 +239,15 @@ def save_item(conn: sqlite3.Connection, run_id: int, item: NormalisedItem, sourc
            ORDER BY id DESC LIMIT 1""", (product_id,)).fetchone()
     if previous and previous[0] == raw_price:
         raw_price = None
+    added = 0
     for i, obs in enumerate(item.observations):
         store_id = ensure_store(conn, p.chain, obs.store_ref)
+        if only_changes and product_id not in (keep or ()) and _unchanged(conn, product_id, store_id, obs, ts):
+            continue
         # Woolworths' in-store and online observations share one raw record: store it once.
-        _insert_observation(conn, run_id, product_id, store_id, ts, source, obs, raw_price if i == 0 else None)
-    return len(item.observations)
+        _insert_observation(conn, run_id, product_id, store_id, ts, source, obs, raw_price if added == 0 else None)
+        added += 1
+    return added
 
 
 def _save_snapshot(conn: sqlite3.Connection, product_id: int, raw: dict[str, Any], ts: str) -> None:

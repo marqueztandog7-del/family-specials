@@ -6,9 +6,9 @@ GitHub's servers start empty on every run, so the repo is where history lives:
   history/products/<chain>.csv           product details and barcodes, one row per product
   history/observations/<chain>-<year>.csv  one row per price seen; rows are only ever appended
 
-Only products related to what we buy are written (the public-data decision of 12 Oct 2026):
-products seen in a tracked-category read, plus (from Part 5) products matched to a watch item.
-Member prices and raw store data are never written here; they stay in the local database.
+Only specials are written, at every store, whatever we watch (since 19 Oct 2026: which products we read or match
+says what our family buys, so nothing chosen by the watchlist goes in the public repo). Regular prices, the full
+ranges, member prices and raw store data stay in the local database on the Mac (backed up to iCloud).
 
 Every update first imports these files into the (local or fresh) SQLite database, then
 collects, then appends the new runs.
@@ -43,16 +43,8 @@ OBS_FIELDS = ["run_started_at", "run_kind", "observed_at", "store_ref", "product
 
 
 def scope_product_ids(conn: sqlite3.Connection) -> set[int]:
-    """Products related to what we buy: seen in a tracked-category read in the last 12 weeks,
-    or matched to a watch item (once matching exists)."""
-    cutoff = iso(now_utc() - timedelta(weeks=SCOPE_WEEKS))
-    ids = {r[0] for r in conn.execute(
-        "SELECT DISTINCT retailer_product_id FROM price_observations WHERE source = 'category' AND observed_at >= ?",
-        (cutoff,))}
-    if conn.execute("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'watch_matches'").fetchone():
-        ids |= {r[0] for r in conn.execute(
-            "SELECT DISTINCT retailer_product_id FROM watch_matches WHERE status != 'rejected'")}
-    return ids
+    """Products that have been on special at some point: the only ones whose prices go in the public history."""
+    return {r[0] for r in conn.execute("SELECT DISTINCT retailer_product_id FROM price_observations WHERE is_special = 1")}
 
 
 # --------------------------------------------------------------------------- publish (DB -> files)
@@ -93,7 +85,7 @@ def _publishable_observations(conn, run, scope: set[int]) -> list[dict[str, Any]
         """SELECT o.*, p.retailer_product_id AS store_product_id, s.store_ref
            FROM price_observations o JOIN retailer_products p ON p.id = o.retailer_product_id
            JOIN stores s ON s.id = o.store_id WHERE o.run_id = ? ORDER BY o.id""", (run["id"],)).fetchall()
-    rows = [r for r in rows if r["retailer_product_id"] in scope]
+    rows = [r for r in rows if r["retailer_product_id"] in scope and r["is_special"]]
     # Woolworths gives an in-store and an online price for every product. Keep the in-store one,
     # and the online one only when it actually differs (e.g. an online-only special).
     in_store = {r["retailer_product_id"]: r for r in rows if r["price_basis"] == "in_store"}
@@ -121,9 +113,6 @@ def _write_products(conn, chain: str, pids: set[int], path: Path) -> None:
     ):
         gtins = "|".join(f"{g['gtin14']}:{g['source']}:{g['is_global']}" for g in conn.execute(
             "SELECT * FROM retailer_product_gtins WHERE retailer_product_id = ? ORDER BY gtin14", (p["id"],)))
-        cats = sorted({r[0] for r in conn.execute(
-            "SELECT category_ref FROM product_categories WHERE retailer_product_id = ?", (p["id"],))}
-            | set(filter(None, (existing.get(p["retailer_product_id"], {}).get("categories") or "").split("|"))))
         old = existing.get(p["retailer_product_id"], {})
         existing[p["retailer_product_id"]] = {
             "product_id": p["retailer_product_id"], "name": p["name"], "display_name": p["display_name"] or "",
@@ -131,7 +120,8 @@ def _write_products(conn, chain: str, pids: set[int], path: Path) -> None:
             "image_url": p["image_url"] or "", "category_path": p["category_path"] or "", "gtins": gtins,
             "first_seen_at": min(filter(None, [old.get("first_seen_at"), p["first_seen_at"]])),
             "last_seen_at": max(filter(None, [old.get("last_seen_at"), p["last_seen_at"]])),
-            "categories": "|".join(cats),
+            # Which of our tracked categories a product was read in says what we watch: not published.
+            "categories": "",
         }
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as f:
@@ -264,6 +254,47 @@ def _int(v: str | None) -> int | None:
 
 def _float(v: str | None) -> float | None:
     return float(v) if v not in (None, "") else None
+
+
+def specials_only(history_dir: Path = HISTORY_DIR) -> dict[str, int]:
+    """Rewrite the history files to hold specials only (19 Oct 2026): drops every regular-price row, and every
+    product that has never been on special. The full history stays in the database on the Mac."""
+    kept = {"observations": 0, "dropped": 0, "products": 0}
+    special_ids: dict[str, set[str]] = {}
+    for path in sorted((history_dir / "observations").glob("*.csv")):
+        chain = path.stem.rsplit("-", 1)[0]
+        rows = _read(path)
+        keep = [r for r in rows if r.get("is_special") == "1"]
+        kept["observations"] += len(keep)
+        kept["dropped"] += len(rows) - len(keep)
+        special_ids.setdefault(chain, set()).update(r["product_id"] for r in keep)
+        _rewrite(path, OBS_FIELDS, keep)
+    for path in sorted((history_dir / "products").glob("*.csv")):
+        keep = [{**r, "categories": ""} for r in _read(path) if r["product_id"] in special_ids.get(path.stem, set())]
+        kept["products"] += len(keep)
+        _rewrite(path, PRODUCT_FIELDS, keep)
+    return kept
+
+
+def rebuild_from_db(conn: sqlite3.Connection, history_dir: Path = HISTORY_DIR) -> dict[str, int]:
+    """Rewrite the history files from the database: every run, and every special it has, at every store, with no
+    selection by what we watch (19 Oct 2026). Earlier files only kept products in the categories we tracked."""
+    for sub in ("runs", "observations", "products"):
+        for f in (history_dir / sub).glob("*.csv"):
+            f.unlink()
+    conn.execute("UPDATE collection_runs SET published = 0 WHERE status != 'running'")
+    return publish_new_runs(conn, history_dir)
+
+
+def _rewrite(path: Path, fields: list[str], rows: list[dict[str, str]]) -> None:
+    if not rows:
+        path.unlink(missing_ok=True)
+        return
+    with path.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore", lineterminator="\n")
+        w.writeheader()
+        for r in rows:
+            w.writerow({k: r.get(k, "") for k in fields})
 
 
 def rewrite_products(conn: sqlite3.Connection, history_dir: Path = HISTORY_DIR) -> int:

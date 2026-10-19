@@ -22,7 +22,7 @@ def cmd_watch(args) -> int:
         key = watchlist.add_item_from_product(conn, args.chain, args.product_id, also_similar=args.similar,
                                               tier=args.tier, target=args.target)
         print(f"Added '{key}' (same product, any store{' + similar items' if args.similar else ''}). "
-              "Commit config/watchlist.yaml to keep it.")
+              "It is saved in data/private/watchlist.yaml (private, on this Mac only).")
         return 0
     items = sorted(watchlist.load(), key=lambda i: (TIERS.get(i.tier, 9), i.name.lower()))
     for i in items:
@@ -60,7 +60,7 @@ def cmd_review(args) -> int:
         items = watchlist.load()
         watchlist.sync_to_db(conn, items)
         run_matching(conn, items)
-        print(f"{args.action.title()}ed. Saved in watchlist/decisions.csv (commit it to keep it).")
+        print(f"{args.action.title()}ed. Saved in data/private/watch-decisions.csv (private, on this Mac only).")
         return 0
     rows = conn.execute(
         """SELECT w.key, w.name, p.chain, p.retailer_product_id, COALESCE(p.display_name, p.name) AS pname,

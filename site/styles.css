@@ -517,3 +517,10 @@ details.stopped { margin-top: 8px; }
 details.stopped summary { display: flex; align-items: center; gap: 6px; min-height: 44px; cursor: pointer; list-style: none; }
 details.stopped summary::-webkit-details-marker { display: none; }
 .hint .material-symbols-outlined { font-size: 16px; vertical-align: -3px; color: var(--terracotta); }
+
+/* Forgot password */
+.auth .forgot { margin-top: 10px; text-align: right; }
+.sent { text-align: center; padding: 8px 4px; }
+.sent > .material-symbols-outlined { display: block; font-size: 36px; margin: 0 auto 10px; }
+/* This Week: the watchlist marker on a special */
+.deal .pill.watched { margin-bottom: 6px; color: var(--terracotta); border-color: currentColor; }

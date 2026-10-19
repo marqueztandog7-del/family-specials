@@ -9,6 +9,7 @@ chains:
   woolworths:
     enabled: true
     run_on: mac   # GitHub test 12 Oct: woolworths.com.au returned 403 to GitHub's servers
+    pause_on_block: true   # a refusal pauses Woolworths until you run: specials resume woolworths
     store:
       # Pinning prices to Kellyville North (#1561) needs a login, which we don't do.
       # So prices come from Woolworths' default online store; weekly specials are set state-wide.
@@ -20,6 +21,12 @@ chains:
       notes: "Local store Kellyville North #1561 can't be pinned without logging in."
     politeness: {delay_seconds: [3, 6], max_requests_per_run: 260}
     cycle: {type: weekly, starts: wednesday}
+    # The full range, read aisle by aisle (category pages, never search: robots.txt). About 850 requests.
+    # Themed collections only repeat products from the real departments, so they're skipped.
+    range:
+      max_requests: 1100
+      skip_departments: [Back to School, Container Bonus Credits, Dinner, Footy Finals, Front of Store, Gift Ideas,
+                         Halloween, Lunch Box, Christmas, Easter]
     specials_groups:
       # Woolworths specials group ids (from /apis/ui/PiesCategoriesWithSpecials).
       - {id: specialsgroup.3676, name: Half Price, special_type: half_price, weekly: true}
@@ -53,7 +60,8 @@ chains:
 
   chemistwarehouse:
     enabled: true
-    run_on: github   # GitHub test 12 Oct: works
+    run_on: mac   # one weekly refresh for every store, on Wednesday morning (19 Oct 2026)
+    pause_on_block: true
     store:
       ref: online
       name: Chemist Warehouse online (national)
@@ -61,19 +69,29 @@ chains:
       postcode: null
       price_scope: online_national
     politeness: {delay_seconds: [3, 6], max_requests_per_run: 60}
-    cycle: {type: weekly, starts: thursday}
-    # Approved 5 Oct 2026: Algolia reads limited to the categories in tracked_categories.yaml.
-    # Specials here = clearance items only: the index's in_catalogue flag isn't reliable.
+    cycle: {type: weekly, starts: wednesday}
+    # Approved 5 Oct 2026 for our categories, and on 19 Oct 2026 for the full range (once a week). Marketplace
+    # sellers are left out. Specials from product data = clearance only: the index's in_catalogue flag isn't
+    # reliable and "$X Off RRP" is everyday pricing. Catalogue specials come from the catalogue below.
+    range: {max_requests: 120, hits_per_page: 1000}
     algolia:
       app_id: 42NP1V2I98
       search_key_env: CW_ALGOLIA_SEARCH_KEY  # set in .env (not committed) or as a GitHub secret
       index: prod_cwr-cw-au_products_en
       hits_per_page: 100
-    nexus_client_id: 3476  # catalogue viewer (images only; not collected)
+    # The printed catalogue (page images, read with AI; approved 19 Oct 2026). An item counts as a special only
+    # when it's cheaper than the price we recorded at Chemist Warehouse before the catalogue started. "Off RRP"
+    # savings alone never count. Anything that can't be matched to a product waits for review on the Mac.
+    catalogue:
+      nexus_client_id: 3476
+      max_requests: 60
+      model: claude-sonnet-5-5
+      api_key_env: ANTHROPIC_API_KEY
 
   costco:
     enabled: true
-    run_on: github   # GitHub test 12 Oct: works
+    run_on: mac
+    pause_on_block: true
     store:
       ref: online
       name: Costco online (national; prices include delivery)
@@ -82,13 +100,20 @@ chains:
       price_scope: online_national
       notes: "Nearest warehouse: Marsden Park (9 km). Warehouse shelf prices are not published online."
     politeness: {delay_seconds: [3, 6], max_requests_per_run: 60}
-    cycle: {type: weekly, starts: monday}
+    cycle: {type: weekly, starts: wednesday}
     specials_categories:
       - {code: hot-buys, name: Hot Buys}
+    range: {max_requests: 160}
+    # The In-Warehouse Savings booklet (warehouse shelf prices). Its viewer has a text version of every page,
+    # so nothing is read from images. Found through costco.com.au/warehouse-savings.
+    catalogue:
+      max_requests: 60
+      warehouse: {ref: warehouse, name: "Costco warehouses (national booklet prices)"}
 
   aldi:
     enabled: true
-    run_on: github   # GitHub test 12 Oct: works
+    run_on: mac
+    pause_on_block: true
     store:
       ref: G449
       name: ALDI North Kellyville
@@ -96,5 +121,8 @@ chains:
       postcode: "2155"
       price_scope: store
     politeness: {delay_seconds: [3, 6], max_requests_per_run: 60}
-    cycle: {type: twice_weekly, days: [wednesday, saturday]}
+    # One refresh a week. Special Buys are published about two weeks ahead, so Wednesday's read already has
+    # Saturday's drop.
+    cycle: {type: weekly, starts: wednesday}
     special_buys: {days_back: 7, days_ahead: 14}
+    range: {max_requests: 90}

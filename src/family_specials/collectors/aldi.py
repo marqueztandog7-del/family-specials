@@ -72,6 +72,10 @@ class AldiCollector(Collector):
         yield from self._read("category", str(category["key"]), category.get("name", ""),
                               {"categoryTree": category["key"]}, {})
 
+    def fetch_range(self) -> Iterator[RawItem]:
+        """Everything ALDI lists for our store, page by page. An item with a was price counts as a special."""
+        yield from self._read("range", "all", "Full range", {}, {})
+
     def discover_categories(self) -> list[CategoryInfo]:
         tree = self.client.get(f"{API}/v2/product-category-tree",
                                params={"serviceType": "walk-in", "servicePoint": self.store_ref}).json()["data"]

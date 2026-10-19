@@ -4,6 +4,8 @@
   specials backend migrate                     apply new database changes in supabase/migrations
   specials backend status                      what's applied, and how many families/accounts (counts only)
   specials backend test                        the database self-test (pretend people, rolled back: saves nothing)
+  specials backend email                       send password-reset emails from the app's Gmail account (asks for its
+                                               address, then its app password, which isn't shown)
 """
 
 from __future__ import annotations
@@ -37,6 +39,18 @@ def cmd_backend(args) -> int:
             applied = backend.migrate()
             print(f"Applied: {', '.join(applied)}" if applied else "Nothing new to apply.")
             return 0
+        if args.action == "email":
+            sender = input("The app's Gmail address: ").strip() if sys.stdin.isatty() else sys.stdin.readline()
+            if sys.stdin.isatty():
+                pw = getpass.getpass("Its 16-letter app password (it won't show as you paste), then press Return: ")
+            else:
+                pw = sys.stdin.readline()
+            backend.configure_email(sender, pw)
+            s = backend.email_settings()
+            print(f"Done. Reset emails now come from the app's Gmail account, up to {s['per_hour']} an hour, with the "
+                  "Family Specials wording. The password is saved in Supabase, .env and the GitHub secret "
+                  "SMTP_PASSWORD (not shown).")
+            return 0
         if args.action == "test":
             results = backend.selftest()
             for r in results:
@@ -55,7 +69,7 @@ def cmd_backend(args) -> int:
 
 def register(sub) -> None:
     p = sub.add_parser("backend", help="the family backend (Supabase): connect, migrate, status")
-    p.add_argument("action", choices=["connect", "migrate", "status", "test"])
+    p.add_argument("action", choices=["connect", "migrate", "status", "test", "email"])
     p.add_argument("--project", help="connect: the Supabase project's name or ref (if you have several)")
     p.add_argument("--from-clipboard", action="store_true", help="connect: read the token from the clipboard instead")
     p.set_defaults(func=cmd_backend)

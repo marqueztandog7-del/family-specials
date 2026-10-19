@@ -5,7 +5,7 @@
   specials notify devices           phones that get notifications
   specials notify remove <number>   stop sending to a phone
   specials notify test              send a test notification to every phone
-  specials notify run [--dry-run]   send what's due (GitHub runs this after every update)
+  specials notify run [--dry-run]   send what's due (the Mac runs this after every update)
 """
 
 from __future__ import annotations

@@ -57,6 +57,10 @@ class CostcoCollector(Collector):
         yield from self._read("category", category.get("code"), category.get("name", ""),
                               category.get("query", ""))
 
+    def fetch_range(self) -> Iterator[RawItem]:
+        """Everything Costco sells online, page by page (online prices include delivery)."""
+        yield from self._read("range", None, "Full range")
+
     def normalise(self, raw: RawItem) -> NormalisedItem | None:
         p = raw.data
         code = p.get("code")

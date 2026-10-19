@@ -1,6 +1,7 @@
-"""The family watchlist: config/watchlist.yaml (names and rules, committed) plus the match
-decisions in watchlist/decisions.csv (confirm/reject, committed). The database copies are
-rebuilt from these files on every run, so the Mac and GitHub always agree.
+"""The family watchlist: data/private/watchlist.yaml (names, rules and the Core / Regulars groups) plus the match
+decisions in data/private/watch-decisions.csv (confirm/reject). Both are private, on the Mac only (since 19 Oct
+2026: the groups are about what our family buys). The database copies are rebuilt from these files on every run,
+and the app gets the result only through the family's private row in Supabase.
 """
 
 from __future__ import annotations
@@ -19,8 +20,8 @@ from . import config
 from .parsing import to_cents
 from .timeutil import now_iso
 
-WATCHLIST = config.CONFIG_DIR / "watchlist.yaml"
-DECISIONS = config.PROJECT_ROOT / "watchlist" / "decisions.csv"
+WATCHLIST = config.WATCHLIST_FILE
+DECISIONS = config.PRIVATE_DIR / "watch-decisions.csv"
 DECISION_FIELDS = ["watch_item", "chain", "product_id", "decision", "decided_at", "note"]
 LEVELS = ("exact", "same_product", "similar")
 TIERS = {"core": 0, "regular": 1, "occasional": 2}

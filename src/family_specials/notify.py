@@ -1,12 +1,13 @@
-"""Phone notifications (Web Push), sent from GitHub Actions. Free: Apple's and Google's push services cost
-nothing, and neither do Actions on a public repo. No other service or account.
+"""Phone notifications (Web Push), sent from the Mac after the weekly refresh. Free: Apple's and Google's push
+services cost nothing. No other service or account.
 
   - Each phone opts in with the switch in Settings. The phone gets a subscription from its push service (Apple or
     Google) and shows it as a code. `specials notify add` (on the Mac) saves it in data/push/ (never in git) and
     copies the list to the PUSH_SUBSCRIPTIONS secret on GitHub.
-  - After every data update, the "Notify phones" workflow runs `specials notify run`: a notification when a watched
-    item goes on special (at most one per item per specials week, Wednesday to Tuesday), plus a weekly digest once
-    Woolworths has this week's prices. What was sent goes in notifications/sent.csv (item keys and dates only).
+  - After every data update, the Mac runs `specials notify run`: a notification when a watched item goes on
+    special (at most one per item per specials week, Wednesday to Tuesday), plus a weekly digest once Woolworths has
+    this week's prices. It reads the family watchlist built on the Mac (data/private/family-watchlist.json), because
+    the watchlist is private since 19 Oct 2026. What was sent goes in data/private/notify-sent.csv (private too).
   - Notifications use shelf prices and the store's own was prices, like the app. They cover every store we have
     prices for (the store switches in Settings only change what the app shows on that phone).
 """
@@ -26,7 +27,8 @@ from . import config
 from .timeutil import SYDNEY, iso, now_utc, parse_iso, weekly_cycle
 
 DEVICES_FILE = config.DATA_DIR / "push" / "devices.json"
-SENT_FILE = config.PROJECT_ROOT / "notifications" / "sent.csv"
+SENT_FILE = config.PRIVATE_DIR / "notify-sent.csv"
+WATCH_FILE = config.PRIVATE_DIR / "family-watchlist.json"   # written by `specials update` (watch_export)
 PUBLIC_KEY_FILE = config.PROJECT_ROOT / "site" / "push.json"
 SENT_FIELDS = ["sent_at", "cycle", "kind", "item_key", "chain", "alert_id"]
 # Only the browsers' own push services. A code pointing anywhere else is refused.
@@ -291,9 +293,11 @@ def send(devices: list[dict[str, Any]], message: dict[str, str]) -> dict[str, li
 
 
 def run(dry_run: bool = False) -> int:
-    site = config.PROJECT_ROOT / "site" / "data"
-    watch = json.loads((site / "watchlist.json").read_text(encoding="utf-8"))
-    status = json.loads((site / "status.json").read_text(encoding="utf-8"))
+    if not WATCH_FILE.exists():
+        print("No family watchlist built yet (run: uv run specials update --no-collect).")
+        return 0
+    watch = json.loads(WATCH_FILE.read_text(encoding="utf-8"))
+    status = json.loads((config.PROJECT_ROOT / "site" / "data" / "status.json").read_text(encoding="utf-8"))
     messages, rows = plan(watch, status, read_sent())
     if dry_run:
         for m in messages:

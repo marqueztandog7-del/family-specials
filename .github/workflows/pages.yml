@@ -1,7 +1,7 @@
 name: Publish page
 
 # Publishes site/ to GitHub Pages when it changes on main (e.g. a push from the Mac).
-# Scheduled collection runs publish the page themselves.
+# Every store refreshes from the Mac once a week; its push publishes the page.
 on:
   push:
     branches: [main]

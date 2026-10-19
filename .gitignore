@@ -32,3 +32,6 @@ docs/decisions.md
 
 # The app's backend settings, written at publish time from GitHub secrets (and locally from .env)
 /site/app-config.json
+
+# Local editor/preview settings (contain this Mac's paths)
+/.claude/

@@ -1,11 +1,17 @@
 // The data layer: the ONLY place the app reads or saves data.
 //
-// Prices come from JSON files published next to the page (GitHub Pages). The shopping list and
-// settings are saved on this phone (localStorage) for now. A future native build (Capacitor) or a
-// shared family account can replace the functions in this file without touching the screens.
+// Every store's specials come from a public JSON file published next to the page (GitHub Pages). Everything about
+// our family comes from the family backend through account.js, which is the only file that talks to it: the
+// family's watchlist (with its Core Essentials and Regulars, private to its members), search over every store's
+// full range, and the shared list, savings and watchlist changes (sync.js). The shopping list and settings are
+// also kept on this phone, so the app works offline. A future native build (Capacitor) can replace the functions
+// in this file without touching the screens.
+import * as account from "./account.js";
 
 const DATA_BASE = new URL("./data/", document.baseURI);
 const cache = new Map();
+export const STORE_NAMES = { woolworths: "Woolworths", coles: "Coles", aldi: "ALDI", costco: "Costco",
+  chemistwarehouse: "Chemist Warehouse" };
 
 async function getJSON(name) {
   if (!cache.has(name)) {
@@ -23,16 +29,37 @@ export function refresh() {
   cache.clear();
 }
 
-// ------------------------------------------------------------------ prices and the watchlist
+// ------------------------------------------------------------------ specials, the watchlist and search
 
-/** The watchlist with each item's current offers, history and signals. */
-export async function getWatchlist() {
-  return getJSON("watchlist.json");
+/** Every store's current specials (public), biggest saving first: { generated_at, cycle_started, specials }. */
+export async function getSpecials() {
+  const data = await getJSON("specials.json");
+  for (const p of data.specials) {
+    if (!p._words) p._words = words([p.name, p.brand, p.size, p.store].join(" "));
+  }
+  return data;
 }
 
-export async function getWatchItem(key) {
-  const w = await getWatchlist();
-  return w.items.find((i) => i.key === key) || null;
+const NO_WATCHLIST = { generated_at: null, items: [], stores: [] };
+
+/**
+ * The family's watchlist with each item's current offers, history and signals (private to the family). Empty
+ * when not in a family. Kept on this phone, so it shows offline; only downloaded again when it has changed.
+ */
+export async function getWatchlist() {
+  if (!family) return NO_WATCHLIST;
+  const key = famKey("watchlist");
+  const saved = load(key, null);
+  try {
+    const res = await account.myWatchlist(saved?.generated_at || null);
+    if (!res) return NO_WATCHLIST;                       // not built for this family yet
+    if (res.unchanged && saved) return saved.data;
+    save(key, { generated_at: res.generated_at, data: res.data });
+    return res.data;
+  } catch (e) {
+    if (saved) return saved.data;                        // offline: the last copy
+    throw e;
+  }
 }
 
 /** Phone notification settings published with the app (the public key that phones subscribe with). */
@@ -47,34 +74,34 @@ export async function getStatus() {
   return getJSON("status.json");
 }
 
-/** Every published product (large: only loaded when someone searches). */
-export async function getProducts() {
-  const data = await getJSON("products.json");
-  for (const p of data.products) {
-    if (!p._words) p._words = words([p.name, p.brand, p.size, p.store].join(" "));
-  }
-  return data.products;
+/** A product from the backend's store ranges, shaped like the app's other offers. */
+function fromRow(r) {
+  return {
+    id: `${r.chain}:${r.product_id}`, chain: r.chain, store: STORE_NAMES[r.chain] || r.chain, name: r.name,
+    brand: r.brand, size: r.size_text, category: r.category, url: r.url, image: r.image,
+    price_cents: r.price_cents, price_per: r.price_per, was_cents: r.was_cents, rrp_cents: r.rrp_cents,
+    basis: r.basis, special: !!r.special, special_type: r.special_type, promo: r.promo, multibuy: r.multibuy,
+    unit: r.unit_cents != null ? { cents: Number(r.unit_cents), per: r.unit_per } : null,
+    store_unit_text: r.store_unit_text, valid_from: r.valid_from, valid_to: r.valid_to,
+    valid_to_assumed: !!r.valid_to_assumed, in_stock: r.in_stock, seen_at: r.seen_at,
+  };
 }
 
-/** Search all published products: each word must match the start of a word in the product. */
-export async function searchProducts(query, { chains = [], limit = 60 } = {}) {
+/** Search every product in every store's full range (Woolworths, ALDI, Costco, Chemist Warehouse). */
+export async function searchProducts(query, { chains = [], limit = 40 } = {}) {
+  if (!words(query).length) return [];
+  return (await account.searchProducts(query, chains, limit)).map(fromRow);
+}
+
+/** Today's prices for products by id ('woolworths:123'), e.g. the ones the family added to its watchlist. */
+export async function getProductsById(ids) {
+  return (await account.productsById(ids)).map(fromRow);
+}
+
+/** Filter a list of specials by what someone typed: every word must start a word in the product. */
+export function matchesQuery(p, query) {
   const terms = words(query);
-  if (!terms.length) return [];
-  const products = await getProducts();
-  const out = [];
-  for (const p of products) {
-    if (chains.length && !chains.includes(p.chain)) continue;
-    let score = 0;
-    let ok = true;
-    for (const t of terms) {
-      const hit = p._words.findIndex((w) => w.startsWith(t));
-      if (hit < 0) { ok = false; break; }
-      score += hit === 0 ? 3 : 1;
-    }
-    if (ok) out.push({ p, score });
-  }
-  out.sort((a, b) => b.score - a.score || (b.p.special - a.p.special) || a.p.price_cents - b.p.price_cents);
-  return out.slice(0, limit).map((x) => x.p);
+  return terms.every((t) => p._words.some((w) => w.startsWith(t)));
 }
 
 function words(text) {

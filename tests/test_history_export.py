@@ -24,19 +24,32 @@ def _run(conn, chain, kind, source, ctx=None):
     return run_id
 
 
-def test_scope_only_includes_tracked_category_products(tmp_path):
+HALF = {"special_type": "half_price", "weekly": True}
+
+
+def test_history_holds_specials_only(tmp_path):
+    """Since 19 Oct 2026 the public history holds specials at every store and nothing chosen by our watchlist:
+    regular prices (from category or full-range reads) stay in the database on the Mac."""
+    hist = tmp_path / "history"
     conn = db.connect(tmp_path / "a.db")
-    _run(conn, "costco", "specials", "specials")
-    assert scope_product_ids(conn) == set()          # specials alone are never published
-    _run(conn, "costco", "category", "category")
+    _run(conn, "aldi", "category", "category")           # regular prices only
+    assert scope_product_ids(conn) == set()
+    assert publish_new_runs(conn, hist)["observations"] == 0
+    _run(conn, "woolworths", "category", "category", HALF)
     assert len(scope_product_ids(conn)) > 0
+    publish_new_runs(conn, hist)
+    rows = [line for f in hist.glob("observations/*.csv") for line in f.read_text().splitlines()[1:]]
+    assert rows and all(line.split(",")[11] == "1" for line in rows)          # is_special
+    products = "".join(f.read_text() for f in hist.glob("products/*.csv"))
+    assert "aldi" not in {f.stem for f in hist.glob("products/*.csv")}
+    assert all(line.endswith(",") for line in products.splitlines()[1:])     # no tracked-category links
 
 
 def test_history_round_trip_rebuilds_the_same_page_data(tmp_path):
     hist = tmp_path / "history"
     a = db.connect(tmp_path / "a.db")
-    _run(a, "woolworths", "category", "category", {"special_type": "half_price", "weekly": True})
-    _run(a, "aldi", "category", "category")
+    _run(a, "woolworths", "category", "category", HALF)
+    _run(a, "aldi", "category", "category", {"special_type": "special_buy", "is_special": True})
     counts = publish_new_runs(a, hist)
     assert counts["runs"] == 2 and counts["observations"] > 0
     assert publish_new_runs(a, hist)["runs"] == 0    # nothing published twice
@@ -46,9 +59,9 @@ def test_history_round_trip_rebuilds_the_same_page_data(tmp_path):
     assert loaded["runs"] == 2
     assert import_history(b, hist)["runs"] == 0      # importing twice adds nothing
 
-    pa = {p["id"]: p for p in build_products(a)}
+    pa = {p["id"]: p for p in build_products(a) if p["special"]}     # the public history has the specials
     pb = {p["id"]: p for p in build_products(b)}
-    assert pa.keys() == pb.keys()
+    assert pa and pa.keys() == pb.keys()
     for key in pa:
         assert pa[key]["price_cents"] == pb[key]["price_cents"]
         assert pa[key]["unit"] == pb[key]["unit"]
@@ -57,7 +70,7 @@ def test_history_round_trip_rebuilds_the_same_page_data(tmp_path):
 def test_history_keeps_woolworths_in_store_price_and_drops_identical_online_copy(tmp_path):
     hist = tmp_path / "history"
     a = db.connect(tmp_path / "a.db")
-    _run(a, "woolworths", "category", "category")
+    _run(a, "woolworths", "category", "category", HALF)
     publish_new_runs(a, hist)
     rows = (hist / "observations").glob("woolworths-*.csv")
     lines = [line for f in rows for line in f.read_text().splitlines()[1:]]
@@ -68,7 +81,7 @@ def test_history_keeps_woolworths_in_store_price_and_drops_identical_online_copy
 def test_no_member_prices_or_raw_data_in_history(tmp_path):
     hist = tmp_path / "history"
     a = db.connect(tmp_path / "a.db")
-    _run(a, "woolworths", "category", "category")
+    _run(a, "woolworths", "category", "category", HALF)
     publish_new_runs(a, hist)
     text = "".join(f.read_text() for f in hist.rglob("*.csv"))
     header = (next(hist.glob("observations/*.csv"))).read_text().splitlines()[0]

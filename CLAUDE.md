@@ -55,7 +55,7 @@ Every stage must keep these possible. When a design choice would block one of th
 - `docs/design` (the Stitch designs and brief) is private (`.gitignore`) and used from the Mac only. The app rebuilds the look (layout, colours, fonts, components); never copy the designs' sample text, names, prices or savings into code.
 
 - The GitHub repo is public. Never commit: the database, raw collector responses, anything in `data/private/` (receipt files), `.env` or secrets. Test fixtures are a small, deliberate set of saved store responses.
-- `data/private/` holds our receipt-derived files. The published page and repo may show watchlist item names and rules only: no receipt lines, dates, prices we paid or spend.
+- `data/private/` holds our receipt-derived files **and the watchlist** (`watchlist.yaml`, `watch-decisions.csv`, `notify-sent.csv`, `family-watchlist.json`). Since 19 Oct 2026 the watchlist and its Core Essentials / Regulars groups are private: they're what our family buys, so they live only in `data/private/` and the family's own Supabase row (`family_watchlist`), never in the repo or a public file. The public data file (`site/data/specials.json`) and `history/` hold store specials only (every store's, never a selection made by the watchlist); full ranges go to Supabase (`store_products`).
 - Online receipts don't mark specials (in-store receipts mark them with ^), so a price from an online order is never treated as the normal price.
 - Third-party keys found in store websites (e.g. Chemist Warehouse's Algolia search key) live in `.env` / GitHub Actions secrets, not in the repo.
 
@@ -65,8 +65,9 @@ Every stage must keep these possible. When a design choice would block one of th
 - Be polite and low volume: only fetch what's needed, at most once or twice per specials cycle per store, with delays between requests.
 - Respect robots.txt, including `*` wildcards (the client checks every request). Store search pages are disallowed, so use category pages. Coles' `/*/*/*/on-special*` rule also blocks the `/_next/data/.../on-special.json` route, so Coles specials come from the normal `/on-special?page=N` pages.
 - No CAPTCHA solving, no proxy rotation, no logins, and no bypassing bot protection. Stop at the first sign of blocking.
-- Ask before calling a store's third-party search service with the site's own browser key. Chemist Warehouse's Algolia is approved (5 Oct 2026), limited to the categories our searched or watched items fall in.
-- Image-only sources (catalogue flipbooks) aren't collected. There is no flyer-upload path.
+- Ask before calling a store's third-party search service with the site's own browser key. Chemist Warehouse's Algolia is approved (5 Oct 2026) and, since 19 Oct 2026, for its full range once a week (marketplace sellers left out).
+- Catalogues (approved 19 Oct 2026): Costco's In-Warehouse Savings booklet is read from its viewer's text pages; Chemist Warehouse's catalogue from page images with AI (Anthropic API, key in `.env`). Anything unclear or not matched with confidence goes on the review list (`specials catalogue review`), never into prices. A Chemist Warehouse catalogue price is a special only when it's below the price we recorded there before the catalogue started, or the catalogue says the saving is off its everyday price.
+- A store that refuses or challenges us is paused (`pause_on_block`) until the user runs `specials resume <store>`; tell the user. Never retry around it.
 - One store breaking must never stop the others.
 - Store timestamps in UTC; specials cycles follow Sydney time (daylight saving).
 
@@ -75,16 +76,13 @@ Every stage must keep these possible. When a design choice would block one of th
 - Python 3.12 (via uv), httpx, pydantic, SQLite with FTS5, rapidfuzz, PyYAML.
 - The family page is a static web app in `site/` on GitHub Pages. `site/js/data.js` is the only file that reads or saves data, and `site/js/push.js` the only one that talks to the push service, so a Capacitor (App Store / Google Play) build can wrap `site/` later. Phone-first; nothing desktop-only.
 - **Design:** the Stitch designs in `docs/design` (Pantry Standard: `pantry_standard/DESIGN.md`, one mock-up per screen, and the design brief) are the visual reference for every screen: layout, spacing, type (Plus Jakarta Sans, JetBrains Mono for prices), components and colours (terracotta actions, sage savings, store colour tags). They replace the earlier greys-only rule (16 Oct 2026). Sample numbers in the mock-ups are always replaced by live data, and where a mock-up conflicts with an agreed rule (Coles paused, data rules), the agreed rule wins and is raised.
-- **Updates:**
-  - GitHub Actions (`.github/workflows/collect.yml`) runs the stores with `run_on: github`; `scripts/mac-update.sh` runs the ones with `run_on: mac`.
-  - Both use `specials update`: load `history/` → collect what's due → append to `history/` → rebuild `site/data/`.
-  - Per-store history files mean GitHub and the Mac never edit the same file.
+- **Updates (one weekly refresh, 19 Oct 2026):** every store is `run_on: mac` and refreshes once a week from Wednesday morning: specials, then full range (category pages only), then catalogue. `specials update` then re-runs matching, writes `site/data/specials.json`, sends ranges and the family watchlist to Supabase, and sends notifications. `scripts/mac-update.sh` commits only `history/` and `site/data/`. GitHub only runs `keepalive.yml` (daily Supabase check-in) and `pages.yml` (publish on push).
 - **Mac schedule** (installed 16 Oct 2026): launchd runs `scripts/mac-update.sh` at 7:30am and 6:30pm. Collection happens only when due; otherwise it's a check that commits nothing. A weekly backup goes to iCloud Drive/family-specials-backups (`specials backup`: SQLite backup API, integrity check, xz, newest 8 kept, notification on failure). `.env`, tokens and the live database never go to iCloud.
 - **Coles:** paused for good. Its one trial (16 Oct 2026) was challenged on half-price page 6 (`pause_for_good_on_block`); never add retries or workarounds. The configured read is half-price pages plus watchlist categories only. A possible fallback (not built) is reading Coles' weekly specials emails from the inbox.
 - **Watchlist:**
-  - `config/watchlist.yaml` (names and rules, committed) drives matching and the store categories that are read. `tracked_categories.yaml` only holds extras.
-  - `watchlist/decisions.csv` holds confirm/reject decisions; a rejection is permanent.
-  - Matching (`matching.py`) runs after every update.
+  - `data/private/watchlist.yaml` (private) drives matching. Products added from search are family watch items in Supabase (no group chooser yet: added with no group).
+  - `data/private/watch-decisions.csv` holds confirm/reject decisions; a rejection is permanent.
+  - Matching (`matching.py`) runs after every update, across every store's full range.
   - The accuracy report is private (`data/reports/`), because it uses receipt names.
 - **Accounts and families:** Supabase (free plan, Sydney), OK'd 16 Oct 2026.
   - `site/js/account.js` is the only file that talks to it. The app finds it through `site/app-config.json` (address + public key), which is written at publish time from GitHub secrets and never committed.
@@ -97,6 +95,8 @@ Every stage must keep these possible. When a design choice would block one of th
     - **Owner and member controls** are in Profile.
     - **Shared data:** `family_list_items`, `family_savings` and `family_watch_items` merge field by field, latest wins, never deleted, synced live by `site/js/sync.js`.
   - **Testing:** I can't create accounts on Supabase, so test the database with `specials backend test` (a rolled-back transaction with pretend people), and the user tests sign-in and joining on real phones.
-- **Phone notifications:** free Web Push. `.github/workflows/notify.yml` runs `specials notify run` after every "Collect prices" or "Publish page" run: at most one notification per watch item per specials week (Wednesday to Tuesday), plus a weekly digest. `notifications/sent.csv` (committed) records what was sent, with item keys and dates only. Phones opt in from Settings; their subscriptions live in `data/push/devices.json` and the `PUSH_SUBSCRIPTIONS` secret, never in git. The signing key is in `.env` and the `VAPID_PRIVATE_KEY` secret. `site/js/push.js` is the only file that talks to the push service.
+- **Phone notifications:** free Web Push, sent from the Mac by `specials update` after a refresh (it needs the private watchlist): at most one notification per watch item per specials week (Wednesday to Tuesday), plus a weekly digest. `data/private/notify-sent.csv` records what was sent. Phones opt in from Settings; their subscriptions live in `data/push/devices.json` and the `PUSH_SUBSCRIPTIONS` secret, never in git. The signing key is in `.env` and the `VAPID_PRIVATE_KEY` secret. `site/js/push.js` is the only file that talks to the push service.
 - **Home numbers:** every number on Home comes from real data or says there isn't enough yet. "New this week" needs a read of the product in the week before. "Usually $X" needs that normal price recorded in 2 different weeks. Recommendations come only from the watchlist (tiers come from receipts: core = bought in 4+ shops). Never publish purchase dates or "due" timing derived from receipts.
-- **Published data:** `history/` and `site/data/` hold only products related to what we buy (seen in a tracked category, or matched to a watch item). No member prices and no raw store data.
+- **Published data:** `history/` and `site/data/` hold store specials only (all stores). No member prices, no raw store data, nothing chosen by the watchlist.
+- **Password reset:** Supabase's recovery email with our own template (needs the custom sender: a Gmail account made for the app, set with `specials backend email`). The link is `<app>#/reset?token_hash=…&type=recovery`, used with `verifyOtp` only when the new password is submitted (works in mail apps' own browsers). Supabase's standard link (`#access_token=…&type=recovery`) is handled too.
+- **Testing the app without Supabase:** `tests/fake_backend.py` (localhost only, pretend accounts).

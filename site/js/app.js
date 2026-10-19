@@ -9,7 +9,7 @@ import * as sync from "./sync.js";
 
 const $ = (s, el = document) => el.querySelector(s);
 const view = $("#view");
-const APP_VERSION = "v6";
+const APP_VERSION = "v7";
 
 const TABS = { "this-week": "This Week", watchlist: "Watchlist", home: "Home", list: "List", savings: "Savings" };
 // Screens on top of a tab. Alerts and Settings hide the tab bar (as in the designs); item detail keeps it.
@@ -23,6 +23,8 @@ const SUB_SCREENS = {
   joined: { tab: null, up: "#/home", title: "Welcome", tabs: false, bare: true },
   family: { tab: "home", up: "#/home", title: "Family", tabs: false },
   profile: { tab: null, up: "#/home", title: "Profile", tabs: false },
+  forgot: { tab: null, up: "#/welcome", title: "Forgot password", tabs: false, bare: true },
+  reset: { tab: null, up: "#/welcome", title: "Set a new password", tabs: false, bare: true },
 };
 const TIER_ORDER = { core: 0, regular: 1, occasional: 2, added: 3 };
 const TIER_LABEL = { core: "Core", regular: "Regular", occasional: "Occasional", added: "Added" };
@@ -44,17 +46,18 @@ const DASHES = ["", "6 4", "2 4", "8 3 2 3", "4 2"];
 
 const state = {
   watch: null, status: null, loadedAt: 0, offerToItem: new Map(), offersById: new Map(),
-  query: "", searchSeq: 0, productsLoaded: false, filter: "all", dealsOnly: false,
+  query: "", searchSeq: 0, productsLoaded: false, dealsOnly: false,
   refs: new Map(), expanded: new Set(), scroll: new Map(), stack: [], pushOn: null,
   accountsOn: false, user: null, family: null, profile: null, authMode: "create",
   invite: null, newInvite: null, leaving: false, productsById: null,
+  specials: [], weekTab: "all", weekQuery: "", weekShown: 40, reset: null,
 };
 
 // ------------------------------------------------------------------ formatting
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const money = (c) => (c == null ? "no price" : "$" + (c / 100).toFixed(2));
-const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+const plural = (n, word) => `${n.toLocaleString("en-AU")} ${word}${n === 1 ? "" : "s"}`;
 const icon = (name, cls = "") => `<span class="material-symbols-outlined ${cls}" aria-hidden="true">${name}</span>`;
 const SYD = { timeZone: "Australia/Sydney" };
 const day = (iso) => new Date(iso).toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short", ...SYD });
@@ -164,18 +167,23 @@ function watchChanges() {
 }
 
 let productsLoading = null;
+/** Today's prices for the products the family added (from the backend's store ranges). */
 function ensureProducts() {
-  productsLoading ||= data.getProducts().then((list) => {
+  const ids = watchChanges().added.map((c) => c.watch_key.slice("product:".length));
+  const key = ids.slice().sort().join(",");
+  if (state.productsKey === key) return;
+  state.productsKey = key;
+  productsLoading = data.getProductsById(ids).then((list) => {
     state.productsById = new Map(list.map((p) => [p.id, p]));
     scheduleRender();
-  }).catch(() => { productsLoading = null; });
+  }).catch(() => { state.productsKey = null; });
 }
 
 /** A product the family added, shaped like a watch item (today's price once the products have loaded). */
 function productItem(change) {
   const id = change.watch_key.slice("product:".length);
   const snap = change.data || {};
-  if (!state.productsById) ensureProducts();
+  ensureProducts();
   const p = state.productsById?.get(id);
   const offer = p ? { ...p, unit_cents: p.unit?.cents ?? null, multibuy_unit_cents: p.multibuy?.unit?.cents ?? null,
     signals: [], new_this_cycle: null, usual_cents: null } : null;
@@ -465,51 +473,102 @@ function renderHome() {
 
 // ------------------------------------------------------------------ This Week
 
-function dealCard({ item, offers, specials, best }) {
-  const bu = bestUnit(best);
-  const normal = offers.find((o) => !o.special && bestUnit(o) != null);
-  const cheaper = bu != null && normal && bestUnit(normal) < bu
-    ? `<p class="hint">Cheaper without a special: <b>${unitMoney(bestUnit(normal), item.compare_per)}</b> at ${esc(normal.store)} (${esc(normal.name)})</p>` : "";
-  const more = specials.length - 1;
-  const unit = best.unit_cents != null ? unitMoney(best.unit_cents, item.compare_per) : `can't compare ${perPhrase(item.compare_per)}`;
+const WEEK_TABS = [["all", "All specials"], ["core", "Core Essentials"], ["regular", "Regulars"]];
+const WEEK_PAGE = 40;
+const GROUP_ORDER = { core: 0, regular: 1 };   // then other watchlist items (2), then everything else (3)
+const MARKER = { core: "Core", regular: "Regular" };
+
+/** Every special at the compared stores, each with the watch item it matches (if any), in This Week's order:
+ *  Core first, then Regulars, then other watchlist items, then everything else; biggest saving first in each. */
+function weekRows(chains) {
+  const watched = new Map();   // special id -> { item, offer } (the item in the highest group wins)
+  for (const item of watchItems()) {
+    for (const o of item.offers) {
+      if (!o.special || !chains.has(o.chain)) continue;
+      const prev = watched.get(o.id);
+      if (!prev || groupOf(item) < groupOf(prev.item)) watched.set(o.id, { item, offer: o });
+    }
+  }
+  const rows = [];
+  const seen = new Set();
+  for (const s of state.specials) {
+    if (!chains.has(s.chain)) continue;
+    const hit = watched.get(s.id);
+    rows.push({ special: s, offer: hit?.offer || s, item: hit?.item || null, saving: s.saving_cents ?? savingCents(s) ?? 0 });
+    seen.add(s.id);
+  }
+  // A watched special that isn't in the public file (e.g. a product the family added, priced since): still shown.
+  for (const [id, hit] of watched) {
+    if (!seen.has(id)) rows.push({ special: hit.offer, offer: hit.offer, item: hit.item, saving: savingCents(hit.offer) ?? 0 });
+  }
+  return rows.sort((a, b) => groupOf(a.item) - groupOf(b.item) || b.saving - a.saving
+    || (a.offer.name || "").localeCompare(b.offer.name || ""));
+}
+
+function groupOf(item) {
+  if (!item) return 3;
+  return GROUP_ORDER[item.tier] ?? 2;
+}
+
+function weekCard({ offer: o, item }) {
+  const link = item ? href(item.key) : (o.url || null);
+  const ext = !item && o.url ? ' target="_blank" rel="noopener"' : "";
+  const unit = item ? (o.unit_cents != null ? unitMoney(o.unit_cents, item.compare_per) : "")
+    : o.unit ? unitMoney(o.unit.cents, o.unit.per) : "";
+  const marker = item ? `<span class="pill outline watched">${icon("bookmark")}${esc(MARKER[item.tier] || "On your watchlist")}</span>` : "";
+  const mbUnit = item ? unitMoney(o.multibuy_unit_cents, item.compare_per) : o.multibuy?.unit ? unitMoney(o.multibuy.unit.cents, o.multibuy.unit.per) : "";
   return `<article class="card deal">
-    <div class="row">${headPill(best)}<span class="caps t3">${esc(endsText(best) || TIER_LABEL[item.tier] || "")}</span></div>
+    <div class="row">${headPill(o)}<span class="caps t3">${esc(endsText(o))}</span></div>
     <div class="deal-body">
-      ${thumb(best, "", href(item.key))}
+      ${thumb(o, "", link && item ? link : null)}
       <div class="grow">
-        <a class="deal-name clamp2" href="${href(item.key)}">${esc(item.name)}</a>
-        <p class="product truncate">${esc(best.name)}</p>
-        <div class="tagline">${storeTag(best.chain, best.store)}<span class="unit">${esc(unit)}</span></div>
-        ${priceLine(best)}
-        ${multibuyLine(best, unitMoney(best.multibuy_unit_cents, item.compare_per))}
+        ${marker}
+        ${link ? `<a class="deal-name clamp2" href="${esc(link)}"${ext}>${esc(o.name)}</a>` : `<p class="deal-name clamp2">${esc(o.name)}</p>`}
+        <div class="tagline">${storeTag(o.chain, o.store)}${unit ? `<span class="unit">${esc(unit)}</span>` : ""}</div>
+        ${priceLine(o)}
+        ${multibuyLine(o, mbUnit)}
       </div>
-      ${addRound(item, best)}
+      ${addRound(item, o)}
     </div>
-    ${morePills(best)}
-    ${cheaper}
-    <a class="deal-foot" href="${href(item.key)}"><span>${more ? `+${plural(more, "more special")} · ` : ""}All stores and price history</span>${icon("chevron_right")}</a>
+    ${morePills(o)}
+    ${item ? `<a class="deal-foot" href="${href(item.key)}"><span>${esc(item.product ? "On your watchlist" : `Matches ${item.name}`)} · all stores and price history</span>${icon("chevron_right")}</a>` : ""}
   </article>`;
+}
+
+function weekEmpty(tab) {
+  const tiers = new Set(watchItems().map((i) => i.tier));
+  if (tab === "all") return `<div class="empty">${icon("local_offer")}<b>No specials at the stores you compare right now</b>
+    <a class="link" href="#/settings">Check which stores you compare</a></div>`;
+  const name = tab === "core" ? "Core Essentials" : "Regulars";
+  if (!tiers.has(tab)) {
+    return `<div class="empty">${icon("bookmark")}<b>${data.familyMode() ? `Your watchlist has no ${name} yet` : `Your family's ${name} show here`}</b>
+      ${data.familyMode() ? "" : `They're shared with your family's members. <a class="link" href="#/profile">Join or start a family</a>`}</div>`;
+  }
+  return `<div class="empty">${icon("local_offer")}<b>None of your ${name} are on special this week</b>
+    <a class="link" href="#/this-week" data-action="week-tab" data-tab="all">See all specials</a></div>`;
 }
 
 function renderThisWeek() {
   const chains = comparedChains();
-  const all = specialRows(chains);
+  const rows = weekRows(chains);
+  const watchedRows = specialRows(chains);
   const paused = [...pausedChains()];
-  const pot = potential(all);
+  const pot = potential(watchedRows);
   const upd = updatedAt(chains);
-  const filters = [
-    ["all", "All Specials", all],
-    ["new", "New this week", all.filter((r) => r.specials.some((o) => o.new_this_cycle === true))],
-    ["lowest", "Lowest in weeks", all.filter((r) => r.specials.some(lowestSignal))],
-    ["core", "Core Essentials", all.filter((r) => r.item.tier === "core")],
-    ["regular", "Regulars", all.filter((r) => r.item.tier === "regular")],
-  ].filter(([k, , rows]) => k === "all" || rows.length);
-  if (!filters.some(([k]) => k === state.filter)) state.filter = "all";
-  const rows = filters.find(([k]) => k === state.filter)[2];
+  const tabs = {
+    all: rows,
+    core: rows.filter((r) => r.item?.tier === "core"),
+    regular: rows.filter((r) => r.item?.tier === "regular"),
+  };
+  if (!tabs[state.weekTab]) state.weekTab = "all";
+  const q = state.weekQuery.trim();
+  const shown = q ? tabs[state.weekTab].filter((r) => r.special._words ? data.matchesQuery(r.special, q)
+    : (r.offer.name || "").toLowerCase().includes(q.toLowerCase())) : tabs[state.weekTab];
+  const page = shown.slice(0, state.weekShown);
 
-  // Store counts for the digest: where each item's best special is.
+  // Store counts for the digest: every special at each compared store.
   const byStore = new Map();
-  for (const r of all) byStore.set(r.best.chain, (byStore.get(r.best.chain) || 0) + 1);
+  for (const r of rows) byStore.set(r.offer.chain, (byStore.get(r.offer.chain) || 0) + 1);
 
   view.innerHTML = `
     <div class="context">
@@ -520,23 +579,41 @@ function renderThisWeek() {
       <div class="row" style="align-items:flex-start">
         <div class="grow">
           <span class="pill terra caps">${icon("local_fire_department")}Pantry digest</span>
-          <h2>${all.length ? `${plural(all.length, "item")} on special${pot.counted ? `, save up to <span class="num-lg">${money(pot.cents)}</span>` : ""}`
-            : "Nothing on special this week"}</h2>
-          <p class="body-sm t2">Matched against the ${plural(watchItems().length, "thing")} on your watchlist.</p>
+          <h2>${watchedRows.length ? `${plural(watchedRows.length, "watched item")} on special${pot.counted ? `, save up to <span class="num-lg">${money(pot.cents)}</span>` : ""}`
+            : "None of your watched items are on special"}</h2>
+          <p class="body-sm t2">${plural(rows.length, "special")} this week at the stores you compare.</p>
         </div>
         <span class="digest-icon">${icon("savings")}</span>
       </div>
       <div class="digest-foot">
-        ${[...byStore].map(([c, n]) => `<span class="store-count c-${c}"><span class="dot"></span>${n} ${esc(storeName(c))}</span>`).join("")}
+        ${[...byStore].map(([c, n]) => `<span class="store-count c-${c}"><span class="dot"></span>${n.toLocaleString("en-AU")} ${esc(storeName(c))}</span>`).join("")}
         ${paused.map((c) => `<span class="store-count c-${c}">${icon("pause_circle")}${esc(storeName(c))} paused</span>`).join("")}
       </div>
     </a>
-    ${all.length ? `<div class="filters" role="toolbar" aria-label="Filter specials">
-      ${filters.map(([k, label, r]) => `<button type="button" class="filter" data-action="filter" data-filter="${k}"
-        aria-pressed="${state.filter === k}">${k === "lowest" ? '<span class="dot"></span>' : ""}${esc(label)}<span class="count">${r.length}</span></button>`).join("")}
-    </div>` : ""}
-    <div class="stack">${rows.map(dealCard).join("") || `<div class="empty">${icon("local_offer")}<b>None of your watched items are on special</b>
-      at the stores you compare. <a class="link" href="#/watchlist">See the watchlist</a></div>`}</div>`;
+    <div class="filters" role="tablist" aria-label="Specials">
+      ${WEEK_TABS.map(([k, label]) => `<button type="button" class="filter" role="tab" data-action="week-tab" data-tab="${k}"
+        aria-selected="${state.weekTab === k}" aria-pressed="${state.weekTab === k}">${esc(label)}<span class="count">${tabs[k].length.toLocaleString("en-AU")}</span></button>`).join("")}
+    </div>
+    <form class="search" role="search" id="week-search">${icon("search")}
+      <input id="wq" type="search" placeholder="Search this week's specials" enterkeyhint="search" autocomplete="off"
+        autocorrect="off" spellcheck="false" aria-label="Search this week's specials" value="${esc(state.weekQuery)}">
+    </form>
+    <div class="stack" id="week-list">${page.map(weekCard).join("") || (q ? `<div class="empty">${icon("search")}<b>No specials match "${esc(q)}"</b>Try a shorter word.</div>` : weekEmpty(state.weekTab))}</div>
+    ${shown.length > page.length ? `<button type="button" class="btn secondary block" data-action="week-more" style="margin-top:12px">Show more (${(shown.length - page.length).toLocaleString("en-AU")} more)</button>` : ""}`;
+  let timer;
+  $("#wq").addEventListener("input", (e) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      state.weekQuery = e.target.value;
+      state.weekShown = WEEK_PAGE;
+      const at = e.target.selectionStart;
+      renderThisWeek();
+      const box = $("#wq");
+      box.focus();
+      try { box.setSelectionRange(at, at); } catch { /* not a text field */ }
+    }, 250);
+  });
+  $("#week-search").addEventListener("submit", (e) => { e.preventDefault(); $("#wq").blur(); });
 }
 
 // ------------------------------------------------------------------ Watchlist and search
@@ -577,7 +654,9 @@ function renderWatchlist() {
           <div><p class="title-sm">${plural(rows.length, "special")} on your watchlist this week</p>
             ${pot.counted ? `<p class="body-sm">Potential basket saving: <b class="mono">${money(pot.cents)}</b></p>` : ""}</div></div>
         ${icon("notifications_active", "t2")}</a>` : ""}
-      ${sections || `<div class="empty">${icon("local_offer")}<b>Nothing on special right now</b>Turn off "Deals only" to see everything.</div>`}
+      ${sections || (items.length ? `<div class="empty">${icon("local_offer")}<b>Nothing on special right now</b>Turn off "Deals only" to see everything.</div>`
+        : data.familyMode() ? `<div class="empty">${icon("bookmark")}<b>Nothing on the watchlist yet</b>Search for a product above and tap Watch.</div>`
+        : `<div class="empty">${icon("bookmark")}<b>Your family's watchlist shows here</b>It's shared with your family's members. <a class="link" href="#/profile">Join or start a family</a></div>`)}
       ${stoppedHTML()}
       <p class="note">${data.familyMode() ? "Your watchlist is shared with the family. Search for a product and tap Watch to add it, or open an item to stop watching it."
         : "New items are added to the watchlist on our Mac for now. Search for a product and tap \"Suggest to watch\" to send a request."}</p>
@@ -627,14 +706,14 @@ async function renderResults() {
   watched.hidden = !!q;
   if (!q) return;
   const seq = ++state.searchSeq;
-  if (!state.productsLoaded) box.innerHTML = `<p class="note">Loading all products…</p>`;
+  if (!state.productsLoaded) box.innerHTML = `<p class="note">Searching every store…</p>`;
   try {
     const limit = 40;
     const results = await data.searchProducts(q, { chains: [...comparedChains()], limit });
     state.productsLoaded = true;
     if (seq !== state.searchSeq) return;
     box.innerHTML = `<p class="body-sm t2">${results.length >= limit ? `Top ${limit}` : results.length} ${results.length === 1 ? "product" : "products"}.
-        Searches the store categories your watched items are in.</p>` +
+        Searches every product at ${esc(listWords([...comparedChains()].map(storeName)))}.</p>` +
       (results.map(productHTML).join("") || `<div class="empty">${icon("search")}<b>Nothing found</b>Try a shorter word.</div>`);
   } catch (e) {
     if (seq === state.searchSeq) box.innerHTML = errorHTML(e);
@@ -644,13 +723,15 @@ async function renderResults() {
 function productHTML(p) {
   const item = state.offerToItem.get(p.id) || watchItems().find((i) => i.key === `product:${p.id}`);
   const r = ref(null, p);
-  const unit = p.unit ? unitMoney(p.unit.cents, p.unit.per) : "";
+  const unit = p.unit ? unitMoney(p.unit.cents, p.unit.per) : p.store_unit_text || "";
+  const size = p.size && !(p.name || "").toLowerCase().replace(/\s/g, "").includes(p.size.toLowerCase().replace(/\s/g, "")) ? p.size : "";
   return `<article class="card deal">
-    ${p.special ? `<div class="row">${headPill(p)}<span class="caps t3">${esc(endsText(p))}</span></div>` : ""}
+    <div class="row">${p.special ? headPill(p) : `<span class="pill muted">Normal price</span>`}<span class="caps t3">${esc(p.special ? endsText(p) : "")}</span></div>
     <div class="deal-body">
       ${thumb(p)}
       <div class="grow">
         <a class="deal-name clamp2" href="${esc(p.url || "#")}" target="_blank" rel="noopener">${esc(p.name)}</a>
+        ${size ? `<p class="product truncate">${esc(size)}</p>` : ""}
         <div class="tagline">${storeTag(p.chain, p.store)}${unit ? `<span class="unit">${esc(unit)}</span>` : ""}</div>
         ${priceLine(p)}
         ${multibuyLine(p, p.multibuy?.unit ? unitMoney(p.multibuy.unit.cents, p.multibuy.unit.per) : "")}
@@ -1179,6 +1260,7 @@ function renderSettings() {
     const paused = s.updates_from === "paused";
     const failed = !paused && s.last_attempt && s.last_attempt.status !== "ok";
     const badge = paused ? `<span class="status" style="color:var(--text-3);border-color:var(--border-clay);background:var(--muted-bg)">Paused</span>`
+      : s.stopped_after_block ? `<span class="status" style="color:var(--error-text);border-color:var(--error-bg);background:var(--error-bg)"><span class="dot"></span>Stopped: the store refused us</span>`
       : failed ? `<span class="status" style="color:var(--error-text);border-color:var(--error-bg);background:var(--error-bg)"><span class="dot"></span>Last try failed</span>`
       : `<span class="status c-${chain}"><span class="dot"></span>Active</span>`;
     return `<label class="setting-card${paused ? " off" : ""}">
@@ -1212,8 +1294,9 @@ function renderSettings() {
             <li>Multibuys ("2 for $7") count as specials, shown per item and per unit.</li>
             <li>Items are compared on unit price: per kg, per litre, per can, per sheet and so on. Meat sold by weight is per kg.</li>
             <li>Woolworths prices come from its default online store, so your local shop can differ slightly.</li>
-            <li>Costco prices are online prices that include delivery, so the warehouse is usually cheaper.</li>
-            <li>Chemist Warehouse "off RRP" prices aren't counted as specials.</li>
+            <li>Costco's online prices include delivery. Prices from its In-Warehouse Savings booklet are warehouse shelf prices, and show instead while the booklet runs.</li>
+            <li>Chemist Warehouse "off RRP" prices aren't counted as specials. A catalogue price counts only when it's lower than the price we saw there before the catalogue started.</li>
+            <li>Every store is read once a week, on Wednesday morning, including its full range for search.</li>
             <li>Coles is paused: it blocked our reads, so there are no Coles prices.</li>
             <li>End dates come from the store. Woolworths doesn't publish them, so we show its usual weekly end (Tuesday) and say so.</li>
             <li>"Lowest in N weeks" needs ${state.watch.min_history_weeks} weeks of price history. We never predict the next special.</li>
@@ -1373,7 +1456,8 @@ function authFormHTML() {
         <label class="field">Email<input id="auth-email" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required></label>
         <label class="field">Password<input id="auth-password" type="password" autocomplete="${create ? "new-password" : "current-password"}" required></label>
         ${create ? `<label class="field">Confirm password<input id="auth-confirm" type="password" autocomplete="new-password" required></label>
-          <p class="body-sm t3" style="margin-top:6px">At least 8 characters.</p>` : ""}
+          <p class="body-sm t3" style="margin-top:6px">At least 8 characters.</p>`
+          : `<p class="forgot"><a class="link" href="#/forgot">Forgot password?</a></p>`}
         <p class="form-error" id="auth-error" role="alert" hidden></p>
         <button type="submit" class="btn block" style="margin-top:16px">${create ? "Create account" : "Sign in"}</button>
       </form>
@@ -1416,6 +1500,117 @@ async function submitAuth(form) {
   toast(state.authMode === "signin" ? "Signed in" : "Account created", "check");
   if (route().name === "invite") render();                   // straight on to joining
   else location.replace("#/home");
+}
+
+// ------------------------------------------------------------------ forgotten passwords
+
+const SENT_TEXT = "If that email has an account, we've sent a link to reset your password. Check your inbox and junk folder.";
+
+function renderForgot() {
+  view.innerHTML = `<div class="auth">${brandHTML("Forgot your password? We'll email you a link to set a new one.")}
+    <section class="card white" id="forgot-card">
+      <form id="forgot-form" novalidate>
+        <label class="field">Email<input id="forgot-email" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required></label>
+        <p class="form-error" id="forgot-error" role="alert" hidden></p>
+        <button type="submit" class="btn block" style="margin-top:16px">${icon("mail")}Send reset link</button>
+      </form>
+    </section>
+    <p class="note" id="forgot-back"><a class="link" href="#/welcome" data-action="auth-mode" data-mode="signin">Back to sign in</a></p></div>`;
+  $("#forgot-email").focus();
+}
+
+async function submitForgot(form) {
+  const email = $("#forgot-email").value.trim();
+  const err = $("#forgot-error");
+  const btn = form.querySelector('button[type="submit"]');
+  const fail = (msg) => { err.textContent = msg; err.hidden = false; btn.disabled = false; btn.innerHTML = `${icon("mail")}Send reset link`; };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail("That doesn't look like an email address.");
+  btn.disabled = true;
+  btn.textContent = "Sending…";
+  try {
+    await account.requestPasswordReset(email);
+  } catch (e) {
+    // Waiting between emails, or no connection: say so. Nothing here ever says whether the email has an account.
+    if (/wait a minute|connection/i.test(e.message)) return fail(e.message);
+  }
+  $("#forgot-back").hidden = true;
+  $("#forgot-card").innerHTML = `<div class="sent">${icon("mail", "terracotta")}<p class="title-sm" role="status">${esc(SENT_TEXT)}</p>
+    <p class="body-sm t3" style="margin-top:8px">The link works once, for an hour. Open it on this phone or any other.</p>
+    <a class="btn secondary block" href="#/welcome" data-action="auth-mode" data-mode="signin" style="margin-top:16px">Back to sign in</a></div>`;
+}
+
+function resetExpiredHTML() {
+  return `<div class="auth">${brandHTML("")}
+    <section class="card white"><div class="sent">${icon("link_off", "terracotta")}
+      <p class="title-sm" role="alert">This link has expired. Request a new one.</p>
+      <a class="btn block" href="#/forgot" style="margin-top:16px">${icon("lock_reset")}Request a new link</a></div></section></div>`;
+}
+
+/** The reset link being used, kept for this browser tab only (so reloading the page doesn't lose it). */
+function keepReset(link) {
+  state.reset = link;
+  try {
+    if (link && link.kind !== "expired") sessionStorage.setItem("fs.reset", JSON.stringify({ ...link, user: undefined }));
+    else sessionStorage.removeItem("fs.reset");
+  } catch { /* private mode: kept in memory only */ }
+}
+
+function savedReset() {
+  try { return JSON.parse(sessionStorage.getItem("fs.reset") || "null"); } catch { return null; }
+}
+
+function renderReset(_arg, params) {
+  const link = account.resetLinkFrom("", params) || state.reset || savedReset();
+  if (link && link !== state.reset) keepReset(link);
+  if (!state.reset || state.reset.kind === "expired") {
+    view.innerHTML = resetExpiredHTML();
+    return;
+  }
+  // The link's token stays out of the address bar (and out of the browser's history) from here on.
+  if (params?.get("token_hash")) history.replaceState(null, "", "#/reset");
+  view.innerHTML = `<div class="auth">${brandHTML("Choose a new password for your account.")}
+    <section class="card white">
+      <form id="reset-form" novalidate>
+        <label class="field">New password<input id="reset-password" type="password" autocomplete="new-password" minlength="8" required></label>
+        <label class="field">Confirm new password<input id="reset-confirm" type="password" autocomplete="new-password" minlength="8" required></label>
+        <div class="row" style="margin-top:8px"><p class="body-sm t3">At least 8 characters.</p>
+          <button type="button" class="chip-btn" data-action="show-passwords" aria-pressed="false">${icon("visibility")}Show</button></div>
+        <p class="form-error" id="reset-error" role="alert" hidden></p>
+        <button type="submit" class="btn block" style="margin-top:16px">${icon("lock_reset")}Set new password</button>
+      </form>
+    </section></div>`;
+  $("#reset-password").focus();
+}
+
+async function submitReset(form) {
+  const pw = $("#reset-password").value;
+  const confirm = $("#reset-confirm").value;
+  const err = $("#reset-error");
+  const btn = form.querySelector('button[type="submit"]');
+  const fail = (msg) => { err.textContent = msg; err.hidden = false; btn.disabled = false; btn.innerHTML = `${icon("lock_reset")}Set new password`; };
+  if (pw.length < 8) return fail("Use a password of at least 8 characters.");
+  if (pw !== confirm) return fail("The two passwords don't match. Type the same new password in both boxes.");
+  btn.disabled = true;
+  btn.textContent = "One moment…";
+  try {
+    // The link is only used now, so an email app that opens links to check them can't use it up first.
+    if (!state.reset.user) state.reset.user = await account.useResetLink(state.reset);
+  } catch {
+    keepReset({ kind: "expired" });
+    view.innerHTML = resetExpiredHTML();
+    return;
+  }
+  try {
+    await account.updatePassword(pw);
+  } catch (e) {
+    return fail(e.message);
+  }
+  state.user = state.reset.user;
+  keepReset(null);
+  await Promise.all([refreshFamily(), refreshProfile()]);
+  updateHeader();
+  location.replace("#/home");
+  toast("Your password has been updated", "check");
 }
 
 /** The invite link's page: who invited you, then an account, then the code and a nickname. */
@@ -2023,9 +2218,21 @@ view.addEventListener("click", (e) => {
     state.expanded.has(k) ? state.expanded.delete(k) : state.expanded.add(k);
     const y = window.scrollY;
     render().then(() => window.scrollTo(0, y));
-  } else if (action === "filter") {
-    state.filter = b.dataset.filter;
-    render();
+  } else if (action === "show-passwords") {
+    const on = b.getAttribute("aria-pressed") !== "true";
+    b.setAttribute("aria-pressed", String(on));
+    b.innerHTML = `${icon(on ? "visibility_off" : "visibility")}${on ? "Hide" : "Show"}`;
+    for (const id of ["#reset-password", "#reset-confirm"]) $(id).type = on ? "text" : "password";
+  } else if (action === "week-tab") {
+    e.preventDefault();
+    state.weekTab = b.dataset.tab;
+    state.weekShown = WEEK_PAGE;
+    renderThisWeek();
+  } else if (action === "week-more") {
+    state.weekShown += 60;
+    const y = window.scrollY;
+    renderThisWeek();
+    window.scrollTo(0, y);
   } else if (action === "deals-only") {
     state.dealsOnly = !state.dealsOnly;
     render();
@@ -2114,6 +2321,8 @@ view.addEventListener("change", (e) => {
 });
 view.addEventListener("submit", (e) => {
   if (e.target.id === "auth-form") { e.preventDefault(); submitAuth(e.target); return; }
+  if (e.target.id === "forgot-form") { e.preventDefault(); submitForgot(e.target); return; }
+  if (e.target.id === "reset-form") { e.preventDefault(); submitReset(e.target); return; }
   if (e.target.id === "family-form") { e.preventDefault(); submitFamily(e.target); return; }
   if (e.target.id === "profile-form") { e.preventDefault(); submitProfile(e.target); return; }
   if (e.target.id === "join-form") { e.preventDefault(); submitJoin(e.target); return; }
@@ -2132,8 +2341,13 @@ view.addEventListener("submit", (e) => {
 
 async function load(force = false) {
   if (force) data.refresh();
-  const [watch, status] = await Promise.all([data.getWatchlist(), data.getStatus().catch(() => null)]);
-  state.watch = watch;
+  const [specials, watch, status] = await Promise.all([data.getSpecials(), data.getWatchlist(),
+    data.getStatus().catch(() => null)]);
+  state.specials = specials.specials;
+  // Not in a family (or its watchlist isn't built yet): no watched items, every store's specials still show.
+  state.watch = { history_started: null, min_history_weeks: 4, ...watch,
+    stores: watch.stores?.length ? watch.stores : specials.stores || [],
+    cycle_started: watch.cycle_started || specials.cycle_started, items: watch.items || [] };
   state.status = status;
   state.loadedAt = Date.now();
   state.offerToItem = new Map(watch.items.flatMap((i) => i.offers.map((o) => [o.id, i])));
@@ -2151,7 +2365,7 @@ const ROUTES = {
   home: renderHome, "this-week": renderThisWeek, watchlist: renderWatchlist, watch: renderDetail,
   list: renderList, savings: renderSavings, alerts: renderAlerts, settings: renderSettings,
   welcome: renderWelcome, join: renderJoin, family: renderFamily, profile: renderProfile,
-  invite: renderInvite, joined: renderJoined,
+  invite: renderInvite, joined: renderJoined, forgot: renderForgot, reset: renderReset,
 };
 const NEEDS_DATA = new Set(["home", "this-week", "watchlist", "watch", "alerts", "settings"]);
 const LIKES_DATA = new Set(["list", "savings"]);   // use today's prices if they load, but work without them (offline)
@@ -2166,7 +2380,8 @@ async function render() {
   if (!ROUTES[r.name]) { location.replace("#/home"); return; }
   // With accounts switched on, everyone signs in first. An invite link's page opens without an account (on any
   // phone, even one that's never opened the app), and so does the notice for links from the first version.
-  const open = r.name === "welcome" || r.name === "invite" || (r.name === "join" && r.params.get("code"));
+  const open = r.name === "welcome" || r.name === "invite" || r.name === "forgot" || r.name === "reset"
+    || (r.name === "join" && r.params.get("code"));
   if (state.accountsOn && !state.user && !open) {
     location.replace("#/welcome");
     return;
@@ -2266,6 +2481,13 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
 }
 
 async function start() {
+  // A reset link from Supabase's standard email lands as #access_token=...&type=recovery (or #error=... when it has
+  // expired). Keep what it brought, and take the tokens out of the address bar straight away.
+  const resetLink = account.resetLinkFrom(location.hash);
+  if (resetLink) {
+    keepReset(resetLink);
+    history.replaceState(null, "", "#/reset");
+  }
   state.accountsOn = await account.available();
   if (state.accountsOn) {
     state.user = await account.currentUser();

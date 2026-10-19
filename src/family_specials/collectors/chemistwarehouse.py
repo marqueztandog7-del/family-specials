@@ -1,14 +1,15 @@
 """Chemist Warehouse: the Algolia search index its category pages use.
 
-Approved 5 Oct 2026, limited to the categories in tracked_categories.yaml. Chemist
-Warehouse shows "$X Off RRP" on nearly everything: that's everyday pricing, never a
-special. The index's `in_catalogue` flag is NOT reliable (86% of items carry it, and
-product pages show no catalogue badge), so the only specials recorded here are clearance
-items. Its real catalogue specials are only published as page images, which we don't collect.
+Approved 5 Oct 2026 for our categories, and 19 Oct 2026 for the full range once a week (marketplace sellers left
+out). Chemist Warehouse shows "$X Off RRP" on nearly everything: that's everyday pricing, never a special. The
+index's `in_catalogue` flag is NOT reliable (86% of items carry it, and product pages show no catalogue badge), so
+the only specials recorded from product data are clearance items. Catalogue specials are read from the printed
+catalogue's page images (catalogue_cw.py).
 """
 
 from __future__ import annotations
 
+import json
 import re
 from collections.abc import Iterator
 from typing import Any
@@ -23,19 +24,30 @@ SITE = "https://www.chemistwarehouse.com.au"
 # Supplier image URLs embed the barcode: richcontent.skulibrary.com/ABB/8427030007670/...
 SKULIB_GTIN_RE = re.compile(r"skulibrary\.com/[A-Za-z0-9]+/(\d{8,14})/")
 DROP = {"_highlightResult", "_snippetResult", "ranking", "searchableAttributes"}
+NOT_MARKETPLACE = 'NOT categoryKeys.en:"All Marketplace Lines"'   # third-party sellers, not Chemist Warehouse stock
+# Price bands (cents) for reading the full range: the search only returns 1,000 products per query, so the range is
+# read band by band, and a band with more than that is split in two.
+PRICE_BANDS = [0, 500, 800, 1000, 1200, 1500, 1800, 2000, 2500, 3000, 3500, 4000, 5000, 6000, 7500, 10000, 15000,
+               20000, 10**9]
 PRICE_KEYS = {"prices", "pricesCustomFields", "calculatedPrice", "priceRangeFacetKeys", "isInStock"}
 
 
 class ChemistWarehouseCollector(Collector):
     chain = "chemistwarehouse"
-    specials_are_categories = True  # its specials run reads the tracked categories
+    specials_are_categories = True  # a category read records its clearance specials
+    has_specials_read = False       # its specials (clearance) come from the weekly full-range read
 
-    def _query(self, filters: str, page: int) -> dict[str, Any]:
+    def _query(self, filters: str, page: int, hits_per_page: int | None = None,
+               facets: list[str] | None = None) -> dict[str, Any]:
         a = self.cfg["algolia"]
         key = config.secret(a["search_key_env"])  # Chemist Warehouse's public search key, kept out of the repo
         url = (f"https://{a['app_id']}-dsn.algolia.net/1/indexes/*/queries?"
                + urlencode({"x-algolia-api-key": key, "x-algolia-application-id": a["app_id"]}))
-        params = urlencode({"filters": filters, "hitsPerPage": a.get("hits_per_page", 100), "page": page})
+        q = {"filters": filters, "hitsPerPage": hits_per_page if hits_per_page is not None else a.get("hits_per_page", 100),
+             "page": page}
+        if facets:
+            q |= {"facets": json.dumps(facets), "maxValuesPerFacet": 100}
+        params = urlencode(q)
         body = {"requests": [{"indexName": a["index"], "params": params}]}
         resp = self.client.post(url, json=body, headers={"Origin": SITE, "Referer": SITE + "/"})
         return resp.json()["results"][0]
@@ -58,8 +70,66 @@ class ChemistWarehouseCollector(Collector):
         cov.complete = cov.pages_read >= cov.pages_total
 
     def fetch_specials(self) -> Iterator[RawItem]:
-        for cat in config.tracked_categories(self.chain):
-            yield from self._read(cat)
+        return iter(())   # see fetch_range
+
+    def fetch_range(self) -> Iterator[RawItem]:
+        """Chemist Warehouse's own range (not marketplace sellers), price band by price band."""
+        hpp = int(self.cfg.get("range", {}).get("hits_per_page", 1000))
+        cov = Coverage("range", "all", "Full range (Chemist Warehouse's own products)")
+        self.coverage.append(cov)
+        cov.items_total = self._query(NOT_MARKETPLACE, 0, 1).get("nbHits")
+        bands = list(zip(PRICE_BANDS, PRICE_BANDS[1:]))[::-1]
+        seen: set[str] = set()
+        complete = True
+        cov.pages_total = 0
+        while bands:
+            lo, hi = bands.pop()
+            res = self._query(f"calculatedPrice >= {lo} AND calculatedPrice < {hi} AND {NOT_MARKETPLACE}", 0, hpp)
+            cov.pages_total += 1
+            cov.pages_read += 1
+            hits = res.get("hits") or []
+            if (res.get("nbHits") or 0) > hpp:
+                if hi - lo > 1:
+                    mid = (lo + hi) // 2
+                    bands += [(mid, hi), (lo, mid)]
+                    continue
+                # More than a page of products at one exact price (e.g. $25.00): split it by category.
+                hits, ok, used = self._by_category(f"calculatedPrice >= {lo} AND calculatedPrice < {hi} AND {NOT_MARKETPLACE}", hpp)
+                cov.pages_total += used
+                cov.pages_read += used
+                complete &= ok
+            for hit in hits:
+                if hit.get("sku") in seen:
+                    continue
+                seen.add(hit.get("sku"))
+                cov.items_seen += 1
+                yield RawItem(hit, {})
+        # Products with no price aren't in any band; they'd be skipped anyway (no single clear price).
+        cov.complete = complete
+
+    def _by_category(self, base: str, hpp: int) -> tuple[list[dict], bool, int]:
+        """Every product matching `base` when there are more than one page of them: the biggest categories one by
+        one, each time leaving the ones already read out, until what's left fits on a page. Returns (hits, whether
+        everything was read, requests used)."""
+        res = self._query(base, 0, 0, facets=["categoryKeys.en"])
+        total = res.get("nbHits") or 0
+        counts = (res.get("facets") or {}).get("categoryKeys.en") or {}
+        # Categories that hold nearly everything don't split anything.
+        cats = [c for c, n in sorted(counts.items(), key=lambda kv: -kv[1]) if n < total and '"' not in c]
+        hits: list[dict] = []
+        rest, used = base, 1
+        for cat in cats:
+            left = self._query(rest, 0, hpp)
+            used += 1
+            if (left.get("nbHits") or 0) <= hpp:
+                return hits + (left.get("hits") or []), True, used
+            part = self._query(f'{rest} AND categoryKeys.en:"{cat}"', 0, hpp)
+            used += 1
+            if (part.get("nbHits") or 0) <= hpp:
+                hits += part.get("hits") or []
+                rest = f'{rest} AND NOT categoryKeys.en:"{cat}"'
+        left = self._query(rest, 0, hpp)
+        return hits + (left.get("hits") or []), (left.get("nbHits") or 0) <= hpp, used + 1
 
     def fetch_category(self, category: dict[str, Any]) -> Iterator[RawItem]:
         yield from self._read(category)
@@ -94,8 +164,8 @@ class ChemistWarehouseCollector(Collector):
 
         aud = (h.get("prices") or {}).get("AUD") or {}
         price_c = aud.get("min")
-        if price_c is None or aud.get("max") != price_c:
-            return None  # no single clear price
+        if not price_c or aud.get("max") != price_c:
+            return None  # no single clear price ($0 = prescription-only items and samples: no shelf price)
         rrp = (((h.get("pricesCustomFields") or {}).get("AUD") or {}).get("rrp") or {}).get("centAmount")
         flags = attrs.get("cwr-product-flags") or []
         clearance = "clearance" in flags

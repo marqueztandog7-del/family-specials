@@ -1,0 +1,29 @@
+name: Keep the family backend awake
+
+# Free Supabase projects pause after about a week without database use. This daily check-in keeps the family
+# backend awake. It sends no family data and prints nothing about it.
+#
+# GitHub no longer collects prices (19 Oct 2026): every store refreshes once a week from the Mac, which also
+# matches the private watchlist and sends phone notifications. The page is published by "Publish page" whenever
+# the Mac pushes new specials.
+on:
+  schedule:
+    - cron: "30 2 * * *"    # about 1pm Sydney, every day
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-in:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check in with the family backend
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ]; then echo "No family backend yet."; exit 0; fi
+          curl -fsS -o /dev/null -X POST "$SUPABASE_URL/rest/v1/rpc/ping" -H "apikey: $SUPABASE_PUBLISHABLE_KEY" \
+            -H "Content-Type: application/json" -d '{}' && echo "Family backend: ok" || echo "::warning::The family backend didn't answer the check-in."

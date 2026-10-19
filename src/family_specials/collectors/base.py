@@ -15,7 +15,7 @@ from ..models import NormalisedItem
 class Coverage:
     """What one specials group / category / promotion date actually covered in a run."""
 
-    scope_type: str            # specials_group | category | promotion_date | manual_import
+    scope_type: str            # specials_group | category | promotion_date | range | catalogue_page | manual_import
     scope_ref: str
     scope_name: str | None = None
     pages_read: int = 0
@@ -60,6 +60,12 @@ class Collector(ABC):
 
     def fetch_category(self, category: dict[str, Any]) -> Iterator[RawItem]:
         raise NotImplementedError(f"{self.chain} has no category reads yet")
+
+    # The store's full range, for search and matching (once a week). Category pages only, never search pages.
+    has_specials_read = True   # False when the specials come from the range read itself (Chemist Warehouse)
+
+    def fetch_range(self) -> Iterator[RawItem]:
+        raise NotImplementedError(f"{self.chain} has no full-range read")
 
     def discover_categories(self) -> list[CategoryInfo]:
         raise NotImplementedError(f"{self.chain} has no category discovery yet")

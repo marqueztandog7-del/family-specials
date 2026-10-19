@@ -1,365 +1,625 @@
 run_started_at,run_kind,observed_at,store_ref,product_id,source,price_basis,price_per,price_cents,was_cents,rrp_cents,is_special,special_type,promo_text,multibuy_qty,multibuy_cents,unit_price,unit_measure,unit_price_text,valid_from,valid_to,valid_to_source,in_stock
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,41931,specials,online_incl_delivery,each,1298,1698,,1,costco_saving,Save $4.00,,,0.87,100ML,$0.87 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,219793,specials,online_incl_delivery,each,5299,6799,,1,costco_saving,Save $15.00,,,0.45,EA,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,1747373,specials,online_incl_delivery,each,8999,10999,,1,costco_saving,Save $20.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,122000,specials,online_incl_delivery,each,6498,8298,,1,costco_saving,Save $18.00,,,0.84,100ML,$0.84 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,587164,specials,online_incl_delivery,each,2998,4998,,1,costco_saving,Save $20.00,,,,,,2026-09-29T14:00:00Z,2026-10-06T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,120795,specials,online_incl_delivery,each,39999,58999,,1,costco_saving,Save $190.00,,,,,,2026-09-13T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,261023,specials,online_incl_delivery,each,1999,2999,,1,costco_saving,Save $10.00,,,,,,2026-09-30T14:00:00Z,2026-10-06T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,199479,specials,online_incl_delivery,each,10999,19999,,1,costco_saving,Save $90.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,1929679,specials,online_incl_delivery,each,5998,11999,,1,costco_saving,Save $60.01,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,48977,specials,online_incl_delivery,each,2898,3698,,1,costco_saving,Save $8.00,,,7.25,HN,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,208084,specials,online_incl_delivery,each,,,,1,costco_saving,Save $24.00,,,,,,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,130890,specials,online_incl_delivery,each,14999,19999,,1,costco_saving,Save $50.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,1785105,specials,online_incl_delivery,each,9999,24999,,1,costco_saving,Save $150.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,220888,specials,online_incl_delivery,each,39999,64999,,1,costco_saving,Save $250.00,,,,,,2026-09-30T14:00:00Z,2026-10-21T12:59:59Z,store,1
 2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,192238,specials,online_incl_delivery,each,1998,2499,,1,costco_saving,Save $5.01,,,0.84,100ML,$0.84 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,50634,specials,online_incl_delivery,each,57999,69999,,1,costco_saving,Save $120.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,250470,specials,online_incl_delivery,each,4499,5999,,1,costco_saving,Save $15.00,,,,,,2026-09-29T14:00:00Z,2026-10-06T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,103183,specials,online_incl_delivery,each,2499,3499,,1,costco_saving,Save $10.00,,,,,,2026-10-01T14:00:00Z,2026-10-06T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,234006,specials,online_incl_delivery,each,34998,59998,,1,costco_saving,Save $250.00,,,,,,2026-09-25T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,239554,specials,online_incl_delivery,each,,,,1,costco_saving,Save $210.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,205858,specials,online_incl_delivery,each,8998,14999,,1,costco_saving,Save $60.01,,,,,,2026-09-27T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,257329,specials,online_incl_delivery,each,,,,1,costco_saving,Save $10.00,,,,,,2026-09-29T14:00:00Z,2026-10-06T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,1934125,specials,online_incl_delivery,each,2999,3999,,1,costco_saving,Save $10.00,,,,,,2026-09-30T14:00:00Z,2026-10-07T12:59:59Z,store,1
 2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,159980,specials,online_incl_delivery,each,2899,3599,,1,costco_saving,Save $7.00,,,7.25,HG,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
 2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,231970,specials,online_incl_delivery,each,6999,8999,,1,costco_saving,Save $20.00,,,3.5,EA,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,279559,specials,online_incl_delivery,each,7999,9999,,1,costco_saving,Save $20.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,240986,specials,online_incl_delivery,each,29999,38499,,1,costco_saving,Save $85.00,,,,,,2026-09-30T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,239114,specials,online_incl_delivery,each,35999,44999,,1,costco_saving,Save $90.00,,,,,,2026-09-17T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,42138,specials,online_incl_delivery,each,,,,1,costco_saving,Save $8.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,240974,specials,online_incl_delivery,each,32998,38999,,1,costco_saving,Save $60.01,,,,,,2026-09-28T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,38351,specials,online_incl_delivery,each,2849,3549,,1,costco_saving,Save $7.00,,,2.55,HS,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,236668,specials,online_incl_delivery,each,1199,1499,,1,costco_saving,Save $3.00,,,3.43,HN,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,234478,specials,online_incl_delivery,each,,,,1,costco_saving,Save $24.00,,,,,,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,179335,specials,online_incl_delivery,each,,,,1,costco_saving,Save $10.00,,,,,,2026-09-20T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,48054,specials,online_incl_delivery,each,3299,4199,,1,costco_saving,Save $9.00,,,18.33,HN,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,227366,specials,online_incl_delivery,each,,,,1,costco_saving,Save $150.00,,,,,,2026-09-23T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,235767,specials,online_incl_delivery,each,59999,79999,,1,costco_saving,Save $200.00,,,,,,2026-09-30T14:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,174844,specials,online_incl_delivery,each,2399,2999,,1,costco_saving,Save $6.00,,,0.2,EA,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:04Z,online,166519,specials,online_incl_delivery,each,4499,5699,,1,costco_saving,Save $12.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,130322,specials,online_incl_delivery,each,39999,58999,,1,costco_saving,Save $190.00,,,,,,2026-09-29T14:00:00Z,2026-11-01T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,238307,specials,online_incl_delivery,each,19999,29999,,1,costco_saving,Save $100.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,51713,specials,online_incl_delivery,each,42999,53999,,1,costco_saving,Save $110.00,,,,,,2026-09-27T14:00:00Z,2026-10-05T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,274302,specials,online_incl_delivery,each,99999,179999,,1,costco_saving,Save $800.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,246005,specials,online_incl_delivery,each,5999,7499,,1,costco_saving,Save $15.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,239148,specials,online_incl_delivery,each,89999,129999,,1,costco_saving,Save $400.00,,,,,,2026-09-23T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,264860,specials,online_incl_delivery,each,5999,8999,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,262629,specials,online_incl_delivery,each,1799,2199,,1,costco_saving,Save $4.00,,,23.99,HN,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,191179,specials,online_incl_delivery,each,,,,1,costco_saving,Save $400.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,166302,specials,online_incl_delivery,each,14999,19999,,1,costco_saving,Save $50.00,,,,,,2026-09-27T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,45967,specials,online_incl_delivery,each,,,,1,costco_saving,Save $11.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,211285,specials,online_incl_delivery,each,7998,13999,,1,costco_saving,Save $60.01,,,,,,2026-09-21T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,1785028,specials,online_incl_delivery,each,5999,9999,,1,costco_saving,Save $40.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,277835,specials,online_incl_delivery,each,69999,89999,,1,costco_saving,Save $200.00,,,,,,2026-09-23T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,285855,specials,online_incl_delivery,each,2499,3499,,1,costco_saving,Save $10.00,,,1,100ML,$1.00 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,192200,specials,online_incl_delivery,each,7299,8799,,1,costco_saving,Save $15.00,,,9.13,EA,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,7772001,specials,online_incl_delivery,each,2999,3999,,1,costco_saving,Save $10.00,,,,,,2026-09-14T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,240988,specials,online_incl_delivery,each,33999,42999,,1,costco_saving,Save $90.00,,,,,,2026-09-30T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,1959104,specials,online_incl_delivery,each,7999,9999,,1,costco_saving,Save $20.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,12111,specials,online_incl_delivery,each,,,,1,costco_saving,Save $10.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,2026101,specials,online_incl_delivery,each,67999,79999,,1,costco_saving,Save $120.00,,,,,,2026-10-04T13:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,95477,specials,online_incl_delivery,each,8999,10999,,1,costco_saving,Save $20.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,266096,specials,online_incl_delivery,each,24999,39999,,1,costco_saving,Save $150.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,1600273,specials,online_incl_delivery,each,2399,2999,,1,costco_saving,Save $6.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,2026104,specials,online_incl_delivery,each,107999,119999,,1,costco_saving,Save $120.00,,,,,,2026-09-30T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,277440,specials,online_incl_delivery,each,44998,59998,,1,costco_saving,Save $150.00,,,,,,2026-09-23T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,258512,specials,online_incl_delivery,each,3199,3999,,1,costco_saving,Save $8.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,253487,specials,online_incl_delivery,each,2499,3299,,1,costco_saving,Save $8.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,1834453,specials,online_incl_delivery,each,1998,2499,,1,costco_saving,Save $5.01,,,4,EA,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,259950,specials,online_incl_delivery,each,10499,13999,,1,costco_saving,Save $35.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,235638,specials,online_incl_delivery,each,3999,5999,,1,costco_saving,Save $20.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,2026102,specials,online_incl_delivery,each,84999,99999,,1,costco_saving,Save $150.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,197934,specials,online_incl_delivery,each,3899,4699,,1,costco_saving,Save $8.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,1845950,specials,online_incl_delivery,each,54999,84999,,1,costco_saving,Save $300.00,,,,,,2026-09-28T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,251775,specials,online_incl_delivery,each,74999,94999,,1,costco_saving,Save $200.00,,,,,,2026-10-04T13:00:00Z,2026-10-17T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,161451,specials,online_incl_delivery,each,17999,22999,,1,costco_saving,Save $50.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,144777,specials,online_incl_delivery,each,98998,148999,,1,costco_saving,Save $500.01,,,,,,2026-09-23T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,119988,specials,online_incl_delivery,each,45999,56999,,1,costco_saving,Save $110.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,7771398,specials,online_incl_delivery,each,1998,2499,,1,costco_saving,Save $5.01,,,,,,2026-09-14T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,251397,specials,online_incl_delivery,each,20999,25999,,1,costco_saving,Save $50.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:08Z,online,247245,specials,online_incl_delivery,each,2399,2999,,1,costco_saving,Save $6.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,258510,specials,online_incl_delivery,each,2799,3499,,1,costco_saving,Save $7.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,254096,specials,online_incl_delivery,each,10499,12999,,1,costco_saving,Save $25.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,218917,specials,online_incl_delivery,each,2099,2699,,1,costco_saving,Save $6.00,,,14,HN,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,2026066,specials,online_incl_delivery,each,139999,199999,,1,costco_saving,Save $600.00,,,,,,2026-09-29T14:00:00Z,2026-10-05T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,259655,specials,online_incl_delivery,each,,,,1,costco_saving,Save $60.01,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,254080,specials,online_incl_delivery,each,14499,17999,,1,costco_saving,Save $35.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,241320,specials,online_incl_delivery,each,124999,139999,,1,costco_saving,Save $150.00,,,,,,2026-10-04T13:00:00Z,2026-10-18T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,241127,specials,online_incl_delivery,each,209999,231999,,1,costco_saving,Save $220.00,,,,,,2026-10-01T14:00:00Z,2026-10-10T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,218561,specials,online_incl_delivery,each,5999,7999,,1,costco_saving,Save $20.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,197920,specials,online_incl_delivery,each,6499,7999,,1,costco_saving,Save $15.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,270193,specials,online_incl_delivery,each,79999,99999,,1,costco_saving,Save $200.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,237605,specials,online_incl_delivery,each,6999,8999,,1,costco_saving,Save $20.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,229028,specials,online_incl_delivery,each,24999,31999,,1,costco_saving,Save $70.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,207226,specials,online_incl_delivery,each,2149,2699,,1,costco_saving,Save $5.50,,,0.96,100ML,$0.96 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,1851433,specials,online_incl_delivery,each,3498,4998,,1,costco_saving,Save $15.00,,,,,,2026-09-18T14:00:00Z,2026-10-16T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,180151,specials,online_incl_delivery,each,,,,1,costco_saving,Save $1.50,,,,,,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,1440153,specials,online_incl_delivery,each,2499,3299,,1,costco_saving,Save $8.00,,,12.5,EA,,,,,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,275729,specials,online_incl_delivery,each,,,,1,costco_saving,Save $4.00,,,,,,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,223270,specials,online_incl_delivery,each,15999,23999,,1,costco_saving,Save $80.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,2026106,specials,online_incl_delivery,each,25999,29999,,1,costco_saving,Save $40.00,,,,,,2026-09-30T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,1901817,specials,online_incl_delivery,each,3799,4499,,1,costco_saving,Save $7.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,166306,specials,online_incl_delivery,each,29999,43999,,1,costco_saving,Save $140.00,,,,,,2026-09-27T14:00:00Z,2026-10-07T12:59:59Z,store,1
 2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,134302,specials,online_incl_delivery,each,1999,2599,,1,costco_saving,Save $6.00,,,2.5,EA,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,253321,specials,online_incl_delivery,each,2999,4499,,1,costco_saving,Save $15.00,,,,,,2026-09-30T14:00:00Z,2026-10-12T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,239866,specials,online_incl_delivery,each,33998,39999,,1,costco_saving,Save $60.01,,,,,,2026-09-30T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,239235,specials,online_incl_delivery,each,36999,41999,,1,costco_saving,Save $50.00,,,,,,2026-09-30T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,236481,specials,online_incl_delivery,each,37999,47999,,1,costco_saving,Save $100.00,,,,,,2026-09-30T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,234519,specials,online_incl_delivery,each,,,,1,costco_saving,Save $500.01,,,,,,2026-09-27T14:00:00Z,2026-10-30T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,205859,specials,online_incl_delivery,each,17998,26998,,1,costco_saving,Save $90.00,,,,,,2026-09-21T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,2026210,specials,online_incl_delivery,each,204999,239999,,1,costco_saving,Save $350.00,,,,,,2026-10-03T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,2026164,specials,online_incl_delivery,each,129999,174999,,1,costco_saving,Save $450.00,,,,,,2026-09-23T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,2026114,specials,online_incl_delivery,each,192999,289999,,1,costco_saving,Save $970.00,,,,,,2026-09-30T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,2026067,specials,online_incl_delivery,each,199999,269999,,1,costco_saving,Save $700.00,,,,,,2026-09-27T14:00:00Z,2026-10-05T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,1872067,specials,online_incl_delivery,each,59999,89999,,1,costco_saving,Save $300.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,1836270,specials,online_incl_delivery,each,12999,16999,,1,costco_saving,Save $40.00,,,,,,2026-10-01T14:00:00Z,2026-10-10T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,144787,specials,online_incl_delivery,each,2499,3299,,1,costco_saving,Save $8.00,,,6.25,EA,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,85976,specials,online_incl_delivery,each,14999,19999,,1,costco_saving,Save $50.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,8000061,specials,online_incl_delivery,each,29999,49999,,1,costco_saving,Save $200.00,,,,,,2026-09-21T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,42943,specials,online_incl_delivery,each,,,,1,costco_saving,Save $4.00,,,,,,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,40551,specials,online_incl_delivery,each,,,,1,costco_saving,Save $16.01,,,,,,2026-09-30T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:11Z,online,281074,specials,online_incl_delivery,each,14499,17999,,1,costco_saving,Save $35.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,281048,specials,online_incl_delivery,each,15999,19999,,1,costco_saving,Save $40.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,280841,specials,online_incl_delivery,each,11999,14999,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,254012,specials,online_incl_delivery,each,3199,3999,,1,costco_saving,Save $8.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,247383,specials,online_incl_delivery,each,19999,34999,,1,costco_saving,Save $150.00,,,,,,2026-09-27T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,234565,specials,online_incl_delivery,each,,,,1,costco_saving,Save $300.00,,,,,,2026-09-27T14:00:00Z,2026-10-30T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,224072,specials,online_incl_delivery,each,,,,1,costco_saving,Save $800.00,,,,,,2026-09-30T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,216960,specials,online_incl_delivery,each,,,,1,costco_saving,Save $350.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,2026113,specials,online_incl_delivery,each,123999,159999,,1,costco_saving,Save $360.00,,,,,,2026-10-04T13:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,2026055,specials,online_incl_delivery,each,149999,209999,,1,costco_saving,Save $600.00,,,,,,2026-10-01T14:00:00Z,2026-10-05T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,187193,specials,online_incl_delivery,each,1797,2298,,1,costco_saving,Save $5.01,,,0.9,100ML,$0.90 per 100 ml,2026-09-23T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,1713505,specials,online_incl_delivery,each,23999,31999,,1,costco_saving,Save $80.00,,,,,,2026-09-23T14:00:00Z,2026-10-05T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,144785,specials,online_incl_delivery,each,2499,3299,,1,costco_saving,Save $8.00,,,6.25,EA,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,111318,specials,online_incl_delivery,each,74998,124999,,1,costco_saving,Save $500.01,,,,,,2026-09-30T14:00:00Z,2026-10-31T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,47343,specials,online_incl_delivery,each,,,,1,costco_saving,Save $9.00,,,,,,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,281050,specials,online_incl_delivery,each,,,,1,costco_saving,Save $40.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,281037,specials,online_incl_delivery,each,15999,19999,,1,costco_saving,Save $40.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,259698,specials,online_incl_delivery,each,,,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,253256,specials,online_incl_delivery,each,13499,16999,,1,costco_saving,Save $35.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,247385,specials,online_incl_delivery,each,31999,56999,,1,costco_saving,Save $250.00,,,,,,2026-09-21T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,229429,specials,online_incl_delivery,each,98999,124999,,1,costco_saving,Save $260.00,,,,,,2026-09-30T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,216317,specials,online_incl_delivery,each,154999,194999,,1,costco_saving,Save $400.00,,,,,,2026-08-05T14:00:00Z,2026-10-31T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,2026204,specials,online_incl_delivery,each,139998,169998,,1,costco_saving,Save $300.00,,,,,,2026-10-01T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,2026108,specials,online_incl_delivery,each,64999,74999,,1,costco_saving,Save $100.00,,,,,,2026-09-30T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,2026054,specials,online_incl_delivery,each,114999,139999,,1,costco_saving,Save $250.00,,,,,,2026-09-28T14:00:00Z,2026-10-05T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,1996707,specials,online_incl_delivery,each,8999,12999,,1,costco_saving,Save $40.00,,,,,,2026-09-28T14:00:00Z,2026-10-18T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,1872236,specials,online_incl_delivery,each,24999,34999,,1,costco_saving,Save $100.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,1819546,specials,online_incl_delivery,each,69999,99999,,1,costco_saving,Save $300.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,1601252,specials,online_incl_delivery,each,3498,4998,,1,costco_saving,Save $15.00,,,,,,2026-10-01T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,138617,specials,online_incl_delivery,each,19999,24999,,1,costco_saving,Save $50.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,108113,specials,online_incl_delivery,each,,,,1,costco_saving,Save $131.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,91159,specials,online_incl_delivery,each,104999,129999,,1,costco_saving,Save $250.00,,,,,,2026-09-30T14:00:00Z,2026-11-30T12:59:59Z,store,1
 2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,281112,specials,online_incl_delivery,each,16999,20999,,1,costco_saving,Save $40.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,281079,specials,online_incl_delivery,each,14499,17999,,1,costco_saving,Save $35.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
 2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,281066,specials,online_incl_delivery,each,11999,14999,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,277457,specials,online_incl_delivery,each,17999,24999,,1,costco_saving,Save $70.00,,,,,,2026-09-30T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,276821,specials,online_incl_delivery,each,253998,279998,,1,costco_saving,Save $260.00,,,,,,,,,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,275752,specials,online_incl_delivery,each,,,,1,costco_saving,Save $4.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,263433,specials,online_incl_delivery,each,6999,8499,,1,costco_saving,Save $15.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:16Z,online,263426,specials,online_incl_delivery,each,6999,8499,,1,costco_saving,Save $15.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,263425,specials,online_incl_delivery,each,17999,21999,,1,costco_saving,Save $40.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,263422,specials,online_incl_delivery,each,17999,21999,,1,costco_saving,Save $40.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,256649,specials,online_incl_delivery,each,54999,84999,,1,costco_saving,Save $300.00,,,,,,2026-09-28T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,254093,specials,online_incl_delivery,each,7999,9999,,1,costco_saving,Save $20.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,248211,specials,online_incl_delivery,each,8999,11999,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,240416,specials,online_incl_delivery,each,60999,69999,,1,costco_saving,Save $90.00,,,,,,2026-09-30T14:00:00Z,2026-11-04T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,234521,specials,online_incl_delivery,each,,,,1,costco_saving,Save $430.00,,,,,,2026-09-30T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,234305,specials,online_incl_delivery,each,27999,34999,,1,costco_saving,Save $70.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,230405,specials,online_incl_delivery,each,12998,15998,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,2026203,specials,online_incl_delivery,each,144999,179999,,1,costco_saving,Save $350.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,2026112,specials,online_incl_delivery,each,242999,269999,,1,costco_saving,Save $270.00,,,,,,2026-09-30T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,2026109,specials,online_incl_delivery,each,117999,129999,,1,costco_saving,Save $120.00,,,,,,2026-09-30T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,191426,specials,online_incl_delivery,each,57999,65999,,1,costco_saving,Save $80.00,,,,,,2026-09-30T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,177526,specials,online_incl_delivery,each,72999,87999,,1,costco_saving,Save $150.00,,,,,,2026-09-30T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,177511,specials,online_incl_delivery,each,98999,109999,,1,costco_saving,Save $110.00,,,,,,2026-09-30T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,1601410,specials,online_incl_delivery,each,3498,4998,,1,costco_saving,Save $15.00,,,,,,2026-10-01T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,1049672,specials,online_incl_delivery,each,2199,2999,,1,costco_saving,Save $8.00,,,2.2,PR,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,281047,specials,online_incl_delivery,each,,,,1,costco_saving,Save $40.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,280845,specials,online_incl_delivery,each,11999,14999,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,280763,specials,online_incl_delivery,each,26999,38999,,1,costco_saving,Save $120.00,,,,,,2026-09-30T14:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,276831,specials,online_incl_delivery,each,153999,179999,,1,costco_saving,Save $260.00,,,,,,,,,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,264932,specials,online_incl_delivery,each,27999,34999,,1,costco_saving,Save $70.00,,,,,,2026-09-30T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,263416,specials,online_incl_delivery,each,17999,21999,,1,costco_saving,Save $40.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,259710,specials,online_incl_delivery,each,,,,1,costco_saving,Save $40.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,259708,specials,online_incl_delivery,each,,,,1,costco_saving,Save $40.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,259700,specials,online_incl_delivery,each,,,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,259688,specials,online_incl_delivery,each,,,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,259661,specials,online_incl_delivery,each,,,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,259564,specials,online_incl_delivery,each,2399,2999,,1,costco_saving,Save $6.00,,,,,,2026-08-30T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,254758,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,253276,specials,online_incl_delivery,each,8499,11499,,1,costco_saving,Save $30.00,,,,,,2026-10-01T14:00:00Z,2026-10-18T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,250642,specials,online_incl_delivery,each,12999,17999,,1,costco_saving,Save $50.00,,,,,,2026-10-01T14:00:00Z,2026-10-18T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,247384,specials,online_incl_delivery,each,26999,45999,,1,costco_saving,Save $190.00,,,,,,2026-09-21T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,242936,specials,online_incl_delivery,each,31999,44999,,1,costco_saving,Save $130.00,,,,,,2026-09-23T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,238372,specials,online_incl_delivery,each,53999,67999,,1,costco_saving,Save $140.00,,,,,,2026-09-16T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,234825,specials,online_incl_delivery,each,11998,15998,,1,costco_saving,Save $40.00,,,,,,2026-10-01T14:00:00Z,2026-10-18T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,234162,specials,online_incl_delivery,each,51999,64999,,1,costco_saving,Save $130.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,231882,specials,online_incl_delivery,each,299998,499998,,1,costco_saving,"Save $2,000.00",,,,,,2026-09-28T14:00:00Z,2026-10-05T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,230570,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,203237,specials,online_incl_delivery,each,84999,99999,,1,costco_saving,Save $150.00,,,,,,2026-09-30T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:21Z,online,2026115,specials,online_incl_delivery,each,264999,349999,,1,costco_saving,Save $850.00,,,,,,2026-09-30T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,2026107,specials,online_incl_delivery,each,58998,64999,,1,costco_saving,Save $60.01,,,,,,2026-09-30T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,200028,specials,online_incl_delivery,each,111999,124999,,1,costco_saving,Save $130.00,,,,,,2026-09-30T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,1782919,specials,online_incl_delivery,each,49999,69999,,1,costco_saving,Save $200.00,,,,,,2026-09-27T14:00:00Z,2026-10-05T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,173733,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,173031,specials,online_incl_delivery,each,19999,24999,,1,costco_saving,Save $50.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,138626,specials,online_incl_delivery,each,19999,24999,,1,costco_saving,Save $50.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,85969,specials,online_incl_delivery,each,8999,11999,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,85890,specials,online_incl_delivery,each,14999,19999,,1,costco_saving,Save $50.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,68283,specials,online_incl_delivery,each,27999,28999,,1,costco_saving,Save $10.00,,,37.34,100ML,$37.34 per 100 ml,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,282710,specials,online_incl_delivery,each,44999,56999,,1,costco_saving,Save $120.00,,,,,,2026-09-16T14:00:00Z,2026-10-07T12:59:59Z,store,1
 2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,281067,specials,online_incl_delivery,each,11999,14999,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:37Z,online,880173_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:37Z,online,103717_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:37Z,online,24643_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:37Z,online,220429,category,online_incl_delivery,each,1899,,,0,,,,,0.76,HG,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:37Z,online,230452,category,online_incl_delivery,each,,,,0,,,,,,,,,,,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,280833,specials,online_incl_delivery,each,18998,24999,,1,costco_saving,Save $60.01,,,,,,2026-09-30T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,279615,specials,online_incl_delivery,each,239999,259999,,1,costco_saving,Save $200.00,,,,,,2026-10-03T14:00:00Z,2026-10-18T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,279600,specials,online_incl_delivery,each,349999,369999,,1,costco_saving,Save $200.00,,,,,,2026-10-04T13:00:00Z,2026-10-18T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,276832,specials,online_incl_delivery,each,183999,209999,,1,costco_saving,Save $260.00,,,,,,,,,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,276823,specials,online_incl_delivery,each,343999,369999,,1,costco_saving,Save $260.00,,,,,,,,,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,276822,specials,online_incl_delivery,each,283999,309999,,1,costco_saving,Save $260.00,,,,,,,,,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,275961,specials,online_incl_delivery,each,,,,1,costco_saving,Save $6.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,263429,specials,online_incl_delivery,each,6999,8499,,1,costco_saving,Save $15.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,262015,specials,online_incl_delivery,each,64999,74999,,1,costco_saving,Save $100.00,,,,,,2026-09-16T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,259654,specials,online_incl_delivery,each,,,,1,costco_saving,Save $60.01,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,259653,specials,online_incl_delivery,each,,,,1,costco_saving,Save $60.01,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,254763,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,254762,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,254761,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,254760,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,254759,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,254757,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,254756,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,254755,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,254754,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,254753,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,254751,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,247485,specials,online_incl_delivery,each,47998,64999,,1,costco_saving,Save $170.01,,,,,,2026-09-23T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,239151,specials,online_incl_delivery,each,124999,154999,,1,costco_saving,Save $300.00,,,,,,2026-09-23T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,233034,specials,online_incl_delivery,each,114998,139998,,1,costco_saving,Save $250.00,,,,,,2026-09-30T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,232302,specials,online_incl_delivery,each,,,,1,costco_saving,Save $3.00,,,,,,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,216453,specials,online_incl_delivery,each,114999,134999,,1,costco_saving,Save $200.00,,,,,,2026-09-30T14:00:00Z,2026-10-14T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,205202,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,205197,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,205190,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,2026110,specials,online_incl_delivery,each,134999,149999,,1,costco_saving,Save $150.00,,,,,,2026-09-30T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,2026068,specials,online_incl_delivery,each,419999,549999,,1,costco_saving,"Save $1,300.00",,,,,,2026-09-30T14:00:00Z,2026-10-05T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,1872136,specials,online_incl_delivery,each,19999,29999,,1,costco_saving,Save $100.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,1861844,specials,online_incl_delivery,each,49999,69999,,1,costco_saving,Save $200.00,,,,,,2026-09-27T14:00:00Z,2026-10-05T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,1812748,specials,online_incl_delivery,each,94999,119999,,1,costco_saving,Save $250.00,,,,,,2026-09-29T14:00:00Z,2026-10-07T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:27Z,online,1812734,specials,online_incl_delivery,each,79999,99999,,1,costco_saving,Save $200.00,,,,,,2026-09-13T14:00:00Z,2026-10-05T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:32Z,online,16309,specials,online_incl_delivery,each,,,,1,costco_saving,Save $3.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:32Z,online,1476217,specials,online_incl_delivery,each,649999,849999,,1,costco_saving,"Save $2,000.00",,,,,,2026-09-22T14:00:00Z,2026-10-06T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:32Z,online,1476212,specials,online_incl_delivery,each,999999,1299999,,1,costco_saving,"Save $3,000.00",,,,,,2026-09-22T14:00:00Z,2026-10-06T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:32Z,online,1473232,specials,online_incl_delivery,each,1299999,1799999,,1,costco_saving,"Save $5,000.00",,,,,,2026-09-21T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:32Z,online,144786,specials,online_incl_delivery,each,2499,3299,,1,costco_saving,Save $8.00,,,6.25,EA,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:32Z,online,144784,specials,online_incl_delivery,each,2499,3299,,1,costco_saving,Save $8.00,,,6.25,EA,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:32Z,online,138625,specials,online_incl_delivery,each,19999,24999,,1,costco_saving,Save $50.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
+2026-10-05T03:09:00Z,specials,2026-10-05T03:09:32Z,online,138624,specials,online_incl_delivery,each,19999,24999,,1,costco_saving,Save $50.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
 2026-10-05T03:09:32Z,category,2026-10-05T03:09:37Z,online,191210,category,online_incl_delivery,each,,,,1,costco_saving,Save $35.00,,,,,,2026-09-28T14:00:00Z,2026-10-05T12:59:59Z,store,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:37Z,online,226750,category,online_incl_delivery,each,15998,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:37Z,online,172382_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:37Z,online,131801,category,online_incl_delivery,each,6999,,,0,,,,,0.39,HG,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,97012,category,online_incl_delivery,each,2798,,,0,,,,,0.33,HS,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,33992_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,115720,category,online_incl_delivery,each,3199,,,0,,,,,2.23,HS,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,112472,category,online_incl_delivery,each,3499,,,0,,,,,0.33,HS,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,33992,category,online_incl_delivery,each,4499,,,0,,,,,0.24,HS,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,1170795_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,1170795,category,online_incl_delivery,each,3999,,,0,,,,,0.31,HS,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,131804,category,online_incl_delivery,each,2499,,,0,,,,,1.9,HS,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,1406685,category,online_incl_delivery,each,4299,,,0,,,,,1.92,HS,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,172127,category,online_incl_delivery,each,49999,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,206002,category,online_incl_delivery,each,99999,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,241351,category,online_incl_delivery,each,22999,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,211888,category,online_incl_delivery,each,3999,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,54047_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,34443,category,online_incl_delivery,each,3499,,,0,,,,,0.23,EA,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:42Z,online,231947,category,online_incl_delivery,each,7499,,,0,,,,,74.99,EA,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,150258,category,online_incl_delivery,each,2899,,,0,,,,,4.4,LT,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,150258_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,176499_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,176499,category,online_incl_delivery,each,3099,,,0,,,,,5.17,LT,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,92916,category,online_incl_delivery,each,3149,,,0,,,,,5.25,LT,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,3160440,category,online_incl_delivery,each,4199,,,0,,,,,10.3,LT,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,109707,category,online_incl_delivery,each,2499,,,0,,,,,1.05,100ML,$1.05 per 100 ml,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,130425,category,online_incl_delivery,each,2299,,,0,,,,,8.65,LT,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,179436,category,online_incl_delivery,each,2399,,,0,,,,,6.67,LT,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,227097,category,online_incl_delivery,each,4998,,,0,,,,,0.5,EA,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,331594,category,online_incl_delivery,each,2999,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,55932,category,online_incl_delivery,each,4699,,,0,,,,,3.14,KG,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,232249,category,online_incl_delivery,each,3999,,,0,,,,,0.38,EA,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,267324,category,online_incl_delivery,each,46999,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,267317,category,online_incl_delivery,each,99999,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,267318,category,online_incl_delivery,each,59998,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,52014,category,online_incl_delivery,each,3499,,,0,,,,,1.75,100ML,$1.75 per 100 ml,,,,1
 2026-10-05T03:09:32Z,category,2026-10-05T03:09:48Z,online,192238,category,online_incl_delivery,each,1998,2499,,1,costco_saving,Save $5.01,,,0.84,100ML,$0.84 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,130425,category,online_incl_delivery,each,2299,,,0,,,,,8.65,LT,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,179436,category,online_incl_delivery,each,2399,,,0,,,,,6.67,LT,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,109707,category,online_incl_delivery,each,2499,,,0,,,,,1.05,100ML,$1.05 per 100 ml,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,176499,category,online_incl_delivery,each,3099,,,0,,,,,5.17,LT,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,197120,category,online_incl_delivery,each,264999,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,241557,category,online_incl_delivery,each,3199,,,0,,,,,2.29,100ML,$2.29 per 100 ml,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,267325,category,online_incl_delivery,each,67999,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,176499_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,218510,category,online_incl_delivery,each,89999,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,30858,category,online_incl_delivery,each,1349,,,0,,,,,0.45,100ML,$0.45 per 100 ml,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,138283,category,online_incl_delivery,each,39999,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,28755,category,online_incl_delivery,each,1899,,,0,,,,,0.8,100ML,$0.80 per 100 ml,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,1452518,category,online_incl_delivery,each,2499,,,0,,,,,0.22,EA,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,1452518_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:53Z,online,230452,category,online_incl_delivery,each,,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,191999,category,online_incl_delivery,each,1899,,,0,,,,,1.81,HG,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,174427,category,online_incl_delivery,each,2499,,,0,,,,,3.13,HG,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,271362,category,online_incl_delivery,each,3499,,,0,,,,,4.38,HG,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,95551,category,online_incl_delivery,each,2399,,,0,,,,,3,HG,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,229469,category,online_incl_delivery,each,3499,,,0,,,,,2.92,HG,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,50797,category,online_incl_delivery,each,1899,,,0,,,,,4.53,HG,,,,,1
 2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,159980,category,online_incl_delivery,each,2899,3599,,1,costco_saving,Save $7.00,,,7.25,HG,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,214651,category,online_incl_delivery,each,2699,,,0,,,,,2.7,HG,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,253486,category,online_incl_delivery,each,1799,,,0,,,,,1.8,EA,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,281652,category,online_incl_delivery,each,1749,,,0,,,,,2.92,EA,,,,,1
 2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,231970,category,online_incl_delivery,each,6999,8999,,1,costco_saving,Save $20.00,,,3.5,EA,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
 2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,134302,category,online_incl_delivery,each,1999,2599,,1,costco_saving,Save $6.00,,,2.5,EA,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,131602,category,online_incl_delivery,each,14999,,,0,,,,,,,,,,,1
-2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,263438,category,online_incl_delivery,each,4998,,,0,,,,,8.33,EA,,,,,1
 2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,281066,category,online_incl_delivery,each,11999,14999,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
 2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,281067,category,online_incl_delivery,each,11999,14999,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
 2026-10-05T03:09:32Z,category,2026-10-05T03:09:56Z,online,281112,category,online_incl_delivery,each,16999,20999,,1,costco_saving,Save $40.00,,,,,,2026-09-27T14:00:00Z,2026-10-11T12:59:59Z,store,1
 2026-10-11T22:27:44Z,specials,2026-10-11T22:27:50Z,online,159980,specials,online_incl_delivery,each,2799,3599,,1,costco_saving,Save $8.00,,,7,HG,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
-2026-10-11T22:27:44Z,specials,2026-10-11T22:27:50Z,online,231970,specials,online_incl_delivery,each,8999,,,0,,,,,4.5,EA,,,,,1
 2026-10-11T22:27:44Z,specials,2026-10-11T22:27:55Z,online,192238,specials,online_incl_delivery,each,1998,2499,,1,costco_saving,Save $5.01,,,0.84,100ML,$0.84 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
 2026-10-11T22:27:44Z,specials,2026-10-11T22:27:55Z,online,134302,specials,online_incl_delivery,each,1999,2599,,1,costco_saving,Save $6.00,,,2.5,EA,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
-2026-10-11T22:27:44Z,specials,2026-10-11T22:28:04Z,online,281067,specials,online_incl_delivery,each,14999,,,0,,,,,,,,,,,1
-2026-10-11T22:27:44Z,specials,2026-10-11T22:28:04Z,online,281066,specials,online_incl_delivery,each,14999,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:20Z,online,880173_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:20Z,online,103717_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:20Z,online,24643_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:20Z,online,220429,category,online_incl_delivery,each,1899,,,0,,,,,0.76,HG,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:20Z,online,230452,category,online_incl_delivery,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:20Z,online,191210,category,online_incl_delivery,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:20Z,online,226750,category,online_incl_delivery,each,15998,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:20Z,online,172382_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:20Z,online,131801,category,online_incl_delivery,each,6999,,,0,,,,,0.39,HG,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,97012,category,online_incl_delivery,each,2699,,,0,,,,,0.32,HS,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,33992_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,115720,category,online_incl_delivery,each,3199,,,0,,,,,2.23,HS,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,112472,category,online_incl_delivery,each,3499,,,0,,,,,0.33,HS,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,33992,category,online_incl_delivery,each,4499,,,0,,,,,0.24,HS,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,1170795_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,1170795,category,online_incl_delivery,each,3999,,,0,,,,,0.31,HS,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,131804,category,online_incl_delivery,each,2499,,,0,,,,,1.9,HS,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,1406685,category,online_incl_delivery,each,4299,,,0,,,,,1.92,HS,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,172127,category,online_incl_delivery,each,49999,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,206002,category,online_incl_delivery,each,99999,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,241351,category,online_incl_delivery,each,22999,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,211888,category,online_incl_delivery,each,3999,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,54047_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,34443,category,online_incl_delivery,each,3499,,,0,,,,,0.23,EA,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,130192_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:25Z,online,231947,category,online_incl_delivery,each,7499,,,0,,,,,74.99,EA,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,1887975,category,online_incl_delivery,each,2299,,,0,,,,,4.02,LT,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,150258_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,176499_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,176499,category,online_incl_delivery,each,3099,,,0,,,,,5.17,LT,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,92916,category,online_incl_delivery,each,3499,,,0,,,,,5.84,LT,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,3160440,category,online_incl_delivery,each,4399,,,0,,,,,10.79,LT,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,109707,category,online_incl_delivery,each,2599,,,0,,,,,1.09,100ML,$1.09 per 100 ml,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,130425,category,online_incl_delivery,each,2299,,,0,,,,,8.65,LT,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,179436,category,online_incl_delivery,each,2199,,,0,,,,,6.11,LT,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,227097,category,online_incl_delivery,each,4699,,,0,,,,,0.47,EA,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,1888240,category,online_incl_delivery,each,2699,,,0,,,,,0.2,EA,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,331594,category,online_incl_delivery,each,2999,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,55932,category,online_incl_delivery,each,4699,,,0,,,,,3.14,KG,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,232249,category,online_incl_delivery,each,3999,,,0,,,,,0.38,EA,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,267324,category,online_incl_delivery,each,46999,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,267317,category,online_incl_delivery,each,99999,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,267318,category,online_incl_delivery,each,59998,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:30Z,online,52014,category,online_incl_delivery,each,3499,,,0,,,,,1.75,100ML,$1.75 per 100 ml,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,130425,category,online_incl_delivery,each,2299,,,0,,,,,8.65,LT,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,179436,category,online_incl_delivery,each,2199,,,0,,,,,6.11,LT,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,109707,category,online_incl_delivery,each,2599,,,0,,,,,1.09,100ML,$1.09 per 100 ml,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,176499,category,online_incl_delivery,each,3099,,,0,,,,,5.17,LT,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,197120,category,online_incl_delivery,each,264999,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,241557,category,online_incl_delivery,each,3199,,,0,,,,,2.29,100ML,$2.29 per 100 ml,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,176499_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,218510,category,online_incl_delivery,each,89999,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,30858,category,online_incl_delivery,each,1349,,,0,,,,,0.45,100ML,$0.45 per 100 ml,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,1186958,category,online_incl_delivery,each,4699,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,28755,category,online_incl_delivery,each,1899,,,0,,,,,0.8,100ML,$0.80 per 100 ml,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,1452518,category,online_incl_delivery,each,2699,,,0,,,,,0.24,EA,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,1452518_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,230452,category,online_incl_delivery,each,,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:35Z,online,108910,category,online_incl_delivery,each,84999,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,191999,category,online_incl_delivery,each,1899,,,0,,,,,1.81,HG,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,174427,category,online_incl_delivery,each,2499,,,0,,,,,3.13,HG,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,271362,category,online_incl_delivery,each,3499,,,0,,,,,4.38,HG,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,95551,category,online_incl_delivery,each,2399,,,0,,,,,3,HG,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,229469,category,online_incl_delivery,each,3499,,,0,,,,,2.92,HG,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,50797,category,online_incl_delivery,each,1899,,,0,,,,,4.53,HG,,,,,1
 2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,159980,category,online_incl_delivery,each,2799,3599,,1,costco_saving,Save $8.00,,,7,HG,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,214651,category,online_incl_delivery,each,2699,,,0,,,,,2.7,HG,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,253486,category,online_incl_delivery,each,1799,,,0,,,,,1.8,EA,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,281652,category,online_incl_delivery,each,1749,,,0,,,,,2.92,EA,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,231970,category,online_incl_delivery,each,8999,,,0,,,,,4.5,EA,,,,,1
 2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,134302,category,online_incl_delivery,each,1999,2599,,1,costco_saving,Save $6.00,,,2.5,EA,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,131602,category,online_incl_delivery,each,14999,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,263438,category,online_incl_delivery,each,4998,,,0,,,,,8.33,EA,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,281066,category,online_incl_delivery,each,14999,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,281067,category,online_incl_delivery,each,14999,,,0,,,,,,,,,,,1
-2026-10-11T22:28:14Z,category,2026-10-11T22:28:39Z,online,10039,category,online_incl_delivery,each,2199,,,0,,,,,0.74,100ML,$0.74 per 100 ml,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,97012,category,online_incl_delivery,each,2699,,,0,,,,,0.32,HS,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,33992_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,115720,category,online_incl_delivery,each,3199,,,0,,,,,2.23,HS,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,112472,category,online_incl_delivery,each,3499,,,0,,,,,0.33,HS,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,1170795_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,1170795,category,online_incl_delivery,each,3999,,,0,,,,,0.31,HS,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,131804,category,online_incl_delivery,each,2499,,,0,,,,,1.9,HS,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,227086,category,online_incl_delivery,each,1799,,,0,,,,,3,HS,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,1406685,category,online_incl_delivery,each,4299,,,0,,,,,1.92,HS,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,1652990,category,online_incl_delivery,each,6499,,,0,,,,,5.08,HN,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,172127,category,online_incl_delivery,each,49999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,206002,category,online_incl_delivery,each,99999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,241351,category,online_incl_delivery,each,22999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,211888,category,online_incl_delivery,each,3999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,54047_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,286551,category,online_incl_delivery,each,249999,,,0,,,,,,,,,,,1
 2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,34443,category,online_incl_delivery,each,3449,3499,,1,costco_saving,Save $0.50,,,0.23,EA,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,130192_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:10:58Z,online,231947,category,online_incl_delivery,each,7499,,,0,,,,,74.99,EA,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,115720,category,online_incl_delivery,each,3199,,,0,,,,,2.23,HS,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,1768085,category,online_incl_delivery,each,3999,,,0,,,,,2.09,HS,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,33993,category,online_incl_delivery,each,5999,,,0,,,,,1.55,HS,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,227086_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,623381,category,online_incl_delivery,each,3999,,,0,,,,,0.2,EA,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,96338,category,online_incl_delivery,each,2999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,264897,category,online_incl_delivery,each,14999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,713160,category,online_incl_delivery,each,5999,,,0,,,,,0.84,EA,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,2040372,category,online_incl_delivery,each,2899,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,112472,category,online_incl_delivery,each,3499,,,0,,,,,0.33,HS,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,52014,category,online_incl_delivery,each,3499,,,0,,,,,1.75,100ML,$1.75 per 100 ml,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,109707,category,online_incl_delivery,each,2599,,,0,,,,,1.09,100ML,$1.09 per 100 ml,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,33992_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,30858,category,online_incl_delivery,each,1349,,,0,,,,,0.45,100ML,$0.45 per 100 ml,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,55932,category,online_incl_delivery,each,4699,,,0,,,,,3.14,KG,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:09Z,online,1909200,category,online_incl_delivery,each,3499,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:15Z,online,241842,category,online_incl_delivery,each,4998,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:15Z,online,244562,category,online_incl_delivery,each,3499,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:15Z,online,214662,category,online_incl_delivery,each,5999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:15Z,online,122765,category,online_incl_delivery,each,239999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:15Z,online,7771460,category,online_incl_delivery,each,2999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,29496_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,44709_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,26056_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,230141_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,44745_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,149030_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,249373_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,241842,category,online_incl_delivery,each,4998,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,181678,category,online_incl_delivery,each,8999,,,0,,,,,5,EA,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,181678_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,10259_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,102856_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,33212_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,278920,category,online_incl_delivery,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:19Z,online,237140,category,online_incl_delivery,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:23Z,online,19584_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:23Z,online,141481,category,online_incl_delivery,each,6999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:23Z,online,224114,category,online_incl_delivery,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:23Z,online,1647339,category,online_incl_delivery,each,149999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:23Z,online,264932,category,online_incl_delivery,each,34999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:23Z,online,1934215,category,online_incl_delivery,each,79999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,224114,category,online_incl_delivery,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,36854_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,37315_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,44641_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,1934215,category,online_incl_delivery,each,79999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,95438_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,39072_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,1945800_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,1945800,category,online_incl_delivery,each,3199,,,0,,,,,3.2,HG,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,264932,category,online_incl_delivery,each,34999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,46521_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,23131_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,1807129,category,online_incl_delivery,each,299999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,31053_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:28Z,online,200715_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,263618_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,109707,category,online_incl_delivery,each,2599,,,0,,,,,1.09,100ML,$1.09 per 100 ml,,,,1
 2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,41931,category,online_incl_delivery,each,1298,1698,,1,costco_saving,Save $4.00,,,0.87,100ML,$0.87 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,41931_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,52014,category,online_incl_delivery,each,3499,,,0,,,,,1.75,100ML,$1.75 per 100 ml,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,262015,category,online_incl_delivery,each,74999,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,129430_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,190649,category,online_incl_delivery,each,2699,,,0,,,,,9,LT,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,112581,category,online_incl_delivery,each,3999,,,0,,,,,2,100ML,$2.00 per 100 ml,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,46395_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,46395,category,online_incl_delivery,each,3299,,,0,,,,,1.1,100ML,$1.10 per 100 ml,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,30858,category,online_incl_delivery,each,1349,,,0,,,,,0.45,100ML,$0.45 per 100 ml,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,195045,category,online_incl_delivery,each,6799,,,0,,,,,1.07,SM,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,209131,category,online_incl_delivery,each,2499,,,0,,,,,5.56,100ML,$5.56 per 100 ml,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,47395,category,online_incl_delivery,each,2899,,,0,,,,,1.45,100ML,$1.45 per 100 ml,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:33Z,online,208775,category,online_incl_delivery,each,2299,,,0,,,,,2.3,100ML,$2.30 per 100 ml,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:37Z,online,241585_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:37Z,online,189393_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:37Z,online,106944_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:37Z,online,1300658_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:37Z,online,1882069_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:37Z,online,1881606_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:37Z,online,39587_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-15T23:10:52Z,category,2026-10-15T23:11:37Z,online,8122017,category,online_incl_delivery,each,3999,,,0,,,,,,,,,,,1
 2026-10-18T20:54:42Z,specials,2026-10-18T20:54:49Z,online,41931,specials,online_incl_delivery,each,1298,1698,,1,costco_saving,Save $4.00,,,0.87,100ML,$0.87 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
 2026-10-18T20:54:42Z,specials,2026-10-18T20:54:49Z,online,159980,specials,online_incl_delivery,each,2799,3599,,1,costco_saving,Save $8.00,,,7,HG,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
 2026-10-18T20:54:42Z,specials,2026-10-18T20:54:49Z,online,192238,specials,online_incl_delivery,each,1998,2499,,1,costco_saving,Save $5.01,,,0.84,100ML,$0.84 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
 2026-10-18T20:54:42Z,specials,2026-10-18T20:54:56Z,online,134302,specials,online_incl_delivery,each,1999,2599,,1,costco_saving,Save $6.00,,,2.5,EA,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
-2026-10-18T20:54:42Z,specials,2026-10-18T20:54:56Z,online,331594,specials,online_incl_delivery,each,2999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,97012,category,online_incl_delivery,each,2699,,,0,,,,,0.32,HS,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,33992_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,115720,category,online_incl_delivery,each,3199,,,0,,,,,2.23,HS,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,112472,category,online_incl_delivery,each,3499,,,0,,,,,0.33,HS,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,1170795_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,1170795,category,online_incl_delivery,each,3999,,,0,,,,,0.31,HS,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,131804,category,online_incl_delivery,each,2499,,,0,,,,,1.9,HS,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,227086,category,online_incl_delivery,each,1799,,,0,,,,,3,HS,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,1406685,category,online_incl_delivery,each,4299,,,0,,,,,1.92,HS,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,1652990,category,online_incl_delivery,each,6499,,,0,,,,,5.08,HN,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,172127,category,online_incl_delivery,each,49999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,206002,category,online_incl_delivery,each,99999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,241351,category,online_incl_delivery,each,22999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,211888,category,online_incl_delivery,each,3999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,54047_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,286551,category,online_incl_delivery,each,249999,,,0,,,,,,,,,,,1
 2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,34443,category,online_incl_delivery,each,3449,3499,,1,costco_saving,Save $0.50,,,0.23,EA,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,130192_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:21Z,online,231947,category,online_incl_delivery,each,7499,,,0,,,,,74.99,EA,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,115720,category,online_incl_delivery,each,3199,,,0,,,,,2.23,HS,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,1768085,category,online_incl_delivery,each,3999,,,0,,,,,2.09,HS,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,33993,category,online_incl_delivery,each,5999,,,0,,,,,1.55,HS,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,227086_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,623381,category,online_incl_delivery,each,3999,,,0,,,,,0.2,EA,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,96338,category,online_incl_delivery,each,2999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,264897,category,online_incl_delivery,each,14999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,713160,category,online_incl_delivery,each,5999,,,0,,,,,0.84,EA,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,2040372,category,online_incl_delivery,each,2899,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,112472,category,online_incl_delivery,each,3499,,,0,,,,,0.33,HS,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,52014,category,online_incl_delivery,each,3499,,,0,,,,,1.75,100ML,$1.75 per 100 ml,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,109707,category,online_incl_delivery,each,2599,,,0,,,,,1.09,100ML,$1.09 per 100 ml,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,33992_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,30858,category,online_incl_delivery,each,1349,,,0,,,,,0.45,100ML,$0.45 per 100 ml,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,257213,category,online_incl_delivery,each,3199,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:32Z,online,55932,category,online_incl_delivery,each,4699,,,0,,,,,3.14,KG,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:36Z,online,241842,category,online_incl_delivery,each,4998,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:36Z,online,244562,category,online_incl_delivery,each,3499,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:36Z,online,214662,category,online_incl_delivery,each,5999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:36Z,online,122765,category,online_incl_delivery,each,239999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:36Z,online,7771460,category,online_incl_delivery,each,2999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,29496_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,44709_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,26056_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,230141_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,44745_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,149030_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,249373_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,241842,category,online_incl_delivery,each,4998,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,181678,category,online_incl_delivery,each,8999,,,0,,,,,5,EA,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,181678_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,10259_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,102856_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,33212_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,278920,category,online_incl_delivery,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:41Z,online,11159,category,online_incl_delivery,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:46Z,online,100278,category,online_incl_delivery,each,49999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,224114,category,online_incl_delivery,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,36854_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,37315_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,44641_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,1934215,category,online_incl_delivery,each,79999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,95438_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,39072_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,1945800,category,online_incl_delivery,each,3199,,,0,,,,,3.2,HG,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,1945800_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,264932,category,online_incl_delivery,each,34999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,46521_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,23131_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,1807129,category,online_incl_delivery,each,299999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,31053_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:51Z,online,200715_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,263618_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,109707,category,online_incl_delivery,each,2599,,,0,,,,,1.09,100ML,$1.09 per 100 ml,,,,1
 2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,41931,category,online_incl_delivery,each,1298,1698,,1,costco_saving,Save $4.00,,,0.87,100ML,$0.87 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,41931_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,52014,category,online_incl_delivery,each,3499,,,0,,,,,1.75,100ML,$1.75 per 100 ml,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,262015,category,online_incl_delivery,each,74999,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,129430_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,190649,category,online_incl_delivery,each,2699,,,0,,,,,9,LT,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,112581,category,online_incl_delivery,each,3999,,,0,,,,,2,100ML,$2.00 per 100 ml,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,46395_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,46395,category,online_incl_delivery,each,3299,,,0,,,,,1.1,100ML,$1.10 per 100 ml,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,30858,category,online_incl_delivery,each,1349,,,0,,,,,0.45,100ML,$0.45 per 100 ml,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,121053_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,195045,category,online_incl_delivery,each,6799,,,0,,,,,1.07,SM,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,209131,category,online_incl_delivery,each,2499,,,0,,,,,5.56,100ML,$5.56 per 100 ml,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:55:55Z,online,47395,category,online_incl_delivery,each,2899,,,0,,,,,1.45,100ML,$1.45 per 100 ml,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:56:01Z,online,241585_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:56:01Z,online,189393_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:56:01Z,online,106944_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:56:01Z,online,1300658_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:56:01Z,online,1882069_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:56:01Z,online,1881606_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:56:01Z,online,39587_BD,category,online,each,,,,0,,,,,,,,,,,1
-2026-10-18T20:55:17Z,category,2026-10-18T20:56:01Z,online,8122017,category,online_incl_delivery,each,3999,,,0,,,,,,,,,,,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,271505,specials,online_incl_delivery,each,2398,3898,,1,costco_saving,Save $15.00,,,0.8,EA,,2026-10-08T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,41931,specials,online_incl_delivery,each,1298,1698,,1,costco_saving,Save $4.00,,,0.87,100ML,$0.87 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,241183,specials,online_incl_delivery,each,2398,3898,,1,costco_saving,Save $15.00,,,0.8,EA,,2026-10-08T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,240835,specials,online_incl_delivery,each,2398,3898,,1,costco_saving,Save $15.00,,,0.8,EA,,2026-10-08T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,159980,specials,online_incl_delivery,each,2799,3599,,1,costco_saving,Save $8.00,,,7,HG,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,222334,specials,online_incl_delivery,each,2398,3898,,1,costco_saving,Save $15.00,,,0.8,EA,,2026-10-08T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,1721621,specials,online_incl_delivery,each,1199,1499,,1,costco_saving,Save $3.00,,,0.8,100ML,$0.80 per 100 ml,2026-10-11T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,38351,specials,online_incl_delivery,each,2849,3549,,1,costco_saving,Save $7.00,,,2.55,HS,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,248170,specials,online_incl_delivery,each,9999,14999,,1,costco_saving,Save $50.00,,,,,,2026-10-11T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,263690,specials,online_incl_delivery,each,34999,64999,,1,costco_saving,Save $300.00,,,,,,2026-10-14T13:00:00Z,2026-11-11T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,1785105,specials,online_incl_delivery,each,9999,24999,,1,costco_saving,Save $150.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,260165,specials,online_incl_delivery,each,9999,13999,,1,costco_saving,Save $40.00,,,,,,2026-10-10T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,239114,specials,online_incl_delivery,each,35999,44999,,1,costco_saving,Save $90.00,,,,,,2026-09-17T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,26087,specials,online_incl_delivery,each,1749,2199,,1,costco_saving,Save $4.50,,,0.88,100ML,$0.88 per 100 ml,2026-10-11T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,130322,specials,online_incl_delivery,each,39999,58999,,1,costco_saving,Save $190.00,,,,,,2026-09-29T14:00:00Z,2026-11-01T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,12111,specials,online_incl_delivery,each,,,,1,costco_saving,Save $10.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,235767,specials,online_incl_delivery,each,59999,79999,,1,costco_saving,Save $200.00,,,,,,2026-09-30T14:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,272364,specials,online_incl_delivery,each,29999,66999,,1,costco_saving,Save $370.00,,,,,,2026-10-02T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,239554,specials,online_incl_delivery,each,,,,1,costco_saving,Save $210.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,253487,specials,online_incl_delivery,each,2499,3299,,1,costco_saving,Save $8.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,234161,specials,online_incl_delivery,each,2499,3199,,1,costco_saving,Save $7.00,,,11.9,HN,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,45967,specials,online_incl_delivery,each,,,,1,costco_saving,Save $11.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,1959104,specials,online_incl_delivery,each,7999,9999,,1,costco_saving,Save $20.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,264860,specials,online_incl_delivery,each,5999,8999,,1,costco_saving,Save $30.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,266096,specials,online_incl_delivery,each,24999,39999,,1,costco_saving,Save $150.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,199479,specials,online_incl_delivery,each,10999,19999,,1,costco_saving,Save $90.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,1600273,specials,online_incl_delivery,each,2399,2999,,1,costco_saving,Save $6.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,230390,specials,online_incl_delivery,each,39999,64999,,1,costco_saving,Save $250.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,229503,specials,online_incl_delivery,each,,,,1,costco_saving,Save $500.01,,,,,,2026-09-28T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,2026102,specials,online_incl_delivery,each,76999,99999,,1,costco_saving,Save $230.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,48979,specials,online_incl_delivery,each,2898,3698,,1,costco_saving,Save $8.00,,,7.25,HN,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,259083,specials,online_incl_delivery,each,29999,44999,,1,costco_saving,Save $150.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,42138,specials,online_incl_delivery,each,,,,1,costco_saving,Save $8.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,1601410,specials,online_incl_delivery,each,3498,4998,,1,costco_saving,Save $15.00,,,,,,2026-10-01T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,1819867,specials,online_incl_delivery,each,4499,5999,,1,costco_saving,Save $15.00,,,,,,2026-10-13T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,192238,specials,online_incl_delivery,each,1998,2499,,1,costco_saving,Save $5.01,,,0.84,100ML,$0.84 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,192200,specials,online_incl_delivery,each,7299,8799,,1,costco_saving,Save $15.00,,,9.13,EA,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,274946,specials,online_incl_delivery,each,74999,119999,,1,costco_saving,Save $450.00,,,,,,2026-10-14T13:00:00Z,2026-12-02T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,276448,specials,online_incl_delivery,each,12499,17499,,1,costco_saving,Save $50.00,,,,,,2026-10-13T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,247245,specials,online_incl_delivery,each,2399,2999,,1,costco_saving,Save $6.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,221120,specials,online_incl_delivery,each,4899,6199,,1,costco_saving,Save $13.00,,,1.03,EA,,2026-10-11T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,1785028,specials,online_incl_delivery,each,5999,9999,,1,costco_saving,Save $40.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,40629,specials,online_incl_delivery,each,3299,4299,,1,costco_saving,Save $10.00,,,11,HG,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,269487,specials,online_incl_delivery,each,6499,9499,,1,costco_saving,Save $30.00,,,,,,2026-10-13T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,207226,specials,online_incl_delivery,each,2149,2699,,1,costco_saving,Save $5.50,,,0.96,100ML,$0.96 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:32Z,online,259950,specials,online_incl_delivery,each,10499,13999,,1,costco_saving,Save $35.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,246005,specials,online_incl_delivery,each,5999,7499,,1,costco_saving,Save $15.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,236668,specials,online_incl_delivery,each,1199,1499,,1,costco_saving,Save $3.00,,,3.43,HN,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,221121,specials,online_incl_delivery,each,4899,6199,,1,costco_saving,Save $13.00,,,1.03,EA,,2026-10-11T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,197920,specials,online_incl_delivery,each,6499,7999,,1,costco_saving,Save $15.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,1901817,specials,online_incl_delivery,each,3799,4499,,1,costco_saving,Save $7.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,179335,specials,online_incl_delivery,each,,,,1,costco_saving,Save $10.00,,,,,,2026-09-20T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,1307681,specials,online_incl_delivery,each,2399,2999,,1,costco_saving,Save $6.00,,,,,,2026-10-18T13:00:00Z,2026-11-01T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,48977,specials,online_incl_delivery,each,2898,3698,,1,costco_saving,Save $8.00,,,7.25,HN,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,187193,specials,online_incl_delivery,each,1797,2298,,1,costco_saving,Save $5.01,,,0.9,100ML,$0.90 per 100 ml,2026-09-23T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,224072,specials,online_incl_delivery,each,,,,1,costco_saving,Save $800.00,,,,,,2026-09-30T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,270800,specials,online_incl_delivery,each,2699,3399,,1,costco_saving,Save $7.00,,,6.36,HG,,2026-10-15T13:00:00Z,2026-10-22T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,234006,specials,online_incl_delivery,each,34998,59998,,1,costco_saving,Save $250.00,,,,,,2026-09-25T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,691232,specials,online_incl_delivery,each,5999,7999,,1,costco_saving,Save $20.00,,,,,,2026-10-09T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,48054,specials,online_incl_delivery,each,3299,4199,,1,costco_saving,Save $9.00,,,18.33,HN,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,257581,specials,online_incl_delivery,each,139998,189999,,1,costco_saving,Save $500.01,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,254012,specials,online_incl_delivery,each,3199,3999,,1,costco_saving,Save $8.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,197934,specials,online_incl_delivery,each,3899,4699,,1,costco_saving,Save $8.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,251397,specials,online_incl_delivery,each,20999,25999,,1,costco_saving,Save $50.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,239866,specials,online_incl_delivery,each,32999,39999,,1,costco_saving,Save $70.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,1784934,specials,online_incl_delivery,each,2998,4998,,1,costco_saving,Save $20.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,275729,specials,online_incl_delivery,each,,,,1,costco_saving,Save $4.00,,,,,,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,1929721,specials,online_incl_delivery,each,23999,28999,,1,costco_saving,Save $50.00,,,,,,2026-10-18T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,168189,specials,online_incl_delivery,each,1499,1899,,1,costco_saving,Save $4.00,,,1.79,HG,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,282710,specials,online_incl_delivery,each,45999,56999,,1,costco_saving,Save $110.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,258510,specials,online_incl_delivery,each,2799,3499,,1,costco_saving,Save $7.00,,,,,,2026-09-27T14:00:00Z,2026-11-08T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,234519,specials,online_incl_delivery,each,,,,1,costco_saving,Save $500.01,,,,,,2026-09-27T14:00:00Z,2026-10-30T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,198921,specials,online_incl_delivery,each,,,,1,costco_saving,Save $8.00,,,,,,2026-10-08T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,1785046,specials,online_incl_delivery,each,14999,19999,,1,costco_saving,Save $50.00,,,,,,2026-10-18T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,208084,specials,online_incl_delivery,each,,,,1,costco_saving,Save $24.00,,,,,,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,2026203,specials,online_incl_delivery,each,144999,179999,,1,costco_saving,Save $350.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,2026052,specials,online_incl_delivery,each,69999,84999,,1,costco_saving,Save $150.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,166519,specials,online_incl_delivery,each,4499,5699,,1,costco_saving,Save $12.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,42943,specials,online_incl_delivery,each,,,,1,costco_saving,Save $4.00,,,,,,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,285855,specials,online_incl_delivery,each,2499,3499,,1,costco_saving,Save $10.00,,,1,100ML,$1.00 per 100 ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,255411,specials,online_incl_delivery,each,21998,26998,,1,costco_saving,Save $50.00,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,250395,specials,online_incl_delivery,each,36999,44999,,1,costco_saving,Save $80.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,224537,specials,online_incl_delivery,each,84998,114998,,1,costco_saving,Save $300.00,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,2026107,specials,online_incl_delivery,each,52999,64999,,1,costco_saving,Save $120.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,1831233,specials,online_incl_delivery,each,5999,7999,,1,costco_saving,Save $20.00,,,,,,2026-10-13T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,161451,specials,online_incl_delivery,each,17999,22999,,1,costco_saving,Save $50.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,134302,specials,online_incl_delivery,each,1999,2599,,1,costco_saving,Save $6.00,,,2.5,EA,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,7771553,specials,online_incl_delivery,each,2499,3299,,1,costco_saving,Save $8.00,,,,,,2026-10-16T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,47296,specials,online_incl_delivery,each,,,,1,costco_saving,Save $5.01,,,,,,2026-10-08T13:00:00Z,2026-11-08T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,280763,specials,online_incl_delivery,each,26999,38999,,1,costco_saving,Save $120.00,,,,,,2026-09-30T14:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,253256,specials,online_incl_delivery,each,13499,16999,,1,costco_saving,Save $35.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,248264,specials,online_incl_delivery,each,44999,64999,,1,costco_saving,Save $200.00,,,,,,2026-10-13T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:37Z,online,240121,specials,online_incl_delivery,each,,,,1,costco_saving,Save $50.00,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,234478,specials,online_incl_delivery,each,,,,1,costco_saving,Save $24.00,,,,,,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,2026165,specials,online_incl_delivery,each,214998,279998,,1,costco_saving,Save $650.00,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,2026106,specials,online_incl_delivery,each,24999,29999,,1,costco_saving,Save $50.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,28254,specials,online_incl_delivery,each,2498,2999,,1,costco_saving,Save $5.01,,,12.49,HN,,2026-10-11T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,258716,specials,online_incl_delivery,each,17999,27999,,1,costco_saving,Save $100.00,,,,,,2026-10-10T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,258512,specials,online_incl_delivery,each,3199,3999,,1,costco_saving,Save $8.00,,,,,,2026-09-27T14:00:00Z,2026-11-08T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,258197,specials,online_incl_delivery,each,14999,19999,,1,costco_saving,Save $50.00,,,,,,2026-10-09T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,238516,specials,online_incl_delivery,each,2299,2899,,1,costco_saving,Save $6.00,,,,,,2026-10-18T13:00:00Z,2026-11-01T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,232302,specials,online_incl_delivery,each,,,,1,costco_saving,Save $3.00,,,,,,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,2321717,specials,online_incl_delivery,each,2999,3999,,1,costco_saving,Save $10.00,,,,,,2026-10-01T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,218561,specials,online_incl_delivery,each,5999,7999,,1,costco_saving,Save $20.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,2026168,specials,online_incl_delivery,each,146999,179999,,1,costco_saving,Save $330.00,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,2026060,specials,online_incl_delivery,each,179999,239999,,1,costco_saving,Save $600.00,,,,,,2026-10-14T13:00:00Z,2026-11-04T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,177526,specials,online_incl_delivery,each,77999,87999,,1,costco_saving,Save $100.00,,,,,,2026-10-14T13:00:00Z,2026-11-04T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,175548,specials,online_incl_delivery,each,,,,1,costco_saving,Save $20.00,,,,,,2026-10-11T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,1601252,specials,online_incl_delivery,each,3498,4998,,1,costco_saving,Save $15.00,,,,,,2026-10-01T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,7771590,specials,online_incl_delivery,each,2999,3799,,1,costco_saving,Save $8.00,,,3.75,PR,,2026-10-16T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,275752,specials,online_incl_delivery,each,,,,1,costco_saving,Save $4.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,271089,specials,online_incl_delivery,each,15999,17999,,1,costco_saving,Save $20.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,262697,specials,online_incl_delivery,each,89999,99999,,1,costco_saving,Save $100.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,234832,specials,online_incl_delivery,each,,,,1,costco_saving,Save $5.01,,,,,,2026-10-08T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,2324471,specials,online_incl_delivery,each,2999,3999,,1,costco_saving,Save $10.00,,,,,,2026-10-01T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,2029620,specials,online_incl_delivery,each,4499,5999,,1,costco_saving,Save $15.00,,,,,,2026-10-13T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,2026053,specials,online_incl_delivery,each,84999,99999,,1,costco_saving,Save $150.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,1929725,specials,online_incl_delivery,each,5499,6999,,1,costco_saving,Save $15.00,,,,,,2026-10-18T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,15941,specials,online_incl_delivery,each,1099,1299,,1,costco_saving,Save $2.00,,,2.2,HG,,2026-10-11T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,91159,specials,online_incl_delivery,each,104999,129999,,1,costco_saving,Save $250.00,,,,,,2026-09-30T14:00:00Z,2026-11-30T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,268479,specials,online_incl_delivery,each,23998,29999,,1,costco_saving,Save $60.01,,,,,,2026-10-12T13:00:00Z,2026-10-19T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,267970,specials,online_incl_delivery,each,2798,3299,,1,costco_saving,Save $5.01,,,46.64,HN,,2026-10-11T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,254769,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,251775,specials,online_incl_delivery,each,74999,94999,,1,costco_saving,Save $200.00,,,,,,2026-10-17T13:00:00Z,2026-10-31T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,239133,specials,online_incl_delivery,each,54999,74999,,1,costco_saving,Save $200.00,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,233034,specials,online_incl_delivery,each,97998,139998,,1,costco_saving,Save $420.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,230347,specials,online_incl_delivery,each,2799,3499,,1,costco_saving,Save $7.00,,,9.33,HN,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,2026156,specials,online_incl_delivery,each,69999,79999,,1,costco_saving,Save $100.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,2026064,specials,online_incl_delivery,each,89999,109999,,1,costco_saving,Save $200.00,,,,,,2026-10-14T13:00:00Z,2026-11-04T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,197319,specials,online_incl_delivery,each,289998,324998,,1,costco_saving,Save $350.00,,,,,,2026-10-09T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,1752653,specials,online_incl_delivery,each,14999,19999,,1,costco_saving,Save $50.00,,,,,,2026-10-12T13:00:00Z,2026-10-20T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,275961,specials,online_incl_delivery,each,,,,1,costco_saving,Save $6.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,269951,specials,online_incl_delivery,each,19999,24499,,1,costco_saving,Save $45.00,,,40,HG,,2026-10-15T13:00:00Z,2026-10-22T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,259168,specials,online_incl_delivery,each,,,,1,costco_saving,Save $40.00,,,,,,2026-10-10T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,253377,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,244726,specials,online_incl_delivery,each,2999,4499,,1,costco_saving,Save $15.00,,,,,,2026-10-18T13:00:00Z,2026-11-01T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:43Z,online,240416,specials,online_incl_delivery,each,60999,69999,,1,costco_saving,Save $90.00,,,,,,2026-09-30T14:00:00Z,2026-11-04T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,234565,specials,online_incl_delivery,each,,,,1,costco_saving,Save $300.00,,,,,,2026-09-27T14:00:00Z,2026-10-30T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,224603,specials,online_incl_delivery,each,6999,7999,,1,costco_saving,Save $10.00,,,,,,2026-10-17T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,224587,specials,online_incl_delivery,each,6999,7999,,1,costco_saving,Save $10.00,,,,,,2026-10-17T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,221397,specials,online_incl_delivery,each,6999,7999,,1,costco_saving,Save $10.00,,,,,,2026-10-17T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2026154,specials,online_incl_delivery,each,179999,219999,,1,costco_saving,Save $400.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2026105,specials,online_incl_delivery,each,161999,179999,,1,costco_saving,Save $180.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2026101,specials,online_incl_delivery,each,67999,79999,,1,costco_saving,Save $120.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2026066,specials,online_incl_delivery,each,146999,179999,,1,costco_saving,Save $330.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2026061,specials,online_incl_delivery,each,244999,309999,,1,costco_saving,Save $650.00,,,,,,2026-10-14T13:00:00Z,2026-11-04T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2026057,specials,online_incl_delivery,each,64999,74999,,1,costco_saving,Save $100.00,,,,,,2026-10-14T13:00:00Z,2026-11-04T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2007043,specials,online_incl_delivery,each,2499,3499,,1,costco_saving,Save $10.00,,,,,,2026-10-13T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,1819665,specials,online_incl_delivery,each,9999,11999,,1,costco_saving,Save $20.00,,,,,,2026-10-13T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,178052,specials,online_incl_delivery,each,1499,1799,,1,costco_saving,Save $3.00,,,5,HG,,2026-10-11T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,136452,specials,online_incl_delivery,each,48999,63999,,1,costco_saving,Save $150.00,,,,,,2026-10-18T13:00:00Z,2026-10-30T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,121710,specials,online_incl_delivery,each,59999,89999,,1,costco_saving,Save $300.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,119988,specials,online_incl_delivery,each,45999,56999,,1,costco_saving,Save $110.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,280164,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,280162,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,276230,specials,online_incl_delivery,each,,,,1,costco_saving,Save $5.01,,,,,,2026-10-08T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,275286,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,268023,specials,online_incl_delivery,each,64999,74999,,1,costco_saving,Save $100.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,268019,specials,online_incl_delivery,each,111999,124999,,1,costco_saving,Save $130.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,264419,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,264227,specials,online_incl_delivery,each,,,,1,costco_saving,Save $499.99,,,,,,2026-09-30T14:00:00Z,2026-10-31T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,263377,specials,online_incl_delivery,each,199999,259999,,1,costco_saving,Save $600.00,,,,,,2026-10-07T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,261314,specials,online_incl_delivery,each,192999,214999,,1,costco_saving,Save $220.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,256649,specials,online_incl_delivery,each,54999,84999,,1,costco_saving,Save $300.00,,,,,,2026-09-28T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,255410,specials,online_incl_delivery,each,21998,26998,,1,costco_saving,Save $50.00,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,254771,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,253375,specials,online_incl_delivery,each,17499,24999,,1,costco_saving,Save $75.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,239980,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,233287,specials,online_incl_delivery,each,111998,139999,,1,costco_saving,Save $280.01,,,,,,2026-10-12T13:00:00Z,2026-10-20T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,231882,specials,online_incl_delivery,each,247998,499998,,1,costco_saving,"Save $2,520.00",,,,,,2026-10-18T13:00:00Z,2026-11-01T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,221400,specials,online_incl_delivery,each,6999,7999,,1,costco_saving,Save $10.00,,,,,,2026-10-17T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,216317,specials,online_incl_delivery,each,154999,194999,,1,costco_saving,Save $400.00,,,,,,2026-08-05T14:00:00Z,2026-10-31T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,210233,specials,online_incl_delivery,each,14999,22999,,1,costco_saving,Save $80.00,,,,,,2026-10-14T13:00:00Z,2026-11-04T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,204700,specials,online_incl_delivery,each,64999,74999,,1,costco_saving,Save $100.00,,,,,,2026-10-14T13:00:00Z,2026-11-04T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2026202,specials,online_incl_delivery,each,126999,139999,,1,costco_saving,Save $130.00,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2026153,specials,online_incl_delivery,each,164999,229999,,1,costco_saving,Save $650.00,,,,,,2026-10-11T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2026152,specials,online_incl_delivery,each,134999,159999,,1,costco_saving,Save $250.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2026112,specials,online_incl_delivery,each,226999,269999,,1,costco_saving,Save $430.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2026108,specials,online_incl_delivery,each,64999,74999,,1,costco_saving,Save $100.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2026059,specials,online_incl_delivery,each,161999,179999,,1,costco_saving,Save $180.00,,,,,,2026-10-14T13:00:00Z,2026-11-04T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2026058,specials,online_incl_delivery,each,103999,119999,,1,costco_saving,Save $160.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,2026008,specials,online_incl_delivery,each,139999,159999,,1,costco_saving,Save $200.00,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,201549,specials,online_incl_delivery,each,30999,34999,,1,costco_saving,Save $40.00,,,,,,2026-10-16T13:00:00Z,2026-11-01T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:49Z,online,200028,specials,online_incl_delivery,each,111999,124999,,1,costco_saving,Save $130.00,,,,,,2026-10-14T13:00:00Z,2026-11-04T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,195182,specials,online_incl_delivery,each,119999,144999,,1,costco_saving,Save $250.00,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,1851476,specials,online_incl_delivery,each,5999,7999,,1,costco_saving,Save $20.00,,,,,,2026-10-18T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,1783248,specials,online_incl_delivery,each,14999,19999,,1,costco_saving,Save $50.00,,,,,,2026-10-12T13:00:00Z,2026-10-20T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,137467,specials,online_incl_delivery,each,3199,3499,,1,costco_saving,Save $3.00,,,5.34,100ML,$5.34 per 100 ml,2026-10-11T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,7771577,specials,online_incl_delivery,each,2999,3999,,1,costco_saving,Save $10.00,,,,,,2026-10-16T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,7771559,specials,online_incl_delivery,each,2699,3499,,1,costco_saving,Save $8.00,,,,,,2026-10-16T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,68283,specials,online_incl_delivery,each,24997,25997,,1,costco_saving,Save $10.00,,,33.33,100ML,$33.33 per 100 ml,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,47343,specials,online_incl_delivery,each,,,,1,costco_saving,Save $9.00,,,,,,2026-09-24T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,285900,specials,online_incl_delivery,each,,,,1,costco_saving,Save $100.00,,,,,,2026-10-13T13:00:00Z,2026-11-08T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,280166,specials,online_incl_delivery,each,13998,19999,,1,costco_saving,Save $60.01,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,275285,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,268022,specials,online_incl_delivery,each,152997,169998,,1,costco_saving,Save $170.01,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,268021,specials,online_incl_delivery,each,142998,159999,,1,costco_saving,Save $170.01,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,268020,specials,online_incl_delivery,each,152997,169998,,1,costco_saving,Save $170.01,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,264408,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,264166,specials,online_incl_delivery,each,27999,39999,,1,costco_saving,Save $120.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254774,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254773,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254772,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254770,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254768,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254767,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254766,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254765,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254764,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254763,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254762,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254761,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254760,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254759,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254758,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254757,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254756,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254755,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254754,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254753,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,254751,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,253745,specials,online_incl_delivery,each,20999,29999,,1,costco_saving,Save $90.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,253413,specials,online_incl_delivery,each,17499,24999,,1,costco_saving,Save $75.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,253376,specials,online_incl_delivery,each,17499,24999,,1,costco_saving,Save $75.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,253374,specials,online_incl_delivery,each,17499,24999,,1,costco_saving,Save $75.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,253373,specials,online_incl_delivery,each,17499,24999,,1,costco_saving,Save $75.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,253372,specials,online_incl_delivery,each,17499,24999,,1,costco_saving,Save $75.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,253371,specials,online_incl_delivery,each,17499,24999,,1,costco_saving,Save $75.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,253369,specials,online_incl_delivery,each,17499,24999,,1,costco_saving,Save $75.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,253367,specials,online_incl_delivery,each,17499,24999,,1,costco_saving,Save $75.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:54Z,online,253366,specials,online_incl_delivery,each,17499,24999,,1,costco_saving,Save $75.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,253363,specials,online_incl_delivery,each,17499,24999,,1,costco_saving,Save $75.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,253362,specials,online_incl_delivery,each,17499,24999,,1,costco_saving,Save $75.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,253357,specials,online_incl_delivery,each,13998,19999,,1,costco_saving,Save $60.01,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,253353,specials,online_incl_delivery,each,13998,19999,,1,costco_saving,Save $60.01,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,250397,specials,online_incl_delivery,each,45499,52999,,1,costco_saving,Save $75.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,250396,specials,online_incl_delivery,each,47499,54999,,1,costco_saving,Save $75.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,248122,specials,online_incl_delivery,each,68999,79999,,1,costco_saving,Save $110.00,,,,,,2026-10-16T13:00:00Z,2026-11-01T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,241340,specials,online_incl_delivery,each,399999,439999,,1,costco_saving,Save $400.00,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,237040,specials,online_incl_delivery,each,81998,92998,,1,costco_saving,Save $110.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,230570,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,230234,specials,online_incl_delivery,each,3199,3499,,1,costco_saving,Save $3.00,,,5.34,100ML,$5.34 per 100 ml,2026-10-11T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,229429,specials,online_incl_delivery,each,114999,124999,,1,costco_saving,Save $100.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,218549,specials,online_incl_delivery,each,89999,99999,,1,costco_saving,Save $100.00,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,213129,specials,online_incl_delivery,each,20999,29999,,1,costco_saving,Save $90.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,213125,specials,online_incl_delivery,each,17499,24999,,1,costco_saving,Save $75.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,213123,specials,online_incl_delivery,each,17499,24999,,1,costco_saving,Save $75.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,205302,specials,online_incl_delivery,each,,,,1,costco_saving,Save $800.00,,,,,,2026-10-08T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,205202,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,205197,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,205196,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,205192,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,205190,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,2026215,specials,online_incl_delivery,each,117999,129999,,1,costco_saving,Save $120.00,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,2026155,specials,online_incl_delivery,each,59999,69999,,1,costco_saving,Save $100.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,2026115,specials,online_incl_delivery,each,289999,349999,,1,costco_saving,Save $600.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,2026114,specials,online_incl_delivery,each,234999,289999,,1,costco_saving,Save $550.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,2026113,specials,online_incl_delivery,each,139999,159999,,1,costco_saving,Save $200.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,2026111,specials,online_incl_delivery,each,163999,189999,,1,costco_saving,Save $260.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,2026110,specials,online_incl_delivery,each,121998,149999,,1,costco_saving,Save $280.01,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,2026109,specials,online_incl_delivery,each,99999,129999,,1,costco_saving,Save $300.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,2026069,specials,online_incl_delivery,each,422999,469999,,1,costco_saving,Save $470.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,2026067,specials,online_incl_delivery,each,242999,269999,,1,costco_saving,Save $270.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,2026065,specials,online_incl_delivery,each,119999,149999,,1,costco_saving,Save $300.00,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,2026056,specials,online_incl_delivery,each,56999,64999,,1,costco_saving,Save $80.00,,,,,,2026-10-14T13:00:00Z,2026-11-04T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,2026007,specials,online_incl_delivery,each,111998,139999,,1,costco_saving,Save $280.01,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,2026006,specials,online_incl_delivery,each,189999,199999,,1,costco_saving,Save $100.00,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,201550,specials,online_incl_delivery,each,43998,59998,,1,costco_saving,Save $160.00,,,,,,2026-10-16T13:00:00Z,2026-11-01T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,200177,specials,online_incl_delivery,each,21999,36999,,1,costco_saving,Save $150.00,,,,,,2026-10-14T13:00:00Z,2026-11-04T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,197745,specials,online_incl_delivery,each,169999,194999,,1,costco_saving,Save $250.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,197708,specials,online_incl_delivery,each,174999,199999,,1,costco_saving,Save $250.00,,,,,,2026-10-14T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,1974569,specials,online_incl_delivery,each,2799,3499,,1,costco_saving,Save $7.00,,,,,,2026-10-18T13:00:00Z,2026-11-01T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,195816,specials,online_incl_delivery,each,16999,19999,,1,costco_saving,Save $30.00,,,,,,2026-10-18T13:00:00Z,2026-10-31T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,195150,specials,online_incl_delivery,each,84998,94998,,1,costco_saving,Save $100.00,,,,,,2026-10-18T13:00:00Z,2026-10-31T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,191422,specials,online_incl_delivery,each,26998,32999,,1,costco_saving,Save $60.01,,,,,,2026-10-14T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,1851697,specials,online_incl_delivery,each,8999,11999,,1,costco_saving,Save $30.00,,,,,,2026-10-18T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,1807220,specials,online_incl_delivery,each,99999,179999,,1,costco_saving,Save $800.00,,,,,,2026-10-07T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,173733,specials,online_incl_delivery,each,10499,14999,,1,costco_saving,Save $45.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:42:58Z,online,16309,specials,online_incl_delivery,each,,,,1,costco_saving,Save $3.00,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:43:01Z,online,1495077,specials,online_incl_delivery,each,999999,1284999,,1,costco_saving,"Save $2,850.00",,,,,,2026-10-12T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:43:01Z,online,1494989,specials,online_incl_delivery,each,1099999,1499999,,1,costco_saving,"Save $4,000.00",,,,,,2026-10-13T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:43:01Z,online,1235716,specials,online_incl_delivery,each,144999,189999,,1,costco_saving,Save $450.00,,,,,,2026-10-13T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:42:28Z,specials,2026-10-19T12:43:01Z,online,1186644,specials,online_incl_delivery,each,1299999,1699999,,1,costco_saving,"Save $4,000.00",,,,,,2026-10-12T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:43:10Z,online,256990,range,online_incl_delivery,each,4399,5499,,1,costco_saving,Save $11.00,,,4.4,HG,,2026-10-02T14:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:43:22Z,online,240976,range,online_incl_delivery,each,168999,192999,,1,costco_saving,Save $240.00,,,,,,2026-10-18T13:00:00Z,2026-10-26T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:43:22Z,online,240979,range,online_incl_delivery,each,187999,209999,,1,costco_saving,Save $220.00,,,,,,2026-10-18T13:00:00Z,2026-10-26T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:43:43Z,online,131881,range,online_incl_delivery,each,,,,1,costco_saving,Save $50.00,,,,,,2026-10-15T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:43:43Z,online,258865,range,online_incl_delivery,each,109999,144999,,1,costco_saving,Save $350.00,,,,,,2026-10-01T14:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:44:06Z,online,273803,range,online_incl_delivery,each,3499,4499,,1,costco_saving,Save $10.00,,,5.84,EA,,2026-10-15T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:44:18Z,online,261802,range,online_incl_delivery,each,2499,3299,,1,costco_saving,Save $8.00,,,8.33,EA,,,,,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:44:24Z,online,261302,range,online_incl_delivery,each,144998,169998,,1,costco_saving,Save $250.00,,,,,,2026-10-18T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:44:58Z,online,191210,range,online_incl_delivery,each,,,,1,costco_saving,Save $50.00,,,,,,2026-10-13T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:45:12Z,online,277835,range,online_incl_delivery,each,69999,89999,,1,costco_saving,Save $200.00,,,,,,2026-10-15T13:00:00Z,2026-10-26T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:45:37Z,online,234130,range,online_incl_delivery,each,74998,114998,,1,costco_saving,Save $400.00,,,,,,,,,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:45:37Z,online,229033,range,online_incl_delivery,each,31999,39999,,1,costco_saving,Save $80.00,,,,,,2026-10-15T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:45:40Z,online,2026170,range,online_incl_delivery,each,199998,249999,,1,costco_saving,Save $500.01,,,,,,2026-10-07T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:49:10Z,online,261316,range,online_incl_delivery,each,224999,249999,,1,costco_saving,Save $250.00,,,,,,2026-10-18T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:49:10Z,online,261292,range,online_incl_delivery,each,124999,149999,,1,costco_saving,Save $250.00,,,,,,2026-10-18T13:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:49:16Z,online,258874,range,online_incl_delivery,each,139999,174999,,1,costco_saving,Save $350.00,,,,,,2026-10-01T14:00:00Z,2026-10-28T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:49:22Z,online,253889,range,online_incl_delivery,each,,,,1,costco_saving,"Save $1,000.00",,,,,,2026-10-15T13:00:00Z,2026-10-25T12:59:59Z,store,1
+2026-10-19T12:43:01Z,range,2026-10-19T12:50:13Z,online,229583,range,online_incl_delivery,each,31999,39999,,1,costco_saving,Save $80.00,,,,,,2026-10-15T13:00:00Z,2026-10-21T12:59:59Z,store,1
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:25Z,warehouse,247245,catalogue,in_store,each,1499,1999,,1,costco_booklet,In-warehouse saving: $5.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:25Z,warehouse,266096,catalogue,in_store,each,24999,39999,,1,costco_booklet,In-warehouse saving: $150.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:25Z,warehouse,251397,catalogue,in_store,each,19999,24999,,1,costco_booklet,In-warehouse saving: $50.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:25Z,warehouse,199479,catalogue,in_store,each,10999,19999,,1,costco_booklet,In-warehouse saving: $90.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:25Z,warehouse,246005,catalogue,in_store,each,4999,6499,,1,costco_booklet,In-warehouse saving: $15.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:25Z,warehouse,234006,catalogue,in_store,each,34999,59999,,1,costco_booklet,In-warehouse saving: $250.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:25Z,warehouse,42513,catalogue,in_store,each,2399,2999,,1,costco_booklet,In-warehouse saving: $6.00 off,,,39.98,100EA,$39.98 per 100,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:25Z,warehouse,239554,catalogue,in_store,each,26999,47999,,1,costco_booklet,In-warehouse saving: $210.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:25Z,warehouse,253487,catalogue,in_store,each,1999,2499,,1,costco_booklet,In-warehouse saving: $5.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:35Z,warehouse,258538,catalogue,in_store,each,1999,2499,,1,costco_booklet,In-warehouse saving: $5.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:35Z,warehouse,258510,catalogue,in_store,each,1999,2499,,1,costco_booklet,In-warehouse saving: $5.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:35Z,warehouse,258512,catalogue,in_store,each,2399,2999,,1,costco_booklet,In-warehouse saving: $6.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:35Z,warehouse,260290,catalogue,in_store,each,2799,3499,,1,costco_booklet,In-warehouse saving: $7.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:35Z,warehouse,251339,catalogue,in_store,each,1599,1999,,1,costco_booklet,In-warehouse saving: $4.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:35Z,warehouse,1901817,catalogue,in_store,each,2799,3499,,1,costco_booklet,In-warehouse saving: $7.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:35Z,warehouse,197934,catalogue,in_store,each,2899,3699,,1,costco_booklet,In-warehouse saving: $8.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:35Z,warehouse,197920,catalogue,in_store,each,5499,6999,,1,costco_booklet,In-warehouse saving: $15.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:35Z,warehouse,192200,catalogue,in_store,each,5799,7299,,1,costco_booklet,In-warehouse saving: $15.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:45Z,warehouse,264860,catalogue,in_store,each,4999,7999,,1,costco_booklet,In-warehouse saving: $30.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:45Z,warehouse,121767,catalogue,in_store,each,4399,5499,,1,costco_booklet,In-warehouse saving: $11.00 off,,,43.99,100G,$43.99 per 100g,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:45Z,warehouse,187193,catalogue,in_store,each,1199,1599,,1,costco_booklet,In-warehouse saving: $4.00 off,,,0.6,100ML,$0.60 per 100ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:45Z,warehouse,192893,catalogue,in_store,each,2199,2799,,1,costco_booklet,In-warehouse saving: $6.00 off,,,1.67,100ML,$1.67 per 100ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:45Z,warehouse,192894,catalogue,in_store,each,2199,2799,,1,costco_booklet,In-warehouse saving: $6.00 off,,,1.67,100ML,$1.67 per 100ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:45Z,warehouse,94124,catalogue,in_store,each,2199,2799,,1,costco_booklet,In-warehouse saving: $6.00 off,,,1.83,100ML,$1.83 per 100ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:45Z,warehouse,192238,catalogue,in_store,each,1699,2199,,1,costco_booklet,In-warehouse saving: $5.00 off,,,0.71,100ML,$0.71 per 100ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:45Z,warehouse,207226,catalogue,in_store,each,1899,2399,,1,costco_booklet,In-warehouse saving: $5.00 off,,,0.84,100ML,$0.84 per 100ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:45Z,warehouse,134302,catalogue,in_store,each,1699,2199,,1,costco_booklet,In-warehouse saving: $5.00 off,,,2.12,1EA,$2.12 per each,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:45Z,warehouse,206359,catalogue,in_store,each,1299,1699,,1,costco_booklet,In-warehouse saving: $4.00 off,,,0.87,100ML,$0.87 per 100ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:54Z,warehouse,159980,catalogue,in_store,each,2699,3399,,1,costco_booklet,In-warehouse saving: $7.00 off,,,6.75,100G,$6.75 per 100g,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:54Z,warehouse,2026102,catalogue,in_store,each,76999,99999,,1,costco_booklet,In-warehouse saving: $230.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:54Z,warehouse,2026203,catalogue,in_store,each,144999,179999,,1,costco_booklet,In-warehouse saving: $350.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:54Z,warehouse,239114,catalogue,in_store,each,29999,38999,,1,costco_booklet,In-warehouse saving: $90.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:54Z,warehouse,1790469,catalogue,in_store,each,77999,89999,,1,costco_booklet,In-warehouse saving: $120.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:54Z,warehouse,227694,catalogue,in_store,each,3999,4999,,1,costco_booklet,In-warehouse saving: $10.00 off,,,,,,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:54Z,warehouse,48054,catalogue,in_store,each,2998,3898,,1,costco_booklet,In-warehouse saving: $9.00 off,,,16.66,100EA,$16.66 per 100,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:54Z,warehouse,180506,catalogue,in_store,each,2799,3499,,1,costco_booklet,In-warehouse saving: $7.00 off,,,4.67,100G,$4.67 per 100g,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:52:54Z,warehouse,41931,catalogue,in_store,each,1298,1698,,1,costco_booklet,In-warehouse saving: $4.00 off,,,0.87,100ML,$0.87 per 100ml,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:53:03Z,warehouse,48977,catalogue,in_store,each,2799,3499,,1,costco_booklet,In-warehouse saving: $7.00 off,,,7,100EA,$7.00 per 100,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:53:03Z,warehouse,48979,catalogue,in_store,each,2799,3499,,1,costco_booklet,In-warehouse saving: $7.00 off,,,7,100EA,$7.00 per 100,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:53:03Z,warehouse,234161,catalogue,in_store,each,2399,2999,,1,costco_booklet,In-warehouse saving: $6.00 off,,,11.43,100EA,$11.43 per 100,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:53:03Z,warehouse,236668,catalogue,in_store,each,999,1299,,1,costco_booklet,In-warehouse saving: $3.00 off,,,2.86,100EA,$2.86 per 100,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:53:03Z,warehouse,40629,catalogue,in_store,each,3299,4299,,1,costco_booklet,In-warehouse saving: $10.00 off,,,11,100G,$11.00 per 100g,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:53:03Z,warehouse,34508,catalogue,in_store,each,399,539,,1,costco_booklet,In-warehouse saving: $1.40 off,,,0.2,1EA,$0.20 per each,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:53:03Z,warehouse,81222,catalogue,in_store,each,549,699,,1,costco_booklet,In-warehouse saving: $1.50 off,,,8.45,1KG,$8.45 per kg,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:53:03Z,warehouse,390071,catalogue,in_store,each,3199,3999,,1,costco_booklet,In-warehouse saving: $8.00 off,,,2.02,100G,$2.02 per 100g,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,
+2026-10-19T12:52:04Z,catalogue,2026-10-19T12:53:03Z,warehouse,121960,catalogue,in_store,each,1599,1999,,1,costco_booklet,In-warehouse saving: $4.00 off,,,2.21,100G,$2.21 per 100g,2026-09-27T14:00:00Z,2026-10-25T12:59:59Z,catalogue,

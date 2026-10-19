@@ -58,7 +58,9 @@ const FRIENDLY = [
   [/already registered|already been registered|user_already_exists/i, "There's already an account with that email. Sign in instead."],
   [/password should be at least|weak_password|password is too weak/i, "Use a password of at least 8 characters."],
   [/unable to validate email|invalid format|email address .* is invalid|email_address_invalid/i, "That doesn't look like an email address."],
+  [/over_email_send_rate_limit|email rate limit|only request this after|for security purposes/i, "Please wait a minute before asking for another email."],
   [/rate limit|too many requests|over_request_rate_limit/i, "Too many tries. Wait a minute and try again."],
+  [/same_password|should be different from the old/i, "That's your current password. Choose a new one."],
   [/already-in-family/, "You're already in a family."],
   [/not-owner/, "Only the family's owner can do that."],
   [/choose-new-owner/, "Choose who'll own the family before you leave."],
@@ -112,6 +114,70 @@ export async function signOut() {
   await sb.auth.signOut({ scope: "local" });
   remember(null);
   rememberProfile(null);
+}
+
+// ------------------------------------------------------------------ forgotten passwords
+
+/** The app's own address (no #route): where the reset email's link comes back to. */
+export function appAddress() {
+  return `${location.origin}${location.pathname}`;
+}
+
+/** Ask for a reset email. Says nothing about whether the email has an account (Supabase doesn't either). */
+export async function requestPasswordReset(email) {
+  const sb = await client();
+  const { error } = await sb.auth.resetPasswordForEmail(email.trim(), { redirectTo: appAddress() });
+  if (error) throw friendly(error);
+}
+
+/**
+ * What a reset link brought with it, read from the address: { kind: 'token', tokenHash } (our email's link),
+ * { kind: 'session', access, refresh } (Supabase's standard email), { kind: 'expired' }, or null.
+ */
+export function resetLinkFrom(hash, params) {
+  if (params?.get("token_hash") && params.get("type") === "recovery") return { kind: "token", tokenHash: params.get("token_hash") };
+  const h = new URLSearchParams((hash || "").replace(/^#/, ""));
+  if (h.get("error_code") || (h.get("error") && h.get("error_description"))) return { kind: "expired" };
+  if (h.get("type") === "recovery" && h.get("access_token") && h.get("refresh_token")) {
+    return { kind: "session", access: h.get("access_token"), refresh: h.get("refresh_token") };
+  }
+  return null;
+}
+
+/** Use a reset link: signs in on this phone for setting the new password. Throws 'expired' if it can't be used. */
+export async function useResetLink(link) {
+  const sb = await client();
+  const { data, error } = link.kind === "token"
+    ? await sb.auth.verifyOtp({ token_hash: link.tokenHash, type: "recovery" })
+    : await sb.auth.setSession({ access_token: link.access, refresh_token: link.refresh });
+  if (error || !data?.session) throw new Error("expired");
+  return { id: data.session.user.id, email: data.session.user.email };
+}
+
+/** Set the signed-in person's new password (after a reset link). */
+export async function updatePassword(password) {
+  const sb = await client();
+  const { error } = await sb.auth.updateUser({ password });
+  if (error) throw friendly(error);
+}
+
+// ------------------------------------------------------------------ every store's range, and the family's watchlist
+
+/** Search every store's full range (signed in). Rows as stored: chain, product_id, name, price_cents, ... */
+export async function searchProducts(query, chains, limit = 40) {
+  return rpc("search_products", { p_query: query, p_chains: chains?.length ? chains : null, p_limit: limit });
+}
+
+/** Today's prices for a few products ('woolworths:123'). */
+export async function productsById(ids) {
+  if (!ids.length) return [];
+  return rpc("products_by_id", { p_ids: ids });
+}
+
+/** The family's watchlist ({ generated_at, data } or { generated_at, unchanged } if `since` is the latest), or
+ *  null when not in a family. Private to the family's members. */
+export async function myWatchlist(since = null) {
+  return rpc("my_watchlist", { p_since: since });
 }
 
 /** Call `fn(user or null)` whenever someone signs in or out on this phone. */

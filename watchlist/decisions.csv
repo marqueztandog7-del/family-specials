@@ -1,7 +1,0 @@
-watch_item,chain,product_id,decision,decided_at,note
-chicken-thigh-fillets,woolworths,727461,confirm,2026-10-15T23:26:39Z,bulk tray (confirmed 16 Oct)
-frozen-carrots-peas-corn,woolworths,345414,reject,2026-10-15T23:27:43Z,"canned, not frozen"
-frozen-carrots-peas-corn,woolworths,918790,reject,2026-10-15T23:27:59Z,"canned, not frozen"
-greek-yoghurt,woolworths,6092647,reject,2026-10-15T23:27:28Z,"Light, not High Protein"
-parmigiano-reggiano,woolworths,97938,confirm,2026-10-15T23:27:12Z,
-pork-rashers,woolworths,675687,confirm,2026-10-15T23:26:55Z,

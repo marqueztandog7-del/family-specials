@@ -13,6 +13,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CONFIG_DIR = PROJECT_ROOT / "config"
 DATA_DIR = Path(os.environ.get("SPECIALS_DATA_DIR", PROJECT_ROOT / "data"))
 DB_PATH = Path(os.environ.get("SPECIALS_DB", DATA_DIR / "specials.db"))
+# Our private files (never committed): receipts, and the watchlist with its Core / Regulars groups.
+PRIVATE_DIR = DATA_DIR / "private"
+WATCHLIST_FILE = PRIVATE_DIR / "watchlist.yaml"
 
 
 def load_dotenv(path: Path | None = None) -> None:
@@ -78,9 +81,9 @@ def enabled_chains() -> list[str]:
 
 
 def tracked_categories(chain: str) -> list[dict[str, Any]]:
-    """Categories whose regular prices we read each cycle: those of the watch items in
-    config/watchlist.yaml, plus any extras in tracked_categories.yaml. Each is read once even
-    if several watch items share it."""
+    """Categories whose regular prices we can read on request (`specials collect --kind category`): those of the
+    watch items in the private watchlist, plus any extras in tracked_categories.yaml. Each is read once even
+    if several watch items share it. The weekly refresh reads every store's full range instead."""
     out: list[dict[str, Any]] = []
     seen: set[str] = set()
 
@@ -97,7 +100,8 @@ def tracked_categories(chain: str) -> list[dict[str, Any]]:
             add({"item": entry["item"], **cat})
     field = {"woolworths": "id", "aldi": "key", "coles": "slug", "costco": "query",
              "chemistwarehouse": "category"}.get(chain)
-    for item in load_yaml("watchlist.yaml").get("items") or []:
+    watch = yaml.safe_load(WATCHLIST_FILE.read_text(encoding="utf-8")) if WATCHLIST_FILE.exists() else {}
+    for item in (watch or {}).get("items") or []:
         for value in (item.get("categories") or {}).get(chain) or []:
             add({"item": item["key"], field: str(value), "name": item["name"]})
     return out
