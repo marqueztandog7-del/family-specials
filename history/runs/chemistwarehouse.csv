@@ -3,3 +3,4 @@ chemistwarehouse,specials,mac,2026-10-05T03:10:01Z,2026-10-05T03:10:33Z,ok,8,437
 chemistwarehouse,specials,github,2026-10-11T22:28:42Z,2026-10-11T22:29:16Z,ok,8,436,436,
 chemistwarehouse,specials,github,2026-10-14T20:54:50Z,2026-10-14T20:55:20Z,ok,8,428,428,
 chemistwarehouse,range,mac,2026-10-19T12:53:17Z,2026-10-19T12:59:20Z,partial,80,26557,26146,Some pages weren't read (see run_coverage)
+chemistwarehouse,range,mac,2026-10-20T22:22:23Z,2026-10-20T22:31:56Z,partial,120,17764,233,chemistwarehouse: request budget of 120 used up

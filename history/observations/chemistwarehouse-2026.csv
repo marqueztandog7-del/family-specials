@@ -1803,3 +1803,13 @@ run_started_at,run_kind,observed_at,store_ref,product_id,source,price_basis,pric
 2026-10-19T12:53:17Z,range,2026-10-19T12:59:10Z,online,2695334,range,online,each,11500,,22900,1,clearance,Clearance,,,,,,,,,1
 2026-10-19T12:53:17Z,range,2026-10-19T12:59:15Z,online,2711370,range,online,each,19800,,29900,1,clearance,Clearance,,,,,,,,,1
 2026-10-19T12:53:17Z,range,2026-10-19T12:59:20Z,online,2711374,range,online,each,27900,,39900,1,clearance,Clearance,,,,,,,,,1
+2026-10-20T22:22:23Z,range,2026-10-20T22:23:03Z,online,2730986,range,online,each,249,,499,1,clearance,Clearance,,,,,,,,,1
+2026-10-20T22:22:23Z,range,2026-10-20T22:23:24Z,online,2673111,range,online,each,400,,999,1,clearance,Clearance,,,,,,,,,1
+2026-10-20T22:22:23Z,range,2026-10-20T22:23:28Z,online,2652168,range,online,each,439,,900,1,clearance,Clearance,,,,,,,,,1
+2026-10-20T22:22:23Z,range,2026-10-20T22:23:38Z,online,2689229,range,online,each,600,,900,1,clearance,Clearance,,,,,,,,,1
+2026-10-20T22:22:23Z,range,2026-10-20T22:23:38Z,online,2722924,range,online,each,500,,1099,1,clearance,Clearance,,,,,,,,,1
+2026-10-20T22:22:23Z,range,2026-10-20T22:23:50Z,online,2727721,range,online,each,749,,1300,1,clearance,Clearance,,,,,,,,,1
+2026-10-20T22:22:23Z,range,2026-10-20T22:24:04Z,online,2673102,range,online,each,800,,800,1,clearance,Clearance,,,,,,,,,1
+2026-10-20T22:22:23Z,range,2026-10-20T22:24:10Z,online,2696831,range,online,each,850,,850,1,clearance,Clearance,,,,,,,,,1
+2026-10-20T22:22:23Z,range,2026-10-20T22:25:19Z,online,2718541,range,online,each,1400,,2999,1,clearance,Clearance,,,,,,,,,1
+2026-10-20T22:22:23Z,range,2026-10-20T22:26:25Z,online,2709452,range,online,each,2100,,3799,1,clearance,Clearance,,,,,,,,,1
