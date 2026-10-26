@@ -1,4 +1,4 @@
--- Search that forgives more: when no product has every word, try close spellings ("papr towl" -> paper towel),
+-- Search that forgives more: when no product has every word, try close spellings ("dsh clth" -> dish cloth),
 -- then products with most of the words ("voltaren emulgel" -> Chemist Warehouse's "Voltaren Pain Relief Gel").
 
 create or replace function public.search_products(p_query text, p_chains text[] default null, p_limit int default 40)
@@ -26,7 +26,7 @@ begin
   if found > 0 then
     return;
   end if;
-  -- 2. Close spellings (a similarity of 0.45 or more: "papr towl" scores 0.46 against "paper towel").
+  -- 2. Close spellings (a word similarity of 0.45 or more).
   return query
     select p.* from public.store_products p
     where extensions.word_similarity(lower(p_query), lower(p.name)) >= 0.45

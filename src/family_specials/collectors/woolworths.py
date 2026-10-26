@@ -62,13 +62,14 @@ class WoolworthsCollector(Collector):
             self._tree = self.client.get(BASE + "/apis/ui/PiesCategoriesWithSpecials").json()["Categories"]
         return self._tree
 
-    def _browse(self, category_id: str, url_path: str, name: str, page: int) -> dict[str, Any]:
+    def _browse(self, category_id: str, url_path: str, name: str, page: int,
+                hide_market: bool = False) -> dict[str, Any]:
         location = url_path + (f"?pageNumber={page}" if page > 1 else "")
         body = {
             "categoryId": category_id, "pageNumber": page, "pageSize": PAGE_SIZE, "sortType": "TraderRelevance",
             "url": location, "location": location, "formatObject": json.dumps({"name": name}),
             "isSpecial": False, "isHideUnavailableProducts": False, "isBundle": False, "isMobile": False,
-            "isRegisteredRewardCardPromotion": False, "isHideEverydayMarketProducts": False,
+            "isRegisteredRewardCardPromotion": False, "isHideEverydayMarketProducts": hide_market,
             "filters": [], "categoryVersion": "v2",
         }
         return self.client.post(
@@ -77,13 +78,13 @@ class WoolworthsCollector(Collector):
         ).json()
 
     def _read_listing(self, scope_type: str, category_id: str, url_path: str, name: str,
-                      context: dict[str, Any]) -> Iterator[RawItem]:
+                      context: dict[str, Any], hide_market: bool = False) -> Iterator[RawItem]:
         cov = Coverage(scope_type, category_id, name)
         self.coverage.append(cov)
         page, total_pages = 1, 1
         seen: set[int] = set()
         while page <= self.pages_to_read(total_pages):
-            data = self._browse(category_id, url_path, name, page)
+            data = self._browse(category_id, url_path, name, page, hide_market)
             if page == 1:
                 cov.items_total = data.get("TotalRecordCount") or 0
                 total_pages = max(1, math.ceil(cov.items_total / PAGE_SIZE))
@@ -133,7 +134,9 @@ class WoolworthsCollector(Collector):
                     continue
                 url = f"/shop/browse/{top['UrlFriendlyName']}/{aisle['UrlFriendlyName']}"
                 ctx = {"range_path": f"{top['Description']} > {aisle['Description']}"}
-                for raw in self._read_listing("range", aisle["NodeId"], url, aisle["Description"], ctx):
+                # The site's own "hide Everyday Market" filter: marketplace sellers' products (which we never keep)
+                # filled about two thirds of the aisle pages on 21 Oct, so the range ran out of requests.
+                for raw in self._read_listing("range", aisle["NodeId"], url, aisle["Description"], ctx, hide_market=True):
                     code = raw.data.get("Stockcode")
                     if code not in seen:          # the same product can sit in two aisles
                         seen.add(code)

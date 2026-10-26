@@ -191,7 +191,7 @@ watchlist. It was seeded on 16 Oct 2026 with the 36 Core and Regular items from
 `data/private/family_regular_items.csv`, each at its suggested level. Each item has:
 
 - **a level:** `exact` (one product at one store), `same_product` (the same product at any store: same
-  barcode, otherwise same brand + size + a close name), or `similar` (a rule such as "beef mince, any
+  barcode, otherwise same brand + size + a close name), or `similar` (a rule such as "rolled oats, any
   brand, 500 g to 2 kg", store brands included);
 - **a tier** (core items show first) and the unit to **compare per** (kg, L, item, can, bag, sheet,
   wipe, tea bag), plus an optional **target** unit price;
@@ -235,6 +235,14 @@ Supabase daily so it doesn't pause, and `pages.yml` publishes the page when the 
 **A store that refuses us is paused** (`pause_on_block` in `config/stores.yaml`): nothing contacts it again, from
 any schedule, until you run `uv run specials resume <store>`. The Mac shows a notification. Coles stays paused for
 good.
+
+### Update reports (private)
+
+Every time the app's specials change (or a store is read), `specials update` writes a plain-English report to
+`data/reports/updates/` (never committed: it names our Core Essentials and Regulars): specials and products per
+store and what changed, This Week's subtab counts, each read this week (requests, products, time taken), and what
+wasn't collected and why. `uv run specials report` writes one now; `--show` prints the newest. A scheduled task in
+the Claude app ("Specials update report", 10:30am and 8:30pm) sends each new report on.
 
 ### Price history in the repo (`history/`)
 

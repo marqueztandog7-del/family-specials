@@ -203,7 +203,7 @@ def export_site(conn: sqlite3.Connection, out_dir: Path = SITE_DATA,
     for p in specials:
         special_counts[p["chain"]] = special_counts.get(p["chain"], 0) + 1
     out_dir.mkdir(parents=True, exist_ok=True)
-    _write_json(out_dir / "specials.json", {
+    changed = _write_json(out_dir / "specials.json", {
         "generated_at": iso(now_utc()), "cycle_started": weekly_cycle(2, now_utc())[0].date().isoformat(),
         "stores": [{"chain": c, "name": STORE_NAMES.get(c, c)} for c in config.settings()["chains"]],
         "specials": specials})
@@ -211,15 +211,17 @@ def export_site(conn: sqlite3.Connection, out_dir: Path = SITE_DATA,
     # Earlier versions published products.json and watchlist.json here: never again (watchlist is private).
     for old in ("products.json", "watchlist.json"):
         (out_dir / old).unlink(missing_ok=True)
-    return {"products": counts, "specials": special_counts}
+    return {"products": counts, "specials": special_counts, "changed": changed}
 
 
-def _write_json(path: Path, data: Any) -> None:
-    """Write the file only if something besides its date changed, so a check with nothing new commits nothing."""
+def _write_json(path: Path, data: Any) -> bool:
+    """Write the file only if something besides its date changed, so a check with nothing new commits nothing.
+    Returns whether it was written."""
     try:
         old = json.loads(path.read_text(encoding="utf-8"))
         if {k: v for k, v in old.items() if k != "generated_at"} == {k: v for k, v in data.items() if k != "generated_at"}:
-            return
+            return False
     except (OSError, ValueError, AttributeError):
         pass
     path.write_text(json.dumps(data, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
+    return True

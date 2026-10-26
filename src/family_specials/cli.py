@@ -222,6 +222,11 @@ def cmd_update(args) -> int:
         from .notify import run as notify_run
 
         notify_run()
+    # A report each time the app's specials change (or a store was read): data/reports/updates/, private.
+    if args.report and (counts["changed"] or collected):
+        from .update_report import save
+
+        print(f"Report: {save(conn).relative_to(config.PROJECT_ROOT)}")
     print(f"Done in {_took(time.monotonic() - began)}")
     if problems:
         print("PROBLEMS: " + "; ".join(problems))
@@ -256,6 +261,17 @@ def _changed(watch: dict) -> bool:
         pass
     WATCH_SENT.write_text(digest + "\n")
     return True
+
+
+def cmd_report(args) -> int:
+    from .update_report import newest, save
+
+    path = newest() if args.show else save(db.connect())
+    if path is None:
+        print("No report yet.")
+        return 0
+    print(path.read_text(encoding="utf-8"))
+    return 0
 
 
 def cmd_resume(args) -> int:
@@ -365,7 +381,12 @@ def main(argv: list[str] | None = None) -> int:
                    help="don't send anything to Supabase (the ranges and the family watchlist)")
     p.add_argument("--upload-ranges", action="store_true", help="send the product ranges even if nothing was collected")
     p.add_argument("--no-notify", dest="notify", action="store_false", help="don't send phone notifications")
+    p.add_argument("--no-report", dest="report", action="store_false", help="don't write an update report")
     p.set_defaults(func=cmd_update)
+
+    p = sub.add_parser("report", help="a plain-English report on the latest specials update (private)")
+    p.add_argument("--show", action="store_true", help="print the newest saved report instead of writing one")
+    p.set_defaults(func=cmd_report)
 
     p = sub.add_parser("resume", help="read a store again after it refused us (it's paused until you do)")
     p.add_argument("chain")

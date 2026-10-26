@@ -32,9 +32,9 @@ grant execute on function pg_temp.ok(text, boolean, text) to authenticated, anon
 
 -- Pretend products (ids starting test-) and two pretend families.
 insert into public.store_products (chain, product_id, name, brand, size_text, price_cents, special, seen_at) values
-  ('woolworths', 'test-1', 'Zqxwool Full Cream Milk 2L', 'Zqxwool', '2L', 350, false, now()),
-  ('aldi', 'test-2', 'Zqxfarm Full Cream Milk 2L', 'Zqxfarm', '2L', 299, true, now()),
-  ('costco', 'test-3', 'Zqxkirk Paper Towel 12 pack', 'Zqxkirk', '12 pack', 2999, false, now()),
+  ('woolworths', 'test-1', 'Zqxwool Rice Crackers 100g', 'Zqxwool', '100g', 350, false, now()),
+  ('aldi', 'test-2', 'Zqxfarm Rice Crackers 100g', 'Zqxfarm', '100g', 299, true, now()),
+  ('costco', 'test-3', 'Zqxkirk Dish Cloth 12 pack', 'Zqxkirk', '12 pack', 2999, false, now()),
   ('chemistwarehouse', 'test-4', 'Zqxvita Vitamin C 500mg 100 tablets', null, null, 1299, false, now());
 
 do $$
@@ -52,25 +52,25 @@ begin
   -- 1. Search: every word must start a word, across stores.
   perform pg_temp.as_user('a');
   select count(*), string_agg(product_id, ',' order by product_id) into c, names
-    from public.search_products('zqx full cream mil', null, 40) where product_id like 'test-%';
-  perform pg_temp.ok('search finds both milks, from two stores', c = 2, names);
-  select string_agg(product_id, ',') into names from public.search_products('zqx full cream milk', null, 40)
+    from public.search_products('zqx rice crack', null, 40) where product_id like 'test-%';
+  perform pg_temp.ok('search finds both, from two stores', c = 2, names);
+  select string_agg(product_id, ',') into names from public.search_products('zqx rice crackers', null, 40)
     where product_id like 'test-%';
   perform pg_temp.ok('a special comes before a normal price when equally good', names = 'test-2,test-1', names);
-  select count(*) into c from public.search_products('aldi zqx milk', null, 40) where product_id like 'test-%';
+  select count(*) into c from public.search_products('aldi zqx crackers', null, 40) where product_id like 'test-%';
   perform pg_temp.ok('the store name can be searched', c = 1);
-  select count(*) into c from public.search_products('zqx milk', array['woolworths'], 40) where product_id like 'test-%';
+  select count(*) into c from public.search_products('zqx crackers', array['woolworths'], 40) where product_id like 'test-%';
   perform pg_temp.ok('search can be limited to some stores', c = 1);
-  select count(*) into c from public.search_products('zqxkirk papr towel', null, 40) where product_id like 'test-%';
+  select count(*) into c from public.search_products('zqxkirk dish clths', null, 40) where product_id like 'test-%';
   perform pg_temp.ok('a close spelling still finds it', c = 1);
-  select count(*) into c from public.search_products('zqxkirk papr towl', null, 40) where product_id like 'test-%';
+  select count(*) into c from public.search_products('zqxkirk dsh clth', null, 40) where product_id like 'test-%';
   perform pg_temp.ok('a rougher spelling still finds it', c = 1);
   select string_agg(product_id, ',') into names from public.search_products('zqxkirk qqemulgel', null, 40)
     where product_id like 'test-%';
   perform pg_temp.ok('with no product having every word, most of the words still find it', names = 'test-3', names);
   select count(*) into c from public.search_products('  ', null, 40);
   perform pg_temp.ok('an empty search finds nothing', c = 0);
-  select count(*) into c from public.search_products('zqx milk'' & !', null, 40) where product_id like 'test-%';
+  select count(*) into c from public.search_products('zqx crackers'' & !', null, 40) where product_id like 'test-%';
   perform pg_temp.ok('punctuation in a search is harmless', c = 2);
   select count(*) into c from public.products_by_id(array['costco:test-3', 'aldi:test-2', 'aldi:nope']);
   perform pg_temp.ok('products by id', c = 2);
@@ -91,7 +91,7 @@ begin
     perform pg_temp.ok('people not signed in can''t read the ranges', false, c::text);
   exception when others then perform pg_temp.ok('people not signed in can''t read the ranges', true); end;
   begin
-    perform public.search_products('milk', null, 40);
+    perform public.search_products('crackers', null, 40);
     perform pg_temp.ok('people not signed in can''t search', false);
   exception when others then perform pg_temp.ok('people not signed in can''t search', true); end;
 

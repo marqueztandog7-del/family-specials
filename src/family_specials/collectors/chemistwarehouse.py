@@ -27,6 +27,7 @@ DROP = {"_highlightResult", "_snippetResult", "ranking", "searchableAttributes"}
 NOT_MARKETPLACE = 'NOT categoryKeys.en:"All Marketplace Lines"'   # third-party sellers, not Chemist Warehouse stock
 # Price bands (cents) for reading the full range: the search only returns 1,000 products per query, so the range is
 # read band by band, and a band with more than that is split in two.
+MAX_SPLIT = 12          # at most this many categories when splitting one crowded price
 PRICE_BANDS = [0, 500, 800, 1000, 1200, 1500, 1800, 2000, 2500, 3000, 3500, 4000, 5000, 6000, 7500, 10000, 15000,
                20000, 10**9]
 PRICE_KEYS = {"prices", "pricesCustomFields", "calculatedPrice", "priceRangeFacetKeys", "isInStock"}
@@ -81,6 +82,7 @@ class ChemistWarehouseCollector(Collector):
         bands = list(zip(PRICE_BANDS, PRICE_BANDS[1:]))[::-1]
         seen: set[str] = set()
         complete = True
+        crowded: list[int] = []
         cov.pages_total = 0
         while bands:
             lo, hi = bands.pop()
@@ -93,41 +95,50 @@ class ChemistWarehouseCollector(Collector):
                     mid = (lo + hi) // 2
                     bands += [(mid, hi), (lo, mid)]
                     continue
-                # More than a page of products at one exact price (e.g. $25.00): split it by category.
-                hits, ok, used = self._by_category(f"calculatedPrice >= {lo} AND calculatedPrice < {hi} AND {NOT_MARKETPLACE}", hpp)
-                cov.pages_total += used
-                cov.pages_read += used
-                complete &= ok
+                # More than a page of products at one exact price (e.g. $25.00): split it by category, at the end.
+                crowded.append(lo)
+                continue
             for hit in hits:
                 if hit.get("sku") in seen:
                     continue
                 seen.add(hit.get("sku"))
                 cov.items_seen += 1
                 yield RawItem(hit, {})
+        for lo in crowded:
+            hits, ok, used = self._by_category(
+                f"calculatedPrice >= {lo} AND calculatedPrice < {lo + 1} AND {NOT_MARKETPLACE}", hpp)
+            cov.pages_total += used
+            cov.pages_read += used
+            complete &= ok
+            for hit in hits:
+                if hit.get("sku") not in seen:
+                    seen.add(hit.get("sku"))
+                    cov.items_seen += 1
+                    yield RawItem(hit, {})
         # Products with no price aren't in any band; they'd be skipped anyway (no single clear price).
         cov.complete = complete
 
     def _by_category(self, base: str, hpp: int) -> tuple[list[dict], bool, int]:
-        """Every product matching `base` when there are more than one page of them: the biggest categories one by
-        one, each time leaving the ones already read out, until what's left fits on a page. Returns (hits, whether
-        everything was read, requests used)."""
+        """Every product matching `base` when there's more than a page of them (one exact price, e.g. $25.00): one
+        look at how they spread over categories, then the biggest categories that fit on a page, one by one (each
+        leaving those already read out), until what's left fits on a page too. Returns (hits, whether everything was
+        read, requests used). On 21 Oct an earlier version asked twice per category and used up the read's requests."""
         res = self._query(base, 0, 0, facets=["categoryKeys.en"])
         total = res.get("nbHits") or 0
         counts = (res.get("facets") or {}).get("categoryKeys.en") or {}
-        # Categories that hold nearly everything don't split anything.
-        cats = [c for c, n in sorted(counts.items(), key=lambda kv: -kv[1]) if n < total and '"' not in c]
+        cats = [(c, n) for c, n in sorted(counts.items(), key=lambda kv: -kv[1]) if n <= hpp and '"' not in c]
         hits: list[dict] = []
-        rest, used = base, 1
-        for cat in cats:
-            left = self._query(rest, 0, hpp)
-            used += 1
-            if (left.get("nbHits") or 0) <= hpp:
-                return hits + (left.get("hits") or []), True, used
+        rest, used, taken = base, 1, 0
+        for cat, n in cats[:MAX_SPLIT]:
+            if total - taken <= hpp:
+                break            # what's left should fit on a page now
             part = self._query(f'{rest} AND categoryKeys.en:"{cat}"', 0, hpp)
             used += 1
-            if (part.get("nbHits") or 0) <= hpp:
+            got = part.get("nbHits") or 0
+            if 0 < got <= hpp:
                 hits += part.get("hits") or []
                 rest = f'{rest} AND NOT categoryKeys.en:"{cat}"'
+                taken += got
         left = self._query(rest, 0, hpp)
         return hits + (left.get("hits") or []), (left.get("nbHits") or 0) <= hpp, used + 1
 

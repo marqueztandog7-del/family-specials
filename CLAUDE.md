@@ -11,7 +11,7 @@ A cost-of-living app, built for our family first and possibly the public later. 
 
 Stores, in priority order: Woolworths, Coles, Chemist Warehouse, Costco, ALDI. (Tong Li was dropped on 16 Oct 2026.)
 
-Watch levels: 1 exact (one product at one store), 2 same product at any store (barcode, else brand + normalised name + size, with a confidence score), 3 similar (a rule such as "beef mince, any brand, 500 g to 2 kg", including store-brand equivalents).
+Watch levels: 1 exact (one product at one store), 2 same product at any store (barcode, else brand + normalised name + size, with a confidence score), 3 similar (a rule such as "rolled oats, any brand, 500 g to 2 kg", including store-brand equivalents).
 
 Every stage must keep these possible. When a design choice would block one of them, stop and raise it. The product brief is docs/weekly-routine.md: every feature should make that routine faster or cheaper. The app plan is docs/app-plan.md (in progress since 16 Oct 2026: five tabs This Week · Watchlist · Home · List · Savings, opening on Home). The current spec is docs/accounts-and-families-spec.md (designs, accounts, families and invites, per-family notifications; the backend needs the user's OK before building). The previous stage is docs/next-stage-spec.md. Decisions so far: docs/decisions.md.
 
