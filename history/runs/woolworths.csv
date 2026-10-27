@@ -10,3 +10,5 @@ woolworths,category,mac,2026-10-15T23:17:08Z,2026-10-15T23:17:29Z,ok,6,80,160,
 woolworths,range,mac,2026-10-19T20:38:07Z,2026-10-19T22:02:22Z,partial,1100,11683,18436,woolworths: request budget of 1100 used up
 woolworths,specials,mac,2026-10-20T20:30:06Z,2026-10-20T20:39:02Z,ok,115,3675,7350,
 woolworths,range,mac,2026-10-20T20:39:02Z,2026-10-20T22:05:24Z,partial,1100,11731,19232,woolworths: request budget of 1100 used up
+woolworths,specials,mac,2026-10-27T20:30:07Z,2026-10-27T20:39:14Z,ok,121,4003,8006,
+woolworths,range,mac,2026-10-27T20:39:14Z,2026-10-27T21:52:50Z,ok,962,23027,38760,
