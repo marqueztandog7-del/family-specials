@@ -33,15 +33,18 @@ uv run specials update --where mac "$@" || status=$?
 
 # Only store data goes to GitHub: specials history and the public specials file. Never the watchlist.
 git add history site/data
-if git diff --cached --quiet; then
-  log "Nothing new to publish (just a check)."
-else
+if ! git diff --cached --quiet; then
   git commit -q -m "Specials: $(date +%Y-%m-%d) (Mac)"
+fi
+# Push whatever is waiting, including a commit an earlier run couldn't push (e.g. the Mac was offline).
+if [ "$(git rev-list --count '@{u}..HEAD' 2>/dev/null || echo 0)" -gt 0 ]; then
   if git pull -q --rebase && git push -q; then log "Pushed. The family page updates in a minute or two."
   else log "Couldn't push to GitHub"; notify "Update: couldn't push to GitHub"; status=1; fi
+else
+  log "Nothing new to publish (just a check)."
 fi
 if [ "$status" -ne 0 ]; then
-  notify "A store refused us or failed on the Mac (it's paused until you resume it). See data/logs/collect.log"
+  notify "Some stores couldn't be read on the Mac (refused, failed, or the Mac was offline). See data/logs/collect.log"
 fi
 
 # Weekly backup straight after the Wednesday update. It notifies by itself if it fails.

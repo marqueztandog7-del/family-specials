@@ -24,6 +24,10 @@ class Blocked(Exception):
     """The site refused or challenged us. Stop collecting from this chain."""
 
 
+class Offline(Exception):
+    """This Mac has no internet connection (asleep, Wi-Fi down). Not a refusal: the store is read again next time."""
+
+
 class NotFound(Exception):
     """HTTP 404: the page doesn't exist (not a block). Skip it and carry on."""
 
@@ -34,6 +38,26 @@ class RobotsDisallowed(Exception):
 
 class BudgetExceeded(Exception):
     pass
+
+
+def online(timeout: float = 5.0) -> bool:
+    """Whether this Mac can reach the internet at all: looks up and connects to Apple's own connectivity-check
+    address (what macOS uses to test its Wi-Fi). Sends nothing else."""
+    import socket
+
+    try:
+        socket.create_connection(("captive.apple.com", 80), timeout=timeout).close()
+        return True
+    except OSError:
+        return False
+
+
+def _failed(what: str, e: Exception) -> Exception:
+    """A request that failed without an answer: a refusal (the store dropped or ignored us), unless this Mac is
+    offline, which happens when it sleeps mid-update (4 Nov 2026: every store was marked as refusing us)."""
+    if not online():
+        return Offline(f"{what} failed because this Mac was offline ({e.__class__.__name__})")
+    return Blocked(f"{what} failed: {e}")
 
 
 @dataclass
@@ -146,7 +170,7 @@ class PoliteClient:
             try:
                 resp = self.http.get(robots_url)
             except httpx.HTTPError as e:
-                raise Blocked(f"Couldn't read {robots_url}: {e}") from e
+                raise _failed(f"Reading {robots_url}", e) from e
             ctype = resp.headers.get("content-type", "")
             if resp.status_code >= 500:
                 raise Blocked(f"{robots_url} returned {resp.status_code}; not collecting")
@@ -200,7 +224,7 @@ class PoliteClient:
         try:
             resp = self.http.request(method, url, **kwargs)
         except httpx.HTTPError as e:
-            raise Blocked(f"{method} {url} failed: {e}") from e
+            raise _failed(f"{method} {url}", e) from e
         self._check_blocked(resp, expect, require)
         return resp
 

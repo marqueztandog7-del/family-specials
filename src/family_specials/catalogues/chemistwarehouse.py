@@ -29,7 +29,7 @@ import httpx
 
 from .. import config, db
 from ..collectors.base import Coverage
-from ..http import Blocked, BudgetExceeded, RobotsDisallowed
+from ..http import Blocked, BudgetExceeded, Offline, RobotsDisallowed
 from ..matching import name_score, normalise
 from ..models import Observation
 from ..parsing import parse_size
@@ -265,6 +265,8 @@ def run(conn: sqlite3.Connection, max_pages: int | None = None):
                     notes["special"] += 1
                     observations += 1
                 conn.commit()
+    except Offline as e:
+        status, error = "offline", str(e)
     except (Blocked, RobotsDisallowed) as e:
         status, error = "blocked", str(e)
     except BudgetExceeded as e:

@@ -153,11 +153,12 @@ def cmd_update(args) -> int:
     kinds = ["specials", "range", "catalogue"] if args.kind == "all" else [args.kind]
     problems: list[str] = []
     collected = False
+    offline = False
     for chain in chains if args.collect else []:
         cls = get_collector_class(chain)
         for kind in kinds:
-            if any(p.startswith(chain + " ") for p in problems):
-                break  # refused once: leave this store alone for the rest of the run
+            if offline or any(p.startswith(chain + " ") for p in problems):
+                break  # refused once (or this Mac is offline): leave this store alone for the rest of the run
             if kind == "specials" and not cls.has_specials_read:
                 continue
             if kind == "catalogue" and not has_catalogue(chain):
@@ -185,7 +186,11 @@ def cmd_update(args) -> int:
             if r.status == "blocked" and settings[chain].get("pause_on_block"):
                 print(f"PAUSED: {chain} refused us, so nothing will contact it again until you run: "
                       f"uv run specials resume {chain}")
-            if r.status in ("blocked", "error"):
+            if r.status == "offline":
+                offline = True
+                print("OFFLINE: this Mac lost its internet connection (asleep, or no Wi-Fi). The rest waits for the "
+                      "next update, which reads whatever is still due. Nothing is paused.")
+            if r.status in ("blocked", "error", "offline"):
                 problems.append(f"{chain} {kind}: {r.status}")
     # Re-run matching after every data update, across every store.
     db.reparse_attributes(conn)
@@ -208,8 +213,10 @@ def cmd_update(args) -> int:
     WATCH_FILE.write_text(json.dumps(watch, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
     if args.upload and _connected():
         try:
-            if _changed(watch):
+            digest = _digest(watch)
+            if digest != _sent_digest():
                 backend.upload_watchlist(watch)
+                WATCH_SENT.write_text(digest + "\n")   # only once it's really sent
                 print("Family watchlist: sent to the family's private row")
             if collected or args.upload_ranges:
                 t0 = time.monotonic()
@@ -247,25 +254,29 @@ def _connected() -> bool:
 WATCH_SENT = config.PRIVATE_DIR / ".family-watchlist-sent"
 
 
-def _changed(watch: dict) -> bool:
-    """Whether the watchlist differs from the copy last sent (ignoring when it was built). Remembers this one."""
+def _digest(watch: dict) -> str:
+    """A fingerprint of the watchlist, ignoring when it was built."""
     import hashlib
     import json
 
-    body = json.dumps({k: v for k, v in watch.items() if k != "generated_at"}, sort_keys=True).encode()
-    digest = hashlib.sha256(body).hexdigest()
+    return hashlib.sha256(json.dumps({k: v for k, v in watch.items() if k != "generated_at"},
+                                     sort_keys=True).encode()).hexdigest()
+
+
+def _sent_digest() -> str | None:
+    """The fingerprint of the copy last sent to Supabase."""
     try:
-        if WATCH_SENT.read_text().strip() == digest:
-            return False
+        return WATCH_SENT.read_text().strip()
     except OSError:
-        pass
-    WATCH_SENT.write_text(digest + "\n")
-    return True
+        return None
 
 
 def cmd_report(args) -> int:
-    from .update_report import newest, save
+    from .update_report import deliver, newest, save
 
+    if args.deliver:
+        print(deliver())
+        return 0
     path = newest() if args.show else save(db.connect())
     if path is None:
         print("No report yet.")
@@ -386,6 +397,8 @@ def main(argv: list[str] | None = None) -> int:
 
     p = sub.add_parser("report", help="a plain-English report on the latest specials update (private)")
     p.add_argument("--show", action="store_true", help="print the newest saved report instead of writing one")
+    p.add_argument("--deliver", action="store_true",
+                   help="print the reports not yet sent on (for the scheduled task), and mark them as sent")
     p.set_defaults(func=cmd_report)
 
     p = sub.add_parser("resume", help="read a store again after it refused us (it's paused until you do)")

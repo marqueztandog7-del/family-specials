@@ -15,4 +15,4 @@ costco,catalogue,mac,2026-10-20T22:21:06Z,2026-10-20T22:22:23Z,ok,17,45,46,
 costco,specials,mac,2026-10-27T21:58:45Z,2026-10-27T21:59:12Z,ok,7,285,285,
 costco,range,mac,2026-10-27T21:59:12Z,2026-10-27T22:08:38Z,ok,122,5786,390,
 costco,catalogue,mac,2026-10-27T22:08:38Z,2026-10-27T22:09:47Z,ok,17,52,57,
-costco,specials,mac,2026-11-03T21:34:28Z,2026-11-03T21:34:28Z,blocked,1,0,0,"Couldn't read https://www.costco.com.au/robots.txt: [Errno 8] nodename nor servname provided, or not known"
+costco,specials,mac,2026-11-03T21:34:28Z,2026-11-03T21:34:28Z,offline,1,0,0,"Couldn't read https://www.costco.com.au/robots.txt: [Errno 8] nodename nor servname provided, or not known [4 Nov: reclassified; the Mac was offline (asleep), not a refusal]"

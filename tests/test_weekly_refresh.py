@@ -333,3 +333,55 @@ def test_a_booklet_price_beats_a_later_online_price(tmp_path):
     db.finish_run(conn, online, "ok", 1, 1, 1)
     [p] = build_products(conn)
     assert (p["price_cents"], p["basis"], p["store_ref"]) == (1199, "in store", "warehouse")
+
+
+# --------------------------------------------------------------------------- a sleeping Mac is not a refusal (4 Nov 2026)
+
+
+def _failing_client(monkeypatch, is_online):
+    import httpx
+
+    from family_specials import http as fhttp
+
+    monkeypatch.setattr(fhttp, "online", lambda timeout=5.0: is_online)
+
+    def boom(request):
+        raise httpx.ConnectError("nodename nor servname provided, or not known")
+
+    c = fhttp.PoliteClient("aldi", delay_seconds=(0, 0), max_requests=5)
+    c.http = httpx.Client(transport=httpx.MockTransport(boom))
+    return c
+
+
+def test_no_internet_is_offline_not_a_refusal(monkeypatch):
+    import pytest
+
+    from family_specials.http import Blocked, Offline
+
+    with pytest.raises(Offline):
+        _failing_client(monkeypatch, False).get("https://asl.api.aldi.com.au/x")
+    with pytest.raises(Blocked):                       # online, but the store didn't answer: treated as a refusal
+        _failing_client(monkeypatch, True).get("https://asl.api.aldi.com.au/x")
+
+
+def test_an_offline_read_pauses_nothing_and_stays_due(tmp_path, monkeypatch):
+    monkeypatch.setattr(runner, "RESUMES_FILE", tmp_path / "resumes.json")
+    conn = db.connect(tmp_path / "a.db")
+    monkeypatch.setattr(runner, "make_client", lambda chain, kind="specials": _failing_client(monkeypatch, False))
+    r = runner.run_chain(conn, "aldi", "range")
+    assert r.status == "offline"
+    assert not runner.blocked_since_resume(conn, "aldi")
+    assert runner.is_due(conn, "aldi", "range")
+
+
+def test_reports_are_delivered_once(tmp_path, monkeypatch):
+    from family_specials import update_report as ur
+
+    monkeypatch.setattr(ur, "REPORTS", tmp_path)
+    monkeypatch.setattr(ur, "DELIVERED", tmp_path / ".delivered")
+    assert ur.deliver().startswith("No new specials update since never")
+    (tmp_path / "2026-11-03_0736.md").write_text("# Specials update: Tue 3 Nov, 7:36am\n\nSince the last report (x): **2 new specials**, **1 ended**.\n")
+    (tmp_path / "2026-11-04_1308.md").write_text("# Specials update: Wed 4 Nov, 1:08pm\n\nbody\n")
+    out = ur.deliver()
+    assert "Tue 3 Nov, 7:36am: **2 new specials**, **1 ended**." in out and "# Specials update: Wed 4 Nov, 1:08pm" in out
+    assert ur.deliver() == "No new specials update since Wed 4 Nov, 1:08pm."

@@ -49,6 +49,9 @@ def _problem(conn: sqlite3.Connection, r: sqlite3.Row, cov: tuple) -> str:
     why = (r["error"] or "").splitlines()[0] if r["error"] else ""
     if r["status"] == "blocked":
         return f"{store} {what}: the store REFUSED us ({why}). It's paused until you run `uv run specials resume {r['chain']}`."
+    if r["status"] == "offline":
+        return (f"{store} {what}: not read, because this Mac was offline (asleep, or no internet). Nothing is "
+                f"paused: it's read at the next update.")
     if r["status"] == "error":
         return f"{store} {what}: failed ({why[:120]}). The other stores weren't affected."
     out_of_requests = "budget" in why
@@ -155,11 +158,11 @@ def build(conn: sqlite3.Connection, now: datetime | None = None) -> tuple[str, d
             cov = conn.execute("SELECT COUNT(*), SUM(complete), SUM(items_seen), SUM(items_total) FROM run_coverage "
                                "WHERE run_id = ?", (r["id"],)).fetchone()
             result = {"ok": "done", "partial": "partly done", "blocked": "REFUSED", "error": "failed",
-                      "running": "running"}.get(r["status"], r["status"])
+                      "offline": "not read (Mac offline)", "running": "running"}.get(r["status"], r["status"])
             lines.append(f"| {STORE_NAMES.get(r['chain'], r['chain'])} | {KIND_WORDS.get(r['kind'], r['kind'])} | "
                          f"{_syd(r['started_at'])} | {result} | {r['requests_made']:,} | {r['items_seen']:,} | "
                          f"{_took(r['started_at'], r['finished_at'])} |")
-            if r["status"] in ("partial", "blocked", "error"):
+            if r["status"] in ("partial", "blocked", "error", "offline"):
                 problems.append(_problem(conn, r, cov))
         first, last = runs[0]["started_at"], max((r["finished_at"] or r["started_at"]) for r in runs)
         lines.append(f"\nThe week's refresh ran from {_syd(first)} and took {_took(first, last)} in total.")
@@ -209,3 +212,30 @@ def newest() -> Path | None:
     files = sorted(REPORTS.glob("*.md"))
     return files[-1] if files else None
 
+
+DELIVERED = REPORTS / ".delivered"
+
+
+def deliver() -> str:
+    """For the scheduled task: the newest report not sent on yet (in full), one line for each older one, and marks
+    them as sent. One line if there's nothing new."""
+    files = sorted(REPORTS.glob("*.md"))
+    try:
+        last = DELIVERED.read_text(encoding="utf-8").strip()
+    except OSError:
+        last = ""
+    new = [f for f in files if f.name > last]
+    if not new:
+        when = files[-1].read_text(encoding="utf-8").splitlines()[0].removeprefix("# Specials update: ") if files else "never"
+        return f"No new specials update since {when}."
+    out = []
+    if len(new) > 1:
+        out.append("Earlier updates since the last report:")
+        for f in new[:-1]:
+            lines = f.read_text(encoding="utf-8").splitlines()
+            change = next((ln for ln in lines if ln.startswith("Since the last report")), "")
+            out.append(f"- {lines[0].removeprefix('# Specials update: ')}: {change.split(': ', 1)[-1] if change else 'no change listed'}")
+        out.append("")
+    out.append(new[-1].read_text(encoding="utf-8"))
+    DELIVERED.write_text(new[-1].name + "\n", encoding="utf-8")
+    return "\n".join(out)

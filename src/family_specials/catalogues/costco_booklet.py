@@ -21,7 +21,7 @@ from typing import Any
 
 from .. import config, db
 from ..collectors.base import Coverage
-from ..http import Blocked, BudgetExceeded, NotFound, RobotsDisallowed
+from ..http import Blocked, BudgetExceeded, NotFound, Offline, RobotsDisallowed
 from ..models import NormalisedItem, Observation, ProductInfo
 from ..timeutil import iso, sydney_end_of_day, sydney_midnight, sydney_today
 from . import add_observation, add_to_review, product_id
@@ -183,6 +183,8 @@ def run(conn: sqlite3.Connection, max_pages: int | None = None):
                             add_observation(conn, run_id, pid, chain, obs)
                         observations += 1
             conn.commit()
+    except Offline as e:
+        status, error = "offline", str(e)
     except (Blocked, RobotsDisallowed) as e:
         status, error = "blocked", str(e)
     except BudgetExceeded as e:

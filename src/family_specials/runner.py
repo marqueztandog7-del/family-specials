@@ -10,7 +10,7 @@ from datetime import date, datetime, timedelta
 
 from . import config, db
 from .collectors import get_collector_class
-from .http import Blocked, BudgetExceeded, NotFound, PoliteClient, RobotsDisallowed
+from .http import Blocked, BudgetExceeded, NotFound, Offline, PoliteClient, RobotsDisallowed
 from .timeutil import iso, most_recent_weekday, now_utc, parse_iso, sydney_midnight, weekly_cycle
 
 log = logging.getLogger(__name__)
@@ -107,6 +107,8 @@ def run_chain(conn: sqlite3.Connection, chain: str, kind: str, max_pages: int | 
             items += 1
             if items % 200 == 0:
                 conn.commit()
+    except Offline as e:
+        status, error = "offline", str(e)
     except (Blocked, RobotsDisallowed) as e:
         status, error = "blocked", str(e)
         log.warning("%s %s stopped: %s", chain, kind, e)
