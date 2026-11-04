@@ -14,3 +14,5 @@ aldi,specials,mac,2026-10-20T22:05:24Z,2026-10-20T22:07:10Z,ok,23,986,986,
 aldi,range,mac,2026-10-20T22:07:10Z,2026-10-20T22:11:21Z,ok,56,3286,149,
 aldi,specials,mac,2026-10-27T21:52:50Z,2026-10-27T21:54:23Z,ok,20,908,908,
 aldi,range,mac,2026-10-27T21:54:23Z,2026-10-27T21:58:45Z,ok,57,3336,365,
+aldi,specials,mac,2026-11-03T20:55:01Z,2026-11-03T21:02:31Z,ok,21,925,925,
+aldi,range,mac,2026-11-03T21:02:31Z,2026-11-03T21:34:28Z,blocked,16,840,79,GET https://asl.api.aldi.com.au/commerce/v3/product-search failed: Server disconnected without sending a response.
