@@ -16,3 +16,4 @@ aldi,specials,mac,2026-10-27T21:52:50Z,2026-10-27T21:54:23Z,ok,20,908,908,
 aldi,range,mac,2026-10-27T21:54:23Z,2026-10-27T21:58:45Z,ok,57,3336,365,
 aldi,specials,mac,2026-11-03T20:55:01Z,2026-11-03T21:02:31Z,ok,21,925,925,
 aldi,range,mac,2026-11-03T21:02:31Z,2026-11-03T21:34:28Z,offline,16,840,79,"GET https://asl.api.aldi.com.au/commerce/v3/product-search failed: Server disconnected without sending a response. [4 Nov: reclassified; the Mac was offline (asleep), not a refusal]"
+aldi,range,mac,2026-11-05T07:30:07Z,2026-11-05T07:34:23Z,ok,57,3309,209,
