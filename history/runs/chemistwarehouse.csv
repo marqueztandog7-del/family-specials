@@ -7,3 +7,4 @@ chemistwarehouse,range,mac,2026-10-20T22:22:23Z,2026-10-20T22:31:56Z,partial,120
 chemistwarehouse,range,mac,2026-10-27T22:09:47Z,2026-10-27T22:16:37Z,partial,92,25942,1454,Some pages weren't read (see run_coverage)
 chemistwarehouse,range,mac,2026-11-03T21:34:28Z,2026-11-03T21:34:28Z,offline,1,0,0,"Couldn't read https://42NP1V2I98-dsn.algolia.net/robots.txt: [Errno 8] nodename nor servname provided, or not known [4 Nov: reclassified; the Mac was offline (asleep), not a refusal]"
 chemistwarehouse,range,mac,2026-11-05T07:45:31Z,2026-11-05T07:52:48Z,partial,92,26003,11288,Some pages weren't read (see run_coverage)
+chemistwarehouse,range,mac,2026-11-10T20:47:11Z,2026-11-10T20:54:39Z,partial,92,26056,268,Some pages weren't read (see run_coverage)
